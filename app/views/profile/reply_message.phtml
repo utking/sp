@@ -1,0 +1,42 @@
+<div class="col-md-12">
+    
+    <p><?php echo $this->getContent() ?></p>
+    
+    <?php echo Phalcon\Tag::form(['/profile/reply_message', 'id' => 'message_form', 'class' => 'form-horizontal']) ?>
+    
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group">
+            <?= $this->tag->linkTo(array(
+                '/profile/messages', 
+                'text' => 'Назад к сообщениям',
+                'type' => 'button',
+                'class' => 'btn btn-default'
+                )); ?>
+        </div>
+    </div>
+    <br>
+    
+    <div class="carousel">
+        <div class="page-header">
+            <h4>Ответ на сообщение</h4>
+        </div>
+        
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <td>Тема</td>
+                <td><?php echo Phalcon\Tag::textField(["msg_subject", 'class' => 'form-control']) ?></td>
+            </tr>
+            <tr>
+                <td>Текст ответа</td>
+                <td><?php echo Phalcon\Tag::textarea(["msg_text", 'class' => 'form-control', 'rows' => 10, 'autofocus' => '']) ?></td>
+            </tr>
+        </table>
+        <div class="form-actions">
+            <?php echo Phalcon\Tag::submitButton(["Отправить", 'name' => 'send_reply', 'class' => 'btn btn-default']) ?>
+            <td><?php echo Phalcon\Tag::hiddenField(["msg_to_user_id"]) ?></td>
+        </div>
+    </div>
+    
+    </form>
+    
+</div>

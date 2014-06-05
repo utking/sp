@@ -1,0 +1,18 @@
+<p><?php echo $this->getContent() ?></p>
+<div>
+    <table class="table table-bordered table-condensed product_table">
+    <?php foreach ($this->view->products as $product) { ?>
+        <tr>
+            <td class="product_title">
+                <?= $product->title ?><br>
+                <?php echo $this->tag->linkTo(array(
+                    '/product/view/' . $product->id, 
+                    'text' => 
+                    (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
+            </td>
+            <td class="cat_desc"><?= $product->description ?></td>
+            <td><?= $product->price ?></td>
+        </tr>
+    <?php } ?>
+    </table>
+</div>

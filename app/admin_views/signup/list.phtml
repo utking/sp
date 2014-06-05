@@ -1,0 +1,42 @@
+<?php echo $this->tag->form(array('signup/edit', 'method' => 'post')); ?>
+<p><?php echo $this->getContent() ?></p>
+
+<table class="table table-condensed table-striped">
+    <caption><h4>Пользователи</h4></caption>
+    <thead>
+        <tr>
+            <th>Login</th>
+            <th>Группа</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->view->users as $user) { ?>
+            <tr>
+                <th>
+                    <?php echo $this->tag->radioField(array('uid', 'value' => $user->id)); ?>
+                    <?= $user->login ?></th>
+                <th><?= $user_groups[$user->group_id] ?></th>
+            </tr>
+        <?php } ?>
+    </tbody>
+
+</table>
+<div class="controls-row">
+    <?php echo $this->tag->linkTo(array(
+        'signup/index', 'text' => 'Добавить',
+        'value' => 'Добавить', 
+        'class' => 'btn btn-info btn-sm')); ?>
+    <?php echo $this->tag->submitButton(array(
+        'delete_user', 
+        'name' => 'delete_user',
+        'value' => 'Удалить', 
+        'onclick' => "return confirm('Удалить пользователя?');",
+        'class' => 'btn btn-danger')); ?>
+    <?php echo $this->tag->submitButton(array(
+        'edit_user', 
+        'name' => 'edit_user',
+        'value' => 'Изменить', 
+        'onclick' => "return confirm('Редактировать пользователя?');",
+        'class' => 'btn btn-warning')); ?>
+</div>
+</form>

@@ -1,0 +1,123 @@
+<p><?php echo $this->getContent() ?></p>
+
+<div class="title">Редактировать размеры для &laquo;<?= $product->title ?>&raquo;</div>
+<?php echo Phalcon\Tag::form(['/product/add_attr', 'id' => 'new_attr_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            './#',
+            'onclick' => 'add_attr_row(); return false;',
+            //'/product/add_attr/' . $product->id, 
+            'text' => 'Добавить',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+        <?= $this->tag->linkTo(array(
+            '/product/view/' . $product->id, 
+            'text' => 'Назад к товару',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+<br>
+
+<table class="table product_details_table">
+        <tr>
+            <th>Размеры</th>
+        </tr>
+        <tr>
+            <td>
+                <table class="table product_attributes_table">
+                    <tr style='display: none' id='attr_row_template'>
+                        <td style="width: 24px;">
+                            <?= 
+                            $this->tag->linkTo(array(
+                                './#',
+                                'onclick' => 'remove_attr_row(this); return false;',
+                                'text' => '-',
+                                'title' => 'Удалить размер',
+                                'class' => 'btn btn-default'
+                                ));
+                            ?>
+                        </td>
+                        <td colspan="3">
+                            <?php echo Phalcon\Tag::textField(["product_attr_temlpate[]", 'class' => 'form-control', 'style' => 'display: inline; width: 75%;']) ?>
+                        </td>
+                    </tr>
+                    <?php foreach ($product_attributes as $attr) : ?>
+                        <tr>
+                            <td style="width: 24px;"><?= 
+                            $this->tag->linkTo(array(
+                                '/product/remove_attr/' . $product->id . '/' . $attr->id,
+                                'text' => '-',
+                                'title' => 'Удалить размер',
+                                'class' => 'btn btn-default'
+                                ));
+                            ?></td>
+                            <td><?= $attr->attr ?></td>
+                            <td>
+                                <?php
+                                if (!Product::isStopped($product->id)) {
+                                    echo $this->tag->linkTo(array(
+                                        './#',
+                                        'onclick' => 'return false',
+                                        'text' => 'Прием заказов',
+                                        'class' => ''
+                                        ));
+                                } else {
+                                    echo $this->tag->linkTo(array(
+                                        './#',
+                                        'onclick' => 'return false;',
+                                        'text' => 'Закупка завершена',
+                                        'class' => ''
+                                        ));
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $ordered_users = Order::find(array(
+                                    'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
+                                    'bind' => array(
+                                        1 => $product->id,
+                                        2 => $attr->id
+                                        
+                                    ),
+                                    'group' => 'user_id'
+                                ));
+                                ?>
+                                <?php foreach ($ordered_users as $cur_user) { ?>
+                                <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </td>
+        </tr>
+</table>
+
+<div class="control-group">
+    <div class="controls">
+        <?php echo Phalcon\Tag::hiddenField(["product_id", 'value' => $product->id]) ?>
+        <?php echo Phalcon\Tag::submitButton(["Сохранить", 'id' => 'add_attr', 'name' => 'add_attr', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+    </div>
+</div>
+</form>
+
+<script>
+    <!--
+
+    function add_attr_row() {
+        var new_attr_row = $('#attr_row_template').clone().removeAttr('style');
+        $(new_attr_row).find('input').attr('required', 'required');
+        $('.product_attributes_table').append(new_attr_row);
+    }
+    
+    function remove_attr_row(el) {
+        $(el).parent('td').parent('tr').remove();
+    }
+    
+    -->
+</script>

@@ -1,0 +1,58 @@
+<div class="col-md-4 col-md-offset-4">
+    
+    <div class="page-header">
+        <h4>Регистрация нового пользователя</h4>
+    </div>
+    
+    <p><?php echo $this->getContent() ?></p>
+    
+    <?php echo Phalcon\Tag::form(['/signup/register', 'id' => 'reg_form', 'class' => 'form-horizontal']) ?>
+    
+        <div class="control-group">
+            <label class="control-label" for="login">Логин</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::textField(["login", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="full_name">Фамилия Имя</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::textField(["full_name", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="phone">Контактный телефон</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::textField(["phone", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="email">E-mail</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::textField(["email", 'type' => 'email', 'required' => '', 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Пароль</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::passwordField(["password", 'class' => 'form-control']) ?>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="confirmation">Подтверждение пароля</label>
+            <div class="controls">
+                <?php echo Phalcon\Tag::passwordField(["confirmation", 'class' => 'form-control']) ?>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <?php echo Phalcon\Tag::submitButton(["Вперед", 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+            </div>
+        </div>
+        
+        <?php echo Phalcon\Tag::hiddenField(["operation"]) ?>
+        <?php echo Phalcon\Tag::hiddenField(["uid"]) ?>
+
+    </form>
+</div>

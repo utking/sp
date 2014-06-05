@@ -1,0 +1,26 @@
+<div class="span4 offset4">
+
+    <p><?php echo $this->getContent() ?></p>
+
+    <?php
+    echo Phalcon\Tag::form(array("/signup/start", 'role' => 'form'));
+    ?>
+    <h2 class="form-signin-heading">Вход в систему</h2>
+
+    <?php
+    echo '<div>',
+    Phalcon\Tag::textField(array('username', 'placeholder' => 'Login', 'required' => '', 'class' => 'form-control')),
+    '</div>';
+    
+    echo '<div>',
+    Phalcon\Tag::passwordField(array('password', 'placeholder' => 'password', 'required' => '', 'class' => 'form-control')),
+    '</div>';
+
+    echo '<div>',
+    Phalcon\Tag::submitButton(array('login', 'Value' => 'Войти', 'class' => 'btn btn-lg btn-primary btn-block')),
+    '</div>';
+
+    echo Phalcon\Tag::endForm();
+    ?>
+
+</div>

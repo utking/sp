@@ -1,0 +1,106 @@
+<p><?php echo $this->getContent() ?></p>
+
+<?php $date = new DateTime(); ?>
+
+<div>
+    <?php if (isset($category_id)) { ?>
+        <div class="title">Изменить закупку товаров</div>
+    <?php } else { ?>
+        <div class="title">Добавить закупку товаров</div>
+    <?php } ?>
+    <?php echo Phalcon\Tag::form(['/categories/save', 'id' => 'new_category_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <td><label for="category_title">Название:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textField(["category_title", 'required' => '', 'class' => 'form-control']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="category_description">Описание:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textarea(["category_description", 'class' => 'form-control']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="product_stopdatetime">Дата стопа:</label></td>
+                <td>
+                    <div class="input-append date" id="datetimepicker" data-date="<?= (isset($stop_datetime) ? $stop_datetime->format('d.m.Y H:00') : $date->format('d.m.Y H:00')) ?>" data-date-format="dd.mm.yyyy" date-language='ru'>
+                        <input class="controls1" size="16" type="text" value="<?= (isset($stop_datetime) ? $stop_datetime->format('d.m.Y H:00') : $date->format('d.m.Y H:00')) ?>" name='category_stop_datetime' required="">
+                        <span class="add-on"><i class="icon-calendar"></i></span>
+                    </div> 
+                </td>
+            </tr>
+            <tr>
+                <td><label for="category_parent_id">Родительская категория:</label></td>
+                <td>
+                    <?= Phalcon\Tag::select(["category_parent_id", 
+                        $parents, 
+                        'using' => array('id', 'title'), 
+                        'useEmpty' => true,
+                        'emptyText' => '-',
+                        'class' => 'form-control'
+                        ]) 
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="category_rules">Условия закупки:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textarea(["category_rules", 'class' => 'form-control']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="category_photo">Изображение:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::fileField(["category_photo", '' => '', 'onchange' => 'removePhoto(); return false;']) ?>
+                </td>
+            </tr>
+            <?php if (isset($category_id) && strlen($category_img)) { ?>
+            <tr id='img_row'>
+                <td class="cat_title">
+                    <a href="#" onclick="removePhoto(); return false;" class="btn btn-warning">Удалить изображение</a>
+                </td>
+                <td>
+                    <div>
+                        <img id='cat_img' class="cat_img" src="data:image/jpeg;charset=utf-8;base64,<?= $category_img ?>">
+                    </div>
+                    
+                </td>
+            </tr>
+            <?php } ?>
+        </table>
+        
+        <div class="control-group">
+            <div class="controls">
+        <?php if (isset($category_id)) { ?>
+            <?php echo Phalcon\Tag::submitButton(["Обновить", 'name' => 'update_category', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+            <?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category_id]) ?>
+            <?php echo Phalcon\Tag::hiddenField(["category_img", 'value' => $category_img]) ?>
+        <?php } else { ?>
+            <?php echo Phalcon\Tag::submitButton(["Добавить", 'name' => 'add_category', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+        <?php } ?>
+            </div>
+        </div>
+        
+    </form>
+</div>
+<script>
+    <!--
+    $(document).ready(function () {
+        $("#datetimepicker").datetimepicker({
+            format: 'dd.mm.yyyy hh:ii',
+            autoclose: true,
+            todayBtn: true,
+            pickerPosition: "bottom-left",  
+            language: 'ru',
+            weekStart: 1
+        });
+    });
+    
+    function removePhoto() {
+        $('#img_row').remove();
+        $('#category_img').remove();
+    }
+    -->
+</script>

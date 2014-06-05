@@ -1,0 +1,150 @@
+div.body_div {
+    spadding-top: 60px;
+}
+
+div.center {
+    text-align: center;
+    margin: 10px auto;
+    width: 400px;
+}
+
+div.center form {
+    display: inline-block;
+}
+
+
+html, body {
+    height: 100%;
+}
+#wrap {
+    height: auto;
+    margin: 0 auto -60px;
+    min-height: 100%;
+    padding: 0 0 60px;
+}
+#footer {
+    background-color: #F5F5F5;
+    height: 60px;
+}
+.container {
+    max-width: 1200px;
+    padding: 0 15px;
+    width: auto;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+.errorMessage {
+    padding: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+
+.successMessage {
+    padding: 5px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.cat_img,
+.product_img 
+{
+    width: 250px;
+    height: auto;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	box-shadow: 1px 1px 1px 1px #ccc;
+	-moz-box-shadow: 1px 1px 1px 1px #ccc;
+}
+
+td.cat_title,
+td.product_title,
+table.product_table td.sp_stop_datetime
+{
+    width: 260px;
+}
+
+table tr td.cat_desc,
+table.product_table tr td.cat_desc
+{
+    width: 400px;
+    text-align: left;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+table.cat_table td.cat_products_count,
+table.cat_table td.cat_desc,
+td.cat_title,
+table.product_table td.product_title,
+table.product_details_table td.product_title,
+table.product_table td.product_price,
+table.product_table td.cat_products_count,
+table.product_table td.cat_desc,
+table.product_table td.sp_stop_datetime
+{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.price:after {
+    content: ' р.';
+}
+
+table.product_attributes_table tr td
+{
+    border: 1px solid #ddd;
+}
+
+table.product_details_table tr {
+    border: 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+table.product_details_table td.product_title {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+div.title {
+    font-size: 1.6em;
+    padding: 5px;
+}
+
+table tr.new_message td {
+    font-weight: bold;
+    padding: 5px;
+}
+
+div.msg_body {
+    display: none;
+}
+
+span.forum_info_user,
+span.forum_info_date
+{
+    display: block;
+    font-size: 12px;
+}
+
+span.forum_info_user {
+    width: 120px;
+    overflow: hidden;
+    font-weight: bold;
+}
+
+table td.forum_msg_info {
+    width: 150px;
+}
+
+table.forum_msgs_table tr td {
+    padding: 12px;
+}

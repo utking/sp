@@ -1,0 +1,93 @@
+<p><?php echo $this->getContent() ?></p>
+
+<div class="title"><?= $product->title ?></div>
+
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            '/categories/view/' . $product->category_id, 
+            'text' => 'Назад в закупку',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+<br>
+
+<table class="table product_details_table">
+        <tr>
+            <th>Фото</th>
+            <th>Цена</th>
+            <th>Описание</th>
+            <th>Собрано</th>
+        </tr>
+        <tr>
+            <td class="product_title">
+                <?= (strlen(ProductImage::getProductImage($product->id)) > 0 ? ('<img class="product_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">') : ('<img class="product_img" src="/img/noimage.jpg">')) ?>
+            </td>
+            <td class="price"><?= $product->price ?></td>
+            <td class=""><?= $product->description ?></td>
+            <td><?= Product::getOrderedSumma($product->id) ?></td>
+        </tr>
+</table>
+
+<div class="form-group">
+    <?php
+    if (true) {
+        echo $this->tag->linkTo(array(
+            '/product/edit/' . $product->id,
+            'text' => 'Изменить товар',
+            'class' => 'btn btn-info'
+        ));
+    }
+    ?>
+</div>
+
+<table class="table">
+        <tr>            
+            <td>
+                <table class="table product_attributes_table">
+                    <?php foreach ($product_attributes as $attr) : ?>
+                        <tr>
+                            <td><?= $attr->attr ?></td>
+                            <td>
+                                <?php
+                                if (!Product::isStopped($product->id)) {
+                                    echo $this->tag->linkTo(array(
+                                        './#',
+                                        'onclick' => 'return false',
+                                        'text' => 'Прием заказов',
+                                        'class' => ''
+                                        ));
+                                } else {
+                                    echo $this->tag->linkTo(array(
+                                        './#',
+                                        'onclick' => 'return false;',
+                                        'text' => 'Закупка завершена',
+                                        'class' => ''
+                                        ));
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $ordered_users = Order::find(array(
+                                    'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
+                                    'bind' => array(
+                                        1 => $product->id,
+                                        2 => $attr->id
+                                        
+                                    ),
+                                    'group' => 'user_id'
+                                ));
+                                ?>
+                                <?php foreach ($ordered_users as $cur_user) { ?>
+                                <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </td>
+        </tr>
+</table>

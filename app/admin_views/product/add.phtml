@@ -1,0 +1,150 @@
+<p><?php echo $this->getContent() ?></p>
+
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            '/categories/view/' . $category_id, 
+            'text' => 'Назад в закупку',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+<br>
+
+<div>
+    <?php if (isset($product_id)) { ?>
+        <div class="title">Изменить товар</div>
+    <?php } else { ?>
+        <div class="title">Добавить товар</div>
+    <?php } ?>
+    <?php echo Phalcon\Tag::form(['/product/save', 'id' => 'new_product_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <td><label for="product_title">Название:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textField(["product_title", 'required' => '', 'class' => 'form-control']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="product_description">Описание:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textarea(["product_description", 'class' => 'form-control']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="product_price">Цена за единицу:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::textField(["product_price", 'class' => 'form-control numeric_float', 'required' => '']) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="product_photo">Изображение:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::fileField(["product_photo", '' => '', 'onchange' => 'removePhoto(); return false;']) ?>
+                </td>
+            </tr>
+            <?php if (isset($product_id) && strlen($product_img)) { ?>
+            <tr id='img_row'>
+                <td class="product_title">
+                    <a href="#" onclick="removePhoto(); return false;" class="btn btn-warning">Удалить изображение</a>
+                </td>
+                <td>
+                    <div>
+                        <img id='product_img' class="product_img" src="data:image/jpeg;charset=utf-8;base64,<?= $product_img ?>">
+                    </div>
+                    
+                </td>
+            </tr>
+            <?php } ?>
+            
+            <?php if (!isset($product_id)) { ?>
+            <tr>
+                <td>
+                    <label for="product_attributes">Размеры:</label>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class="btn-group">
+                            <?= $this->tag->linkTo(array(
+                                './#', 
+                                'onclick' => 'add_attr_row(); return false;',
+                                'text' => '+',
+                                'title' => 'Добавить размер',
+                                'type' => 'button',
+                                'class' => 'btn btn-default'
+                                )); ?>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div id="attr_template">
+                        
+                        Размер: <?php echo Phalcon\Tag::textField(["product_attr[]", 'required' => '', 'class' => 'form-control', 'style' => 'display: inline; width: 75%;']) ?>
+                        <?= $this->tag->linkTo(array(
+                            './#', 
+                            'onclick' => 'remove_attr_row(this); return false;',
+                            'text' => '-',
+                            'title' => 'Удалить размер',
+                            'type' => 'button',
+                            'style' => 'display: none;',
+                            'class' => 'btn btn-default remover'
+                        )); ?>
+                    </div>
+                </td>
+            </tr>
+            <?php } else { ?>
+            <tr>
+                <td><label for="product_attributes">Размеры:</label></td>
+                <td>
+                    <div>
+                        <?= $this->tag->linkTo(array(
+                                '/product/attrs/' . $product_id,
+                                'text' => 'Редактировать размеры',
+                                'title' => 'Редактировать размеры',
+                                'type' => 'button',
+                                'class' => 'btn btn-default'
+                                )); ?>
+                    </div>
+                </td>
+            </tr>
+            <?php } ?>
+        </table>
+        
+        <div class="control-group">
+            <div class="controls">
+                <?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category_id]) ?>
+                <?php if (isset($product_id)) { ?>
+                    <?php echo Phalcon\Tag::submitButton(["Обновить", 'name' => 'update_product', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+                    <?php echo Phalcon\Tag::hiddenField(["product_img", 'value' => $product_img]) ?>
+                    <?php echo Phalcon\Tag::hiddenField(["product_id", 'value' => $product_id]) ?>
+                <?php } else { ?>
+                    <?php echo Phalcon\Tag::submitButton(["Добавить", 'name' => 'add_product', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+                <?php } ?>
+            </div>
+        </div>
+        
+    </form>
+</div>
+<script>
+    <!--
+    
+    $(document).ready(function () {
+        $('.numeric').numeric();
+        $('.numeric_float').numeric({decimal: '.'});
+    });
+    
+    function add_attr_row() {
+        var row = $('#attr_template').clone().removeAttr('id');
+        row.find('a.remover').show();
+        $(row).insertAfter($('#attr_template'));
+    }
+    
+    function remove_attr_row(el) {
+        $(el).parent('div').remove();
+    }
+        
+    function removePhoto() {
+        $('#img_row').remove();
+        $('#product_img').remove();
+    }
+    -->
+</script>
