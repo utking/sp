@@ -1,0 +1,20 @@
+<h1>Правила сайта</h1>
+<p><?php echo $this->getContent() ?></p>
+
+<?php echo Phalcon\Tag::form(['/home/save_rules', 'id' => 'rules_form', 'class' => 'form-horizontal']) ?>
+<div>
+    <table class="table table-bordered table-condensed">
+        <tr>
+            <td><label for="rules_text">Правила:</label></td>
+            <td>
+                <?php echo Phalcon\Tag::textarea(["rules_text", 'rows' => '25', 'class' => 'form-control']) ?>
+            </td>
+        </tr>
+    </table>
+    <div class="control-group">
+        <div class="controls">
+            <?php echo Phalcon\Tag::submitButton(["Сохранить", 'name' => 'update_rules', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+        </div>
+    </div>
+</div>
+</form>

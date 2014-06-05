@@ -16,4 +16,14 @@ class Categories extends Phalcon\Mvc\Model
         return TRUE;
     }
     
+    public static function hasChildCategories($category_id) {
+        $category = Categories::findFirst(array(
+            'conditions' => 'parent_category_id = ?1',
+            'bind' => array(
+                1 => $category_id
+            )
+        ));
+        return ($category == true);
+    }
+    
 }

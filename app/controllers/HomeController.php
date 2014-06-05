@@ -10,8 +10,9 @@ class HomeController extends ControllerBase {
         return $this->response->redirect('/categories');
     }
 
-	public function rulesAction() {
-		;
-	}
+    public function rulesAction() {
+        $this->tag->appendTitle('Правила');
+        $this->view->rules = StaticPages::getRules();
+    }
 
 }

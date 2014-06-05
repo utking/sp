@@ -1,0 +1,18 @@
+<h1>Правила сайта</h1>
+<p><?php echo $this->getContent() ?></p>
+
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            '/home/edit_rules/', 
+            'text' => 'Изменить правила',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+<br>
+
+<div>
+    <?= $rules ?>
+</div>

@@ -9,9 +9,13 @@ class AdminElements extends Phalcon\Mvc\User\Component {
 
     private $_headerMenu = array(
         'pull-left' => array(
-            'home' => array(
+            'categories' => array(
                 'caption' => 'Главная',
                 'action' => 'index'
+            ),
+            'home' => array(
+                'caption' => 'Правила',
+                'action' => 'rules'
             ),
             'categories' => array(
                 'caption' => 'Закупки товаров',
