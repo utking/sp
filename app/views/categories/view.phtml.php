@@ -61,9 +61,9 @@
     <table class="table table-bordered table-condensed product_table">
     <?php foreach ($this->view->products as $product) { ?>
         <tr>
-            <td style="width: 40px; vertical-align: middle; text-align: center">
+            <td style="width: 40px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
                 <?= $this->tag->linkTo(array(
-                    '/categories/view/' . $category->id . '#' . $product->id, 
+                    '/categories/view/' . $category->id . '#product_' . $product->id, 
                     'text' => '' . $product->id,
                     'title' => 'Номер товара'
                     )); ?>
@@ -78,6 +78,57 @@
             </td>
             <td class="cat_desc"><?= $product->description ?></td>
             <td class="product_price price"><?= $product->price ?></td>
+            <td><div>Размеры и заказы:</div>
+                <?php
+                $product_attributes = ProductAttribute::find(array(
+                    'conditions' => 'product_id = ?1',
+                    'bind' => array(
+                        1 => $product->id
+                    )
+                ));
+                ?>
+                <table class="table product_attributes_table">
+                    <?php foreach ($product_attributes as $attr) : ?>
+                        <tr>
+                            <td><?= $attr->attr ?></td>
+                            <td>
+                                <?php
+                                if (!Categories::isStopped($product->category_id)) {
+                                    echo $this->tag->linkTo(array(
+                                        '/product/order/' . $product->id .'/' . $attr->id,
+                                        'text' => 'Заказать',
+                                        'class' => ''
+                                        ));
+                                } else {
+                                    echo $this->tag->linkTo(array(
+                                        './#',
+                                        'onclick' => 'return false;',
+                                        'text' => 'Закупка завершена',
+                                        'class' => ''
+                                        ));
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $ordered_users = Order::find(array(
+                                    'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
+                                    'bind' => array(
+                                        1 => $product->id,
+                                        2 => $attr->id
+                                        
+                                    ),
+                                    'group' => 'user_id'
+                                ));
+                                ?>
+                                <?php foreach ($ordered_users as $cur_user) { ?>
+                                <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            </td>
         </tr>
     <?php } ?>
     </table>
