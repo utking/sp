@@ -19,6 +19,9 @@
         
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap-datetimepicker.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/locales/bootstrap-datetimepicker.ru.js"></script>
+        
+        <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/quill.snow.css" />
+        <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/quill_styles/advanced.css" />
                 
         <script>
             $(function() {

@@ -29,7 +29,7 @@ class HomeController extends ControllerBase {
     
     public function save_rulesAction() {
         if ($this->request->isPost() && $this->request->hasPost('rules_text')) {
-            $rules_text = strip_tags(trim($this->request->getPost('rules_text')), '<b><i><p><br><h1><h2><h3><h4><h5><h6>');
+            $rules_text = trim($this->request->getPost('rules_text'));
             if (!StaticPages::saveRules($rules_text)) {
                 $this->flashSession->error('Ошибка обновления правил');
                 return $this->response->redirect('/home/edit_rules/');
@@ -40,6 +40,8 @@ class HomeController extends ControllerBase {
     }
 
     public function edit_rulesAction() {
-        ;
+        $this->tag->appendTitle('Изменить правила');
+        $this->view->rules = StaticPages::getRules();
+        $this->tag->setDefault('rules_text', $this->view->rules);
     }
 }
