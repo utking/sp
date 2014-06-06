@@ -23,7 +23,7 @@ class Categories extends Phalcon\Mvc\Model
                 1 => $category_id
             )
         ));
-        return ($category == true);
+        return ($category == true && count($category));
     }
     
 }
