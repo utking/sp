@@ -32,6 +32,12 @@
                 </td>
             </tr>
             <tr>
+                <td><label for="product_hidden">Не показывать клиентам:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::checkField(["category_hidden", ]) ?>
+                </td>
+            </tr>
+            <tr>
                 <td><label for="category_parent_id">Родительская категория:</label></td>
                 <td>
                     <?= Phalcon\Tag::select(["category_parent_id", 

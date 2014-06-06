@@ -11,7 +11,7 @@ class CategoriesController extends ControllerBase {
 
     public function indexAction() {
         $this->view->categories = Categories::find(array(
-                "conditions" => "parent_category_id = 0"
+                "conditions" => "parent_category_id = 0 AND hidden = 0"
             ));
     }
     
@@ -20,15 +20,18 @@ class CategoriesController extends ControllerBase {
         if (count($args) > 0) {
             $id = (int)$args[0];
             $this->view->category = Categories::findFirst(array(
-                "conditions" => "id = ?1",
-                "bind" => array(1 => (int)$id)
+                "conditions" => "id = ?1 and hidden = ?2",
+                "bind" => array(
+                    1 => (int)$id,
+                    2 => false
+                    )
             ));
             if (!$this->view->category) {
                 $this->flashSession->error('Не существующая закупка');
                 return $this->response->redirect('/categories/');
             }
             $this->view->category_child_cats = Categories::find(array(
-                "conditions" => "parent_category_id = ?1",
+                "conditions" => "parent_category_id = ?1 and hidden = 0",
                 "bind" => array(1 => (int)$id)
             ));
             $this->view->products = Product::find(array(
@@ -41,7 +44,7 @@ class CategoriesController extends ControllerBase {
                 'order' => 'item_datetime DESC'
             ));
         } else {
-            $this->flashSession->error('Закупка не существует');
+            $this->flashSession->error('Закупка не существует или более не доступна');
             return $this->response->redirect('/categories/');
         }
     }
