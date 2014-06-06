@@ -61,6 +61,13 @@
     <table class="table table-bordered table-condensed product_table">
     <?php foreach ($this->view->products as $product) { ?>
         <tr>
+            <td style="width: 40px; vertical-align: middle; text-align: center">
+                <?= $this->tag->linkTo(array(
+                    '/categories/view/' . $category->id . '#' . $product->id, 
+                    'text' => '' . $product->id,
+                    'title' => 'Номер товара'
+                    )); ?>
+            </td>
             <td class="product_title">
                 <div class="title"><?= $product->title ?></div>
                 <?php echo $this->tag->linkTo(array(

@@ -40,6 +40,13 @@ class HomeController extends ControllerBase {
     }
 
     public function edit_rulesAction() {
+        $auth = $this->session->get('auth');
+        if (!isset($auth['id'])) {
+            return $this->dispatcher->forward(array(
+                            'controller' => 'signup',
+                            'action' => 'login'
+                ));
+        }
         $this->tag->appendTitle('Изменить правила');
         $this->view->rules = StaticPages::getRules();
         $this->tag->setDefault('rules_text', $this->view->rules);
