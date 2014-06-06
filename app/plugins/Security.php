@@ -47,6 +47,8 @@ class Security extends Plugin {
             $publicResources = array(
                 'index' => array('index'),
                 'home' => array('index', 'rules'),
+                'rules' => array('index'),
+                'feed' => array('index'),
                 'signup' => array('login', 'index', 'register'),
                 'categories' => array('index', 'list', 'view'),
                 'product' => array('index', 'list', 'view')

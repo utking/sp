@@ -13,9 +13,13 @@ class Elements extends Phalcon\Mvc\User\Component {
                 'caption' => 'Главная',
                 'action' => 'index'
             ),
-            'home' => array(
+            'rules' => array(
                 'caption' => 'Правила',
-                'action' => 'rules'
+                'action' => 'index'
+            ),
+            'feed' => array(
+                'caption' => 'Отзывы и хвастики',
+                'action' => 'index'
             ),
         ),
         'pull-right' => array(
