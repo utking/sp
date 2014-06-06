@@ -39,4 +39,37 @@ class StaticPages extends Phalcon\Mvc\Model
         return true;
     }
     
+    public static function getFeed() {
+        $feed = StaticPages::findFirst(array(
+            'conditions' => 'page_alias = ?1',
+            'bind' => array(
+                1 => 'FEED_PAGE'
+            )
+        ));
+        if ($feed) {
+            return $feed->page_text;
+        }
+        return '';
+    }
+    
+    public static function saveFeed($new_text) {
+        $feed = StaticPages::findFirst(array(
+            'conditions' => 'page_alias = ?1',
+            'bind' => array(
+                1 => 'FEED_PAGE'
+            )
+        ));
+        if ($feed) {
+            $feed->page_text = $new_text;
+        } else {
+            $feed = new StaticPages();
+            $feed->page_alias = 'FEED_PAGE';
+            $feed->page_text = $new_text;
+        }
+        if (!$feed->save()) {
+            return false;
+        }
+        return true;
+    }
+    
 }

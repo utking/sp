@@ -22,9 +22,9 @@ class HomeController extends ControllerBase {
         }
     }
     
-    public function rulesAction() {
-        $this->tag->appendTitle('Правила');
-        $this->view->rules = StaticPages::getRules();
+    public function feedAction() {
+        $this->tag->appendTitle('Отзывы и хвастики');
+        $this->view->feed = StaticPages::getFeed();
     }
     
     public function save_rulesAction() {
@@ -35,7 +35,19 @@ class HomeController extends ControllerBase {
                 return $this->response->redirect('/home/edit_rules/');
             }
             $this->flashSession->success('Правила обновлены');
-            return $this->response->redirect('/home/rules/');
+            return $this->response->redirect('/rules/');
+        }
+    }
+
+    public function save_feedAction() {
+        if ($this->request->isPost() && $this->request->hasPost('feed_text')) {
+            $feed_text = trim($this->request->getPost('feed_text'));
+            if (!StaticPages::saveFeed($feed_text)) {
+                $this->flashSession->error('Ошибка обновления правил');
+                return $this->response->redirect('/home/edit_feed/');
+            }
+            $this->flashSession->success('Отзывы и хвастики обновлены');
+            return $this->response->redirect('/feed/');
         }
     }
 
@@ -51,4 +63,17 @@ class HomeController extends ControllerBase {
         $this->view->rules = StaticPages::getRules();
         $this->tag->setDefault('rules_text', $this->view->rules);
     }
+    public function edit_feedAction() {
+        $auth = $this->session->get('auth');
+        if (!isset($auth['id'])) {
+            return $this->dispatcher->forward(array(
+                            'controller' => 'signup',
+                            'action' => 'login'
+                ));
+        }
+        $this->tag->appendTitle('Изменить');
+        $this->view->feed = StaticPages::getFeed();
+        $this->tag->setDefault('feed_text', $this->view->feed);
+    }
+
 }

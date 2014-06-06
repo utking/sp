@@ -1,0 +1,18 @@
+<h1>Отзывы и хвастики</h1>
+<p><?php echo $this->getContent() ?></p>
+
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            '/home/edit_feed/', 
+            'text' => 'Изменить',
+            'type' => 'button',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+<br>
+
+<div>
+    <?= $feed ?>
+</div>
