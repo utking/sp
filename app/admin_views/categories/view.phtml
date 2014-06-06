@@ -48,7 +48,11 @@
                     (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
             </td>
             <td class="cat_desc"><?= $category->desc ?></td>
+            <?php if (Categories::hasChildCategories($category->id)) { ?>
+            <td class="cat_products_count">-</td>
+            <?php } else { ?>
             <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $category->id)))) ?></td>
+            <?php } ?>
             <?php $stop_datetime = new DateTime($category->stop_datetime); ?>
             <td class="cat_products_count"><span class="<?= (!Categories::isStopped($category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
             <td class="cat_products_count"><span class="glyphicon <?= $category->hidden ? 'glyphicon-eye-close' : '' ?>"></span></td>
