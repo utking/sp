@@ -23,7 +23,7 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="product_stopdatetime">Дата стопа:</label></td>
+                <td><label for="category_stopdatetime">Дата стопа:</label></td>
                 <td>
                     <div class="input-append date" id="datetimepicker" data-date="<?= (isset($stop_datetime) ? $stop_datetime->format('d.m.Y H:00') : $date->format('d.m.Y H:00')) ?>" data-date-format="dd.mm.yyyy" date-language='ru'>
                         <input class="controls1" size="16" type="text" value="<?= (isset($stop_datetime) ? $stop_datetime->format('d.m.Y H:00') : $date->format('d.m.Y H:00')) ?>" name='category_stop_datetime' required="">
@@ -32,9 +32,15 @@
                 </td>
             </tr>
             <tr>
-                <td><label for="product_hidden">Не показывать клиентам:</label></td>
+                <td><label for="category_hidden">Не показывать клиентам:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::checkField(["category_hidden", ]) ?>
+                    <?php echo Phalcon\Tag::checkField(["category_hidden"]) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="category_use_forum">Разрешить обсуждение:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::checkField(["category_use_forum"]) ?>
                 </td>
             </tr>
             <tr>

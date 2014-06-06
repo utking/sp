@@ -22,7 +22,7 @@
 
 <div>
     <br>
-    <div class="title">Закупки в категории</div><br>
+    <div class="title">Закупки в категории &laquo;<?= $category->title ?>&raquo;</div><br>
     <table class="table table-bordered table-condensed cat_table">
         <tr>
             <td class="cat_title">Название и фото</td>
@@ -30,19 +30,19 @@
             <td class="cat_products_count">Товаров в закупке</td>
             <td class="cat_products_count">Стоп</td>
         </tr>
-    <?php foreach ($category_child_cats as $category) { ?>
+    <?php foreach ($category_child_cats as $cur_category) { ?>
         <tr>
             <td class="cat_title">
-                <div class="title"><?= $category->title ?></div>
+                <div class="title"><?= $cur_category->title ?></div>
                 <?= $this->tag->linkTo(array(
-                    '/categories/view/' . $category->id, 
+                    '/categories/view/' . $cur_category->id, 
                     'text' => 
-                    (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
+                    (strlen($cur_category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $cur_category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
             </td>
-            <td class="cat_desc"><?= $category->desc ?></td>
-            <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $category->id)))) ?></td>
-            <?php $stop_datetime = new DateTime($category->stop_datetime); ?>
-            <td class="cat_products_count"><span class="<?= (!Categories::isStopped($category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
+            <td class="cat_desc"><?= $cur_category->desc ?></td>
+            <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $cur_category->id)))) ?></td>
+            <?php $stop_datetime = new DateTime($cur_category->stop_datetime); ?>
+            <td class="cat_products_count"><span class="<?= (!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
         </tr>
     <?php } ?>
     </table>
@@ -53,11 +53,11 @@
 <div>
     <br>
     <div class="">
-        <div class="title">Условия закупки &laquo;<?= $category->title ?>&raquo;</div>
+        <div class="title">Условия закупки</div>
         <div class="alert alert-info"><?= $category->rules ?></div>
     </div>
     
-    <div class="title">Товары в закупке</div><br>
+    <div class="title">Товары в закупке &laquo;<?= $category->title ?>&raquo;</div><br>
     <table class="table table-bordered table-condensed product_table">
     <?php foreach ($this->view->products as $product) { ?>
         <tr>
@@ -134,6 +134,9 @@
     </table>
 </div>
 
+<?php } ?>
+
+<?php if ($category->use_forum > 0) { ?>
 <?php echo Phalcon\Tag::form(['/categories/new_message', 'id' => 'forum_new_message_form', 'class' => 'form-horizontal']) ?>
 <div class="forum_block" id="new_msg">
     <h3 class="help-block">Обсуждение закупки</h3>

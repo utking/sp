@@ -69,6 +69,7 @@ class CategoriesController extends ControllerBase {
                 $this->tag->setDefault('category_description', $category->desc);
                 $this->tag->setDefault('category_rules', $category->rules);
                 $this->tag->setDefault('category_hidden', $category->hidden);
+                $this->tag->setDefault('category_use_forum', $category->use_forum);
                 $stop_datetime = DateTime::createFromFormat('Y-m-d H:i:s', $category->stop_datetime);
                 $this->tag->setDefault('category_stop_datetime', $stop_datetime->format('d.m.Y H:i'));
                 $this->view->stop_datetime = $stop_datetime;
@@ -117,6 +118,7 @@ class CategoriesController extends ControllerBase {
 
             $category_parent_id = (int)$this->request->getPost('category_parent_id', 'int');
             $category_hidden = (int)$this->request->hasPost('category_hidden');
+            $category_use_forum = (int)$this->request->hasPost('category_use_forum');
             $category_title = trim($this->request->getPost('category_title', 'string'));
             $category_description = strip_tags(trim($this->request->getPost('category_description')), '<p><br><i><b>');
             $category_rules = strip_tags(trim($this->request->getPost('category_rules')), '<p><br><i><b>');
@@ -192,6 +194,7 @@ class CategoriesController extends ControllerBase {
                 $category->rules = $category_rules;
                 $category->img = $img_data;
                 $category->hidden = $category_hidden;
+                $category->use_forum = $category_use_forum;
                 $category->stop_datetime = $category_stop_datetime->format('Y-m-d H:i');
                 
             } elseif ($this->request->hasPost('update_category')) {
@@ -219,6 +222,7 @@ class CategoriesController extends ControllerBase {
                 $category->desc = $category_description;
                 $category->rules = $category_rules;
                 $category->hidden = $category_hidden;
+                $category->use_forum = $category_use_forum;
                 if (isset($category_prev_img)) {
                     $category->img = $category_prev_img;
                 } else {
