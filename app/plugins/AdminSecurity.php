@@ -34,7 +34,7 @@ class AdminSecurity extends Plugin {
             
             $adminPrivateResources = array(
                 'signup' => array('list'),
-                'categories' => array('index', 'list', 'view', 'delete', 'add', 'edit', 'save'),
+                'categories' => array('index', 'list', 'view', 'delete', 'add', 'edit', 'save', 'drop_products'),
                 'profile' => array('index', 'orders', 'view', 'messages', 'update_messages', 'reply_message'),
                 'order' => array('view', 'update'),
                 'product' => array('index', 'list', 'view', 'orders', 'edit', 'add', 'save', 'attrs', 'remove_attr', 'add_attr')

@@ -23,6 +23,7 @@ class CategoriesController extends ControllerBase {
                 "conditions" => "id = ?1",
                 "bind" => array(1 => (int)$id)
             ));
+			$this->tag->setDefault('category_id', $id);
             $this->view->category_child_cats = Categories::find(array(
                 "conditions" => "parent_category_id = ?1",
                 "bind" => array(1 => (int)$id)
@@ -253,5 +254,51 @@ class CategoriesController extends ControllerBase {
                     'controller' => 'signup',
                     'action' => 'index'
         ));
+    }
+    
+    public function drop_productsAction() {
+		$category_id = (int)$this->request->getPost('category_id', 'int');
+        if ($this->request->isPost() && $this->request->hasPost('drop_products') && $this->request->hasPost('uid')) {
+            $uids = $this->request->getPost('uid', 'int');
+			$this->db->begin();
+            foreach ($uids as $item) {
+				$prod_attrs = ProductAttribute::find(array(
+					'conditions' => 'product_id = ?1',
+					'bind' => array(
+						1 => $item
+					)
+				));
+				$product = Product::findFirst($item);
+				if (!$product || $product->category_id != $category_id) {
+					$this->flashSession->error('Товар не найден');
+					$this->db->rollBack();
+					return $this->response->redirect('/categories/view/' . $category_id);
+				}
+				foreach ($prod_attrs as $attr) {
+					if (!$attr->delete()) {
+						$this->db->rollBack();
+						foreach ($attr->getMessages() as $message) {
+							$this->flashSession->error($message);
+						}
+						return $this->response->redirect('/categories/view/' . $category_id);
+					}
+				}
+				if (!$product->delete()) {
+					$this->flashSession->error('Товар не удален');
+					$this->db->rollBack();
+					foreach ($product->getMessages() as $message) {
+						$this->flashSession->error($message);
+					}
+					return $this->response->redirect('/categories/view/' . $category_id);
+				}
+            }
+
+			$this->db->commit();
+			$this->flashSession->success('Товары удалены');
+			return $this->response->redirect('/categories/view/' . $category_id);
+        } else {
+			$this->flashSession->error('Не верные параметры');
+			return $this->response->redirect('/categories/view/' . $category_id);
+		}
     }
 }

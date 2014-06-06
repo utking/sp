@@ -67,11 +67,21 @@
         <div class="title">Условия закупки &laquo;<?= $category->title ?>&raquo;</div>
         <div class="alert alert-info"><?= $category->rules ?></div>
     </div>
-    
+    <?php echo Phalcon\Tag::form(['/categories/drop_products', 'id' => 'products_form', 'class' => 'form-horizontal']) ?>
     <div class="title">Товары в закупке</div><br>
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group">
+        <?php echo Phalcon\Tag::submitButton(["Удалить выделенные", 'name' => 'drop_products', 'class' => 'btn btn-default']) ?>
+        <?php echo Phalcon\Tag::hiddenField(['category_id']) ?>
+        </div>
+    </div>
+    <br>
     <table class="table table-bordered table-condensed product_table">
     <?php foreach ($this->view->products as $product) { ?>
         <tr>
+            <td style="width: 16px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
+                <?= $this->tag->checkField(['uid[]', 'value' => $product->id]); ?>
+            </td>
             <td style="width: 40px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
                 <?= $this->tag->linkTo(array(
                     '/categories/view/' . $category->id . '#product_' . $product->id, 
@@ -92,6 +102,7 @@
         </tr>
     <?php } ?>
     </table>
+    </form>
 </div>
 
 <?php } ?>
