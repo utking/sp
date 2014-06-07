@@ -74,7 +74,7 @@
                     '/product/view/' . $product->id, 
                     'text' => 
 					(strlen(ProductImage::getProductImage($product->id)) > 0 ?
-					('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" sdata-zoom-image="/img/noimage.jpg" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
+					('<img class="cat_img prod_cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
 					:
 				   	('<img class="cat_img" src="/img/noimage.jpg">'))
                     )); ?>
@@ -204,7 +204,10 @@
         }
     }
 
-	$('.cat_img').elevateZoom({
+	$('.prod_cat_img').elevateZoom({
+		lensBorder: 0,
+			zoomWindowWidth: 200,
+			zoomWindowHeight: 200,
 	}); 
     -->
 </script>
