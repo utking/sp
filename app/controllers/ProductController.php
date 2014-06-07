@@ -95,6 +95,10 @@ class ProductController extends ControllerBase {
                 $this->flashSession->error('Ошибка при попытке оставить комментарий по заказу: неизвестный заказ');
                 return $this->response->redirect('/profile/index');
             }
+            if (Product::isStopped($order->product_id)) {
+                $this->flashSession->error('Ошибка при попытке оставить комментарий по остановленному заказу');
+                return $this->response->redirect('/profile/index');
+            }
             if ($msg === '') {
 				$order->info = new RawValue('default');
 			}
