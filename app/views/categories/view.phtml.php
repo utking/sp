@@ -206,7 +206,7 @@
 
 	$('.prod_cat_img').elevateZoom({
 		lensBorder: 0,
-			zoomWindowWidth: 200,
+			zoomWindowWidth: 250,
 			zoomWindowHeight: 200,
 	}); 
     -->
