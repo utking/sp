@@ -85,6 +85,49 @@ class ProductController extends ControllerBase {
             return $this->response->redirect('/profile/index');
         }
     }
+
+    public function save_commentAction() {
+        if ($this->request->isPost()) {
+            $order_id = $this->request->getPost('order_id', 'int');
+            $msg = trim($this->request->getPost('comment', 'string'));
+            $order = Order::findFirst($order_id);
+            if (!$order) {
+                $this->flashSession->error('Ошибка при попытке оставить комментарий по заказу: неизвестный заказ');
+                return $this->response->redirect('/profile/index');
+            }
+            if ($msg === '') {
+				$order->info = new RawValue('default');
+			}
+			$order->info = $msg;
+			if (!$order->save()) {
+				$this->flashSession->error('Ошибка добавления комментария по заказу');
+				foreach ($order->getMessages() as $message) {
+					$this->flashSession->error($message);
+				}
+				return $this->response->redirect('/product/comment_order/' . $order_id);
+			}
+            $this->flashSession->success('Комментарий по заказу оставлен');
+            return $this->response->redirect('/profile/index');
+            
+        } else {
+            $this->flashSession->error('Ошибка при попытке оставить комментарий по заказу');
+            return $this->response->redirect('/profile/index');
+        }
+    }
+
+	public function comment_orderAction() {
+        $args = func_get_args();
+        if (count($args) == 1 && $this->request->isGet()) {
+            $order_id = (int)$args[0];
+            $this->view->order = Order::findFirst((int)$args[0]);
+            if ($this->view->order) {
+				$this->tag->setDefault('comment', $this->view->order->info);
+                return;
+            }
+        }
+        $this->flashSession->error('Ошибка при попытке оставить комментарий по заказу');
+        return $this->response->redirect('/profile/index');
+	}
         
     public function orderAction() {
         $auth = $this->session->get('auth');
@@ -130,6 +173,7 @@ class ProductController extends ControllerBase {
                     $order->product_id = $product_id;
                     $order->product_attr_id = $attr_id;
                     $order->order_status_id = 1;
+                    $order->info = new RawValue('default');
                     $order->order_summa = $product->price;
                     $order->user_id = $auth['id'];
                     $order->product_count = 1;
@@ -140,7 +184,7 @@ class ProductController extends ControllerBase {
                     $this->flashSession->success('Заказ принят. Не забудьте внести оплату.');
                     return $this->response->redirect('/product/view/' . $product_id);
                 } else {
-                    foreach ($new_order->getMessages() as $message) {
+                    foreach ($order->getMessages() as $message) {
                         $this->flashSession->error($message);
                     }
                 }

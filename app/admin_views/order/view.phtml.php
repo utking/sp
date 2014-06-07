@@ -16,6 +16,21 @@
         </tr>
     </tbody>
 </table>
+
+<?php if (strlen($order->info)) { ?>
+<div class="">
+    <table class="table table_order_info">
+        <tr>
+            <td class='product_title'> 
+                Комментарий заказа:
+            </td>
+            <td>
+				<?= $order->info ?>
+            </td>
+    </table>
+</div>
+<?php } ?>
+
 <div class="">
     <table class="table_order_status">
         <tr>

@@ -64,7 +64,7 @@
                 <th>Цена</th>
                 <th>Дата заказа</th>
                 <th>Статус заказа</th>
-                <th>Оплата</th>
+                <th>Сообщения</th>
                 <th>Отмена</th>
             </tr>
         </thead>
@@ -78,11 +78,23 @@
                 <td><?= $order->order_summa ?></td>
                 <td><?= rus_date($order->order_datetime, true) ?></td>
                 <td><?= Order::getStatus($order->order_status_id) ?></td>
-                <td><?= $this->tag->linkTo(array(
-                    '/product/msg/' . $order->id, 
-                    'class' => 'btn btn-sm btn-link', 
-                    'text' => 'Сообщить об оплате'
-                    )) ?>
+				<td>
+					<div>
+					<?= $this->tag->linkTo(array(
+						'/product/msg/' . $order->id, 
+						'class' => 'btn btn-sm btn-link', 
+						'text' => 'Сообщить об оплате'
+					)) ?>
+					</div>
+					<?php if (!Product::isStopped($order->product_id)) { ?>
+					<div>
+					<?= $this->tag->linkTo(array(
+						'/product/comment_order/' . $order->id, 
+						'class' => 'btn btn-sm btn-link', 
+						'text' => 'Комментарий'
+					)) ?>
+					</div>
+					<?php } ?>
                 </td>
                 <td><?= (!Product::isStopped($order->product_id) ? '<button class="btn btn-danger btn-sm" onclick=\'return remove_order(this);\' value="' . $order->id . '">Отменить</button>' : '') ?>
                 </td>

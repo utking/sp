@@ -28,7 +28,7 @@
                 <td><?= User::getLogin($order->user_id) ?></td>
                 <td><?= rus_date($order->order_datetime, true) ?></td>
                 <?php $messages = Order::getOrderMessages($order->id); ?>
-                <td class="product_price"><span class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span></td>
+                <td class="product_price"><span class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span><span class="glyphicon <?= (strlen($order->info) > 0 ? 'glyphicon-comment' : '') ?>"></span></td>
             </tr>
         <?php } ?>
         </tbody>
