@@ -326,7 +326,7 @@ class ProductController extends ControllerBase {
                 }
                 $thumb = new Imagick();
                 $thumb->readImage($file->getTempName());
-                $thumb->resizeImage(250,250, imagick::FILTER_LANCZOS, 0.9, true);
+                $thumb->resizeImage(500,500, imagick::FILTER_LANCZOS, 0.9, true);
                 $thumb->writeImage($file->getTempName());
                 $thumb->clear();
                 $thumb->destroy(); 

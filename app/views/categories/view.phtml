@@ -73,7 +73,10 @@
                 <?php echo $this->tag->linkTo(array(
                     '/product/view/' . $product->id, 
                     'text' => 
-                    (strlen(ProductImage::getProductImage($product->id)) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">') : ('<img class="cat_img" src="/img/noimage.jpg">'))
+					(strlen(ProductImage::getProductImage($product->id)) > 0 ?
+					('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" sdata-zoom-image="/img/noimage.jpg" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
+					:
+				   	('<img class="cat_img" src="/img/noimage.jpg">'))
                     )); ?>
             </td>
             <td class="cat_desc"><?= $product->description ?></td>
@@ -200,5 +203,8 @@
             return false;
         }
     }
+
+	$('.cat_img').elevateZoom({
+	}); 
     -->
 </script>

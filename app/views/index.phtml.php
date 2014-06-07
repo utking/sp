@@ -13,6 +13,7 @@
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery-ui.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jq.numeric.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap.js"></script>
+        <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery.elevatezoom.js"></script>
         
         <script>
             $(function() {
