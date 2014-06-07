@@ -1,3 +1,4 @@
 nbproject
 *.phtml.php
-logs
+logs/*.log
+app/config/config.ini
