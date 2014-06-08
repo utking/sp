@@ -70,15 +70,11 @@
             </td>
             <td class="product_title">
                 <div class="title"><?= $product->title ?></div>
-<?php echo $this->tag->linkTo(array(
-                    '/product/view/' . $product->id, 
-					'onclick' => 'return false',
-                    'text' => 
-					(strlen(ProductImage::getProductImage($product->id)) > 0 ?
+				<?php echo (strlen(ProductImage::getProductImage($product->id)) > 0 ?
 					('<img class="cat_img prod_cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
 					:
 				   	('<img class="cat_img" src="/img/noimage.jpg">'))
-                    )); ?>
+                    ; ?>
             </td>
             <td class="cat_desc"><?= $product->description ?></td>
             <td class="product_price price"><?= $product->price ?></td>
@@ -217,6 +213,6 @@
 			maxWidth: 600,
 			bgColor: '#000',
 			bgOpacity: .85
-		}).listen('.prod_cat_img1');
+		}).listen('.prod_cat_img');
     -->
 </script>
