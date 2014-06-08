@@ -14,6 +14,7 @@
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jq.numeric.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery.elevatezoom.js"></script>
+        <script src="<?= $this->di->get('config')->application->baseUri ?>/js/zoomerang.js"></script>
         
         <script>
             $(function() {

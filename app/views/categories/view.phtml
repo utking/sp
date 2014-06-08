@@ -70,8 +70,9 @@
             </td>
             <td class="product_title">
                 <div class="title"><?= $product->title ?></div>
-                <?php echo $this->tag->linkTo(array(
+<?php echo $this->tag->linkTo(array(
                     '/product/view/' . $product->id, 
+					'onclick' => 'return false',
                     'text' => 
 					(strlen(ProductImage::getProductImage($product->id)) > 0 ?
 					('<img class="cat_img prod_cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
@@ -209,5 +210,13 @@
 			zoomWindowWidth: 250,
 			zoomWindowHeight: 200,
 	}); 
+
+	Zoomerang
+		.config({
+			maxHeight: 600,
+			maxWidth: 600,
+			bgColor: '#000',
+			bgOpacity: .85
+		}).listen('.prod_cat_img1');
     -->
 </script>
