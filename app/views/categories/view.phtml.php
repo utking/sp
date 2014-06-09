@@ -154,7 +154,7 @@
                 </td>
             </tr>
             <tr>
-                <td></td>
+                <td>Проверочные символы</td>
                 <td>
                     <?= Recaptcha::get('6LdFpfQSAAAAACrEsxtX55STBL26Ax8s2Z4N9YFd'); ?>
                 </td>
