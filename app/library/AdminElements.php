@@ -34,6 +34,10 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                     ),
                 )
             ),
+            'users' => array(
+                'caption' => 'Список пользователей',
+                'action' => 'index'
+            ),
             'product' => array(
                 'caption' => 'Заказы',
                 'items' => array(

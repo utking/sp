@@ -39,6 +39,7 @@ class AdminSecurity extends Plugin {
                 'categories' => array('index', 'list', 'view', 'delete', 'add', 'edit', 'save', 'drop_products', 'new_message'),
                 'profile' => array('index', 'orders', 'view', 'messages', 'update_messages', 'reply_message'),
                 'order' => array('view', 'update'),
+                'users' => array('edit', 'index'),
                 'product' => array('index', 'list', 'view', 'orders', 'edit', 'add', 'save', 'attrs', 'remove_attr', 'add_attr')
             );
                         
