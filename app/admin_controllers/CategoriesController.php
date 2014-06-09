@@ -28,7 +28,11 @@ class CategoriesController extends ControllerBase {
                 "conditions" => "parent_category_id = ?1",
                 "bind" => array(1 => (int)$id)
             ));
-            
+            $this->view->forum_msgs = ForumMessage::find(array(
+                'conditions' => 'category_id = ?1',
+                "bind" => array(1 => (int)$id),
+                'order' => 'item_datetime DESC'
+            ));
             if ($this->view->category) {
                 $this->view->products = Product::find(array(
                     "conditions" => "category_id = ?1",
@@ -304,5 +308,48 @@ class CategoriesController extends ControllerBase {
 			$this->flashSession->error('Не верные параметры');
 			return $this->response->redirect('/categories/view/' . $category_id);
 		}
+    }
+    
+    public function new_messageAction() {
+        
+        $auth = $this->session->get('auth');
+        
+        if ($this->request->isPost() && $this->request->hasPost('category_id') && $this->request->hasPost('forum_new_msg_text')) {
+            $category_id = $this->request->getPost('category_id', 'int');
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Не найдена закупка для добавляемого сообщения');
+                return $this->response->redirect('/categories/view/' . $category_id);
+            }
+            $msg_text = $this->request->getPost('forum_new_msg_text', 'string');
+            if (trim($msg_text) == '') {
+                $this->flashSession->error('Пустое сообщение не может быть добавлено');
+                return $this->response->redirect('/categories/view/' . $category_id);
+            }
+            
+			if (!isset($auth['id'])) {
+				$this->flashSession->error('Войдите под своими учетными данными чтобы участвовать в обсуждении.');
+                return $this->response->redirect('/categories/view/' . $category_id);
+			}
+
+            $new_forum_msg = new ForumMessage();
+            $new_forum_msg->item_datetime = new RawValue('default');
+            $new_forum_msg->user_id = $auth['id'];
+            $new_forum_msg->msg = $msg_text;
+            $new_forum_msg->category_id = $category_id;
+			
+            if (!$new_forum_msg->save()) {
+                $this->flashSession->error('Новое сообщение не добавлено');
+                foreach ($new_forum_msg->getMessages() as $message) {
+                    $this->flashSession->error($message);
+                }
+                return $this->response->redirect('/categories/view/' . $category_id);
+            } else {
+                $this->flashSession->success('Сообщение добавлено');
+                return $this->response->redirect('/categories/view/' . $category_id . '#ne_msg');
+            }
+        }
+        $this->flashSession->error('Новое сообщение не добавлено. Неверные параметры');
+        return $this->response->redirect('/categories/');
     }
 }

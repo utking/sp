@@ -22,6 +22,11 @@
 
 <div>
     <br>
+    <div class="">
+        <div class="title">Условия закупки</div>
+        <div class="alert alert-info"><?= $category->rules ?></div>
+    </div>
+    <br>
     <div class="title">Закупки в категории &laquo;<?= $category->title ?>&raquo;</div><br>
     <table class="table table-bordered table-condensed cat_table">
         <tr>

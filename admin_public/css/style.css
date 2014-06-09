@@ -155,3 +155,23 @@ div.msg_body {
 #rules-text {
     display: none;
 }
+span.forum_info_user,
+span.forum_info_date
+{
+    display: block;
+    font-size: 12px;
+}
+
+span.forum_info_user {
+    width: 120px;
+    overflow: hidden;
+    font-weight: bold;
+}
+
+table td.forum_msg_info {
+    width: 150px;
+}
+
+table.forum_msgs_table tr td {
+    padding: 12px;
+}

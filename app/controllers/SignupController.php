@@ -136,9 +136,18 @@ class SignupController extends ControllerBase {
             $phone = trim($this->request->getPost('phone', 'string'));
             $confirmation = trim($this->request->getPost('confirmation', 'string'));
             $location = trim($this->request->getPost('location', 'string'));
-            
+            $rules_accept = (int)($this->request->hasPost('accept_rules'));
+                        
             if ($password != $confirmation) {
-                $this->flash->success('Пароль и подтвверждение не соответсвуют друг другу');
+                $this->flash->error('Пароль и подтвверждение не соответсвуют друг другу');
+                return $this->dispatcher->forward(array(
+                            'controller' => 'signup',
+                            'action' => 'index'
+                ));
+            }
+            
+            if ($rules_accept < 1) {
+                $this->flash->error('Нужно согласиться с правилами чтобы продолжить регистрацию');
                 return $this->dispatcher->forward(array(
                             'controller' => 'signup',
                             'action' => 'index'
@@ -146,7 +155,7 @@ class SignupController extends ControllerBase {
             }
             
             if ($location === '') {
-                $this->flash->success('Населенный пункт должен быть указан');
+                $this->flash->error('Населенный пункт должен быть указан');
                 return $this->dispatcher->forward(array(
                             'controller' => 'signup',
                             'action' => 'index'
