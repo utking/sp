@@ -1,7 +1,11 @@
 <div class="col-md-4 col-md-offset-4">
 
     <div class="page-header">
+        <?php if (isset($edit_user)) { ?>
+        <h4>Редактирование пользователя</h4>
+        <?php } else { ?>
         <h4>Регистрация нового пользователя</h4>
+        <?php } ?>
     </div>
 
     <p><?php echo $this->getContent() ?></p>
@@ -44,6 +48,7 @@
             <?php echo Phalcon\Tag::passwordField(["confirmation", 'class' => 'form-control']) ?>
         </div>
     </div>
+    <?php if (!isset($edit_user)) { ?>
     <br>
     <div class="control-group">
         <div class="controls">
@@ -52,6 +57,7 @@
             ?> сайта ознакомлен и согласен</label>
         </div>
     </div>
+    <?php } ?>
     <br>
 
 
@@ -70,7 +76,11 @@
 <script>
     <!--
     function check_rules_accept() {
-        return $('#accept_rules').is(':checked');
+        <?php if (!isset($edit_user)) { ?>
+            return $('#accept_rules').is(':checked');
+        <?php } else { ?>
+            return true;
+        <?php } ?>
     }
     -->
 </script>

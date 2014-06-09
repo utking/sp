@@ -44,6 +44,7 @@ class SignupController extends ControllerBase {
                 $this->flash->error('Ошибка: нет такого пользователя');
             } elseif ($edit_action) {
                 $this->view->user = $user;
+                $this->view->edit_user = true;
                 return $this->showAction($id);
             }
             
@@ -146,14 +147,6 @@ class SignupController extends ControllerBase {
                 ));
             }
             
-            if ($rules_accept < 1) {
-                $this->flash->error('Нужно согласиться с правилами чтобы продолжить регистрацию');
-                return $this->dispatcher->forward(array(
-                            'controller' => 'signup',
-                            'action' => 'index'
-                ));
-            }
-            
             if ($location === '') {
                 $this->flash->error('Населенный пункт должен быть указан');
                 return $this->dispatcher->forward(array(
@@ -184,6 +177,13 @@ class SignupController extends ControllerBase {
                     $this->flash->error("Не могу найти такого пользователя");
                 }
             } else {
+                if ($rules_accept < 1) {
+                    $this->flash->error('Нужно согласиться с правилами чтобы продолжить регистрацию');
+                    return $this->dispatcher->forward(array(
+                                'controller' => 'signup',
+                                'action' => 'index'
+                    ));
+                }
                 if ($password === '') {
                     $this->flash->error('Пароль не должен быть пустым');
                     return $this->dispatcher->forward(array(
