@@ -75,12 +75,12 @@
             </td>
             <td class="product_title">
                 <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_' . $category->id . '_' .$product->id . '.jpg')) {
-                    $img_data = '/public/img/products/img_' . $category->id . '_' .$product->id . '.jpg'; 
+                    $img_data = '/img/products/img_' . $category->id . '_' .$product->id . '.jpg'; 
                 } else {
                     $img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
                 }
                 if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $category->id . '_' .$product->id . '.jpg')) {
-                    $small_img_data = '/public/img/products/img_sm_' . $category->id . '_' .$product->id . '.jpg'; 
+                    $small_img_data = '/img/products/img_sm_' . $category->id . '_' .$product->id . '.jpg'; 
                 } else {
                     $small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
                 }
