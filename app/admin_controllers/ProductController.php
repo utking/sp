@@ -321,6 +321,7 @@ class ProductController extends ControllerBase {
             if ($this->request->hasFiles() != true) {
                 $img_data = new Phalcon\Db\RawValue('default');
                 $img_big_data = NULL;
+                $small_img_data = NULL;
             } else {
                 foreach ($this->request->getUploadedFiles() as $file) {
                     $product_img = $file;
@@ -330,11 +331,12 @@ class ProductController extends ControllerBase {
                 $thumb->resizeImage(1024,800, imagick::FILTER_LANCZOS, 1, true);
                 $thumb->writeImage($file->getTempName());
                 $img_big_data = file_get_contents($file->getTempName());
-                $thumb->resizeImage(250,250, imagick::FILTER_LANCZOS, 1, true);
+                $thumb->resizeImage(200,200, imagick::FILTER_LANCZOS, 1, true);
                 $thumb->writeImage($file->getTempName());
                 $thumb->clear();
                 $thumb->destroy(); 
                 $img_data = base64_encode(file_get_contents($file->getTempName()));
+                $small_img_data = file_get_contents($file->getTempName());
             }
             if (!$this->request->hasPost('product_title') || !$this->request->hasPost('product_description')) {
                 $this->flashSession->error('Не указано название либо описание товара');
@@ -386,9 +388,13 @@ class ProductController extends ControllerBase {
                     ));
                 }
                 $image_file_name = __DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg';
+                $small_image_file_name = __DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg';
                 
                 if (file_exists($image_file_name)) {
                     unlink($image_file_name);
+                }
+                if (file_exists($small_image_file_name)) {
+                    unlink($small_image_file_name);
                 }
                 
                 $product->category_id = $category_id;
@@ -457,6 +463,9 @@ class ProductController extends ControllerBase {
                 
                 if (!is_null($img_big_data)) {
                     file_put_contents(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
+                }
+                if (!is_null($small_img_data)) {
+                    file_put_contents(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
                 }
                 
                 $this->db->commit();
