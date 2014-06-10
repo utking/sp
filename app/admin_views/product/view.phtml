@@ -82,7 +82,16 @@
                                 ));
                                 ?>
                                 <?php foreach ($ordered_users as $cur_user) { ?>
-                                <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                <div><?= User::getLogin($cur_user->user_id) ?>
+                                <?php if (strlen($cur_user->info)) { ?>
+                                    <a title="Посмотреть комментарий по заказу" href="#" data-reveal-id="myModal_<?= $attr->id ?>" onclick="return false;"><span class="glyphicon <?= strlen($cur_user->info) ? 'glyphicon-comment' : '' ?>"></span></a>
+                                    <div id="myModal_<?= $attr->id ?>" class="reveal-modal">
+                                        <h3>Комментарий</h3>
+                                        <p><?= $cur_user->info ?></p>
+                                        <a class="close-reveal-modal">&#215;</a>
+                                   </div>
+                                    <?php } ?>
+                                </div>
                                 <?php } ?>
                             </td>
                         </tr>

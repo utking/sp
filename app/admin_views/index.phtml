@@ -16,12 +16,14 @@
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery-ui.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jq.numeric.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap.js"></script>
+        <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery.reveal.js"></script>
         
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap-datetimepicker.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/locales/bootstrap-datetimepicker.ru.js"></script>
         
         <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/quill.snow.css" />
         <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/quill_styles/advanced.css" />
+        <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/reveal.css" />
                 
         <script>
             $(function() {

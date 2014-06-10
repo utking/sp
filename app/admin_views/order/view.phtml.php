@@ -1,5 +1,6 @@
 <p><?php echo $this->getContent() ?></p>
 
+<div class="title"><?= Categories::getTitle($order->product_id) ?></div>
 <div class="title"><?= Product::getProductTitle($order->product_id) ?></div>
 <?php echo Phalcon\Tag::form(['/order/update', 'id' => 'order_form', 'class' => 'form-horizontal']) ?>
 <table class="table product_details_table">

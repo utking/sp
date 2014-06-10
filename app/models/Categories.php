@@ -16,6 +16,22 @@ class Categories extends Phalcon\Mvc\Model
         return TRUE;
     }
     
+    public static function getTitle($product_id) {
+        $product = Product::findFirst($product_id);
+        if ($product) {
+            $category = Categories::findFirst(array(
+                'conditions' => 'id = ?1',
+                'bind' => array(
+                    1 => (int)$product->category_id
+                )
+            ));
+            if ($category) {
+                return $category->title;
+            }
+        }
+        return '-';
+    }
+    
     public static function hasChildCategories($category_id) {
         $category = Categories::find(array(
             'conditions' => 'parent_category_id = ?1',

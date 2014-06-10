@@ -146,7 +146,7 @@
                             </td>
                             <td>
                                 <?php
-                                $ordered_users = Order::find(array(
+                                $ordered_items = Order::find(array(
                                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
                                     'bind' => array(
                                         1 => $product->id,
@@ -156,8 +156,18 @@
                                     'group' => 'user_id'
                                 ));
                                 ?>
-                                <?php foreach ($ordered_users as $cur_user) { ?>
-                                <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                <?php foreach ($ordered_items as $cur_item) { ?>
+                                <div>
+                                    <?= User::getLogin($cur_item->user_id) ?>
+                                    <?php if (strlen($cur_item->info)) { ?>
+                                    <a title="Посмотреть комментарий по заказу" href="#" data-reveal-id="myModal_<?= $attr->id ?>" onclick="return false;"><span class="glyphicon <?= strlen($cur_item->info) ? 'glyphicon-comment' : '' ?>"></span></a>
+                                    <div id="myModal_<?= $attr->id ?>" class="reveal-modal">
+                                        <h3>Комментарий</h3>
+                                        <p><?= $cur_item->info ?></p>
+                                        <a class="close-reveal-modal">&#215;</a>
+                                   </div>
+                                    <?php } ?>
+                                </div>
                                 <?php } ?>
                             </td>
                         </tr>

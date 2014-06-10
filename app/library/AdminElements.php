@@ -22,7 +22,7 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                 'action' => 'index'
             ),
             'categories' => array(
-                'caption' => 'Закупки товаров',
+                'caption' => 'Закупки',
                 'items' => array(
                     array(
                         'caption' => 'Список закупок',
@@ -35,7 +35,7 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                 )
             ),
             'users' => array(
-                'caption' => 'Список пользователей',
+                'caption' => 'Пользователи',
                 'action' => 'index'
             ),
             'product' => array(
