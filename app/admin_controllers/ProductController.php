@@ -320,13 +320,17 @@ class ProductController extends ControllerBase {
             }
             if ($this->request->hasFiles() != true) {
                 $img_data = new Phalcon\Db\RawValue('default');
+                $img_big_data = NULL;
             } else {
                 foreach ($this->request->getUploadedFiles() as $file) {
                     $product_img = $file;
                 }
                 $thumb = new Imagick();
                 $thumb->readImage($file->getTempName());
-                $thumb->resizeImage(500,500, imagick::FILTER_LANCZOS, 0.9, true);
+                $thumb->resizeImage(1024,800, imagick::FILTER_LANCZOS, 1, true);
+                $thumb->writeImage($file->getTempName());
+                $img_big_data = file_get_contents($file->getTempName());
+                $thumb->resizeImage(250,250, imagick::FILTER_LANCZOS, 1, true);
                 $thumb->writeImage($file->getTempName());
                 $thumb->clear();
                 $thumb->destroy(); 
@@ -372,6 +376,7 @@ class ProductController extends ControllerBase {
                     $product_prev_img = $this->request->getPost('product_img', 'string');
                 }
                 $product = Product::findFirst($product_id);
+                        
                 if (!$product) {
                     $this->db->rollBack();
                     $this->flashSession->error('Ошибка обновления товара - закупка не найдена');
@@ -380,6 +385,12 @@ class ProductController extends ControllerBase {
                         'action' => 'add'
                     ));
                 }
+                $image_file_name = __DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg';
+                
+                if (file_exists($image_file_name)) {
+                    unlink($image_file_name);
+                }
+                
                 $product->category_id = $category_id;
                 $product->title = $product_title;
                 $product->description = $product_description;
@@ -442,6 +453,10 @@ class ProductController extends ControllerBase {
                             return $this->response->redirect('/categories/view/' . $category_id);
                         }
                     }
+                }
+                
+                if (!is_null($img_big_data)) {
+                    file_put_contents(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
                 }
                 
                 $this->db->commit();

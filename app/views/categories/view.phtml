@@ -74,9 +74,15 @@
                     )); ?>
             </td>
             <td class="product_title">
+                <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_' . $category->id . '_' .$product->id . '.jpg')) {
+                    $img_data = '/public/img/products/img_' . $category->id . '_' .$product->id . '.jpg'; 
+                } else {
+                    $img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+                } 
+                ?>
                 <div class="title"><?= $product->title ?></div>
-				<?php echo (strlen(ProductImage::getProductImage($product->id)) > 0 ?
-					('<img class="cat_img prod_cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '" data-zoom-image="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">')
+				<?php echo (strlen($img_data) ?
+					('<img class="cat_img prod_cat_img" src="' . $img_data . '" data-zoom-image="' . $img_data . '">')
 					:
 				   	('<img class="cat_img" src="/img/noimage.jpg">'))
                     ; ?>
@@ -214,8 +220,8 @@
 
 	Zoomerang
 		.config({
-			maxHeight: 600,
-			maxWidth: 600,
+			maxHeight: 1024,
+			maxWidth: 800,
 			bgColor: '#000',
 			bgOpacity: .85
 		}).listen('.prod_cat_img');

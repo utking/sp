@@ -1,4 +1,5 @@
 nbproject
-*.phtml.php
+**/*.phtml.php
 logs/*.log
 app/config/config.ini
+public/img/products/*.jpg
