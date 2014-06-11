@@ -352,4 +352,8 @@ class CategoriesController extends ControllerBase {
         $this->flashSession->error('Новое сообщение не добавлено. Неверные параметры');
         return $this->response->redirect('/categories/');
     }
+    
+    public function load100spAction() {
+        ;
+    }
 }
