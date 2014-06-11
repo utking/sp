@@ -3,6 +3,8 @@
 use Phalcon\Mvc\View\Engine\Volt;
 use Phalcon\Mvc\View;
 
+require_once __DIR__ . '/../app/library/simple_html_dom.php';
+
 date_default_timezone_set('Asia/Vladivostok');
 
 function rus_date($date, $full_date = false) {
@@ -51,6 +53,10 @@ try {
     
     $di->set('config', function() {
         return new Phalcon\Config\Adapter\Ini('../app/config/config.ini');;
+    });
+    
+    $di->set('simple_html_dom', function() {
+        return new simple_html_dom();
     });
 
     //Set the database service
