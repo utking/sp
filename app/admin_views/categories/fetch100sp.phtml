@@ -2,6 +2,17 @@
 <div>
     <div class="title">Найденный товары в закупке со 100sp.ru</div><br>
     <?php echo Phalcon\Tag::form(['/categories/save100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
+    <div class="form-control">
+        <label>Категория для загружаемых товаров: </label>
+        <?= Phalcon\Tag::select(["category_id", 
+                        $categories, 
+                        'using' => array('id', 'title'), 
+                        'useEmpty' => true,
+                        'emptyText' => '-',
+                        'class' => 'form-control'
+                        ]) 
+                    ?>
+    </div>
     <table class="table table-condensed table-bordered table-hover">
         <?php $i = 1; ?>
         <?php foreach ($items as $item) { ?>
