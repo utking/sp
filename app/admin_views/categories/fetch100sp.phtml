@@ -20,11 +20,11 @@
                     <tr>
                         <td><?php echo Phalcon\Tag::textField(["item_size_" . $i . "[]", 'value' => $cur_size, 'class' => 'form-control']) ?></td>
                     </tr>
-                    <?php $i++; ?>
                 <?php } ?>
                 </table>
             </td>
         </tr>
+        <?php $i++; ?>
         <?php } ?>
     </table>
     <?php echo Phalcon\Tag::submitButton(["Загрузить", 'name' => 'fetch_100sp_form', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
