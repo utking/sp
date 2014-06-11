@@ -406,7 +406,7 @@ class CategoriesController extends ControllerBase {
                         $i++;
                     }
                 }
-                $this->flashSession->error(print_r($items, 1));
+                $this->flashSession->error('<pre>' . print_r($items, 1) . '</pre>');
                 return $this->response->redirect('/categories/load100sp');
             }
         }
