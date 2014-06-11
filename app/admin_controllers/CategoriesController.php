@@ -439,7 +439,9 @@ class CategoriesController extends ControllerBase {
     }
     
     protected function loadImage100sp($image_addr) {
-        $tmp_name = tmpfile();
+        $tmpHandle = tmpfile();
+        $metaDatas = stream_get_meta_data($tmpHandle);
+        $tmp_name = $metaDatas['uri'];
         $cmd = "wget '$image_addr' -O " . $tmp_name;
         $this->flashSession->error($cmd);
 
