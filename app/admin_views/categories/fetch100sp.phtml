@@ -7,7 +7,7 @@
         <?php foreach ($items as $item) { ?>
         <tr>
             <td style="width: 32px;">
-                <?php echo Phalcon\Tag::checkField(["items[]", 'value' => $i, 'class' => 'form-control']) ?>
+                <?php echo Phalcon\Tag::checkField(["items[]", 'value' => $i, 'checked' => 'checked', 'class' => 'form-control']) ?>
                 <?php echo Phalcon\Tag::hiddenField(["item_imgs[]", 'value' => $item['img_addr'], 'class' => 'form-control']) ?>
             </td>
             <td><?php echo Phalcon\Tag::textField(["item_names[]", 'value' => $item['name'], 'class' => 'form-control']) ?></td>
