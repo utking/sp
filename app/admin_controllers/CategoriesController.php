@@ -364,13 +364,13 @@ class CategoriesController extends ControllerBase {
                 $address = 'http://www.100sp.ru/collection.php?cid=' . $collection_id;
                 $file_name = 'fetcher.gz';
 
-                    $cmd = "wget '$address' " .
-                        " --header 'Accept-Language: en-US,en;q=0.5' " .
-                        " --header 'Cache-Control: no-cache' " .
-                        " --header 'Connection: keep-alive' " .
-                        " --header 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0 Iceweasel/29.0.1' " .
-                        " --header 'X-Requested-With: XMLHttpRequest' " .
-                        " -O " . __DIR__ . '/../../app/tmp/' . $file_name;
+                $cmd = "wget '$address' " .
+                    " --header 'Accept-Language: en-US,en;q=0.5' " .
+                    " --header 'Cache-Control: no-cache' " .
+                    " --header 'Connection: keep-alive' " .
+                    " --header 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0 Iceweasel/29.0.1' " .
+                    " --header 'X-Requested-With: XMLHttpRequest' " .
+                    " -O " . __DIR__ . '/../../app/tmp/' . $file_name;
 
                 exec($cmd);
                 $ret = file_get_contents(__DIR__ . '/../../app/tmp/' . $file_name);
@@ -424,6 +424,9 @@ class CategoriesController extends ControllerBase {
             foreach ($items as $item) {
                 $new_item = new stdClass();
                 $new_item->img = (isset($item_imgs[$item]) ? $item_imgs[$item] : NULL);
+                if (!is_null($new_item->img)) {
+                    $new_item->img_data = $this->loadImage100sp($new_item->img);
+                }
                 $new_item->name = (isset($item_names[$item]) ? $item_names[$item] : NULL);
                 $new_item->price = (isset($item_prices[$item]) ? $item_prices[$item] : NULL);
                 $new_item->desc = (isset($item_descs[$item]) ? $item_descs[$item] : NULL);
@@ -433,5 +436,20 @@ class CategoriesController extends ControllerBase {
         }
         $this->flashSession->error('Ошибка загрузки. Неверные параметры');
         return $this->response->redirect('/categories/load100sp');
+    }
+    
+    protected function loadImage100sp($image_addr) {
+        $tmp_name = tmpfile();
+        $cmd = "wget '$image_addr' " .
+                " --header 'Accept-Language: en-US,en;q=0.5' " .
+                " --header 'Cache-Control: no-cache' " .
+                " --header 'Connection: keep-alive' " .
+                " --header 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0 Iceweasel/29.0.1' " .
+                " --header 'X-Requested-With: XMLHttpRequest' " .
+                " -O " . $tmp_name;
+
+        exec($cmd);
+        $ret = file_get_contents($tmp_name);
+        return $ret;
     }
 }
