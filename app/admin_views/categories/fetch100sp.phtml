@@ -2,7 +2,7 @@
 <div>
     <div class="title">Найденный товары в закупке со 100sp.ru</div><br>
     <?php echo Phalcon\Tag::form(['/categories/save100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
-    <div class="form-control">
+    <div class="">
         <label>Категория для загружаемых товаров: </label>
         <?= Phalcon\Tag::select(["category_id", 
                         $categories, 
@@ -14,11 +14,11 @@
                     ?>
     </div>
     <table class="table table-condensed table-bordered table-hover">
-        <?php $i = 1; ?>
+        <?php $i = 0; ?>
         <?php foreach ($items as $item) { ?>
         <tr>
             <td style="width: 32px;">
-                <?php echo Phalcon\Tag::checkField(["items[]", 'value' => $i, 'schecked' => 'checked', 'class' => 'form-control']) ?>
+                <?php echo Phalcon\Tag::checkField(["items[]", 'value' => $i, 'checked' => 'checked', 'class' => 'form-control']) ?>
                 <?php echo Phalcon\Tag::hiddenField(["item_imgs[]", 'value' => $item['img_addr'], 'class' => 'form-control']) ?>
             </td>
             <td><?php echo Phalcon\Tag::textField(["item_names[]", 'value' => $item['name'], 'class' => 'form-control']) ?></td>
@@ -28,6 +28,7 @@
             <td>
                 <table>
                 <?php foreach($item['size'] as $cur_size) { ?>
+				<?php if (trim($cur_size) === '') { continue; } ?>
                     <tr>
                         <td><?php echo Phalcon\Tag::textField(["item_size_" . $i . "[]", 'value' => $cur_size, 'class' => 'form-control']) ?></td>
                     </tr>

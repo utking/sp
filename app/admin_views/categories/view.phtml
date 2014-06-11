@@ -102,12 +102,18 @@
                     'title' => 'Номер товара'
                     )); ?>
             </td>
-            <td class="product_title">
+                <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_' . $category->id . '_' .$product->id . '.jpg')) {
+                    $img_data = 'data:image/jpeg;charset=utf-8;base64,' . base64_encode(file_get_contents(__DIR__ . '/../../../public/img/products/img_' . $category->id . '_' .$product->id . '.jpg'));
+                } else {
+                    $img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+                }
+                ?>
+			<td class="product_title">
                 <div class="product_title"><?= $product->title ?></div>
                 <?php echo $this->tag->linkTo(array(
                     '/product/view/' . $product->id, 
                     'text' => 
-                    (strlen(ProductImage::getProductImage($product->id)) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">') : ('<img class="cat_img" src="/img/noimage.jpg">'))
+                    (strlen($img_data) > 0 ? ('<img class="cat_img" src="' . $img_data . '">') : ('<img class="cat_img" src="/img/noimage.jpg">'))
                     )); ?>
             </td>
             <td class="cat_desc"><?= $product->description ?></td>

@@ -299,6 +299,12 @@ class CategoriesController extends ControllerBase {
 					}
 					return $this->response->redirect('/categories/view/' . $category_id);
 				}
+                if (file_exists(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg')) {
+                    unlink(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg');
+                }
+                if (file_exists(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg')) {
+                    unlink(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg');
+                }
             }
 
 			$this->db->commit();
@@ -389,7 +395,7 @@ class CategoriesController extends ControllerBase {
                     foreach ($rows as $row) {
                         $items[$i] = [];
                         $items[$i]['name'] = trim($row->children[1]->plaintext);
-                        $items[$i]['price'] = trim($row->children[3]->plaintext);
+                        $items[$i]['price'] = str_replace(',', '.', trim($row->children[3]->plaintext));
                         $items[$i]['desc'] = trim($row->children[4]->plaintext);
                         $items[$i]['img_addr'] = trim($row->children[2]->find('a', 0)->find('img', 0)->src);
                         $items[$i]['details_addr'] = 'http://www.100sp.ru/' . trim($row->children[2]->find('a', 0)->href);
@@ -397,7 +403,7 @@ class CategoriesController extends ControllerBase {
                         $items[$i]['img_addr'] = str_replace('/thumb150', '', $items[$i]['img_addr']);
                         $sizes = [];
                         foreach ($row->find('td[class=sizes_orders]', 0)->find('tr') as $size_row) {
-                            $sizes[] = str_replace(',', '.', trim($size_row->children[0]->plaintext));
+                            $sizes[] = trim($size_row->children[0]->plaintext);
                         }
                         $items[$i]['size'] = $sizes;
 
@@ -421,26 +427,38 @@ class CategoriesController extends ControllerBase {
         if ($this->request->isPost() && $this->request->hasPost('items') 
                 && $this->request->hasPost('fetch_100sp_form') && $this->request->hasPost('category_id')) {
             
-            $category_id = $this->request->getPost('category_id', 'int');
+            $category_id = (int)$this->request->getPost('category_id', 'int');
+			$category = Categories::findFirst($category_id);
+		
+			if ($category_id < 1) {
+				$this->flashSession->error('Ошибка загрузки. Неверные параметры');
+				return $this->response->redirect('/categories/load100sp');
+			}
+			if (!$category) {
+				$this->flashSession->error('Ошибка загрузки. Категория отсутствует');
+				return $this->response->redirect('/categories/load100sp');
+			}
+
             $items = $this->request->getPost('items');
             $item_imgs = $this->request->getPost('item_imgs');
             $item_names = $this->request->getPost('item_names');
             $item_prices = $this->request->getPost('item_prices');
             $item_descs = $this->request->getPost('item_descs');
             $this->db->begin();
-            foreach ($items as $item) {
+			$prod_count = 0;
+            foreach ($items as $item_pos => $item) {
                 $product = new Product();
                 $product->img = (isset($item_imgs[$item]) ? $item_imgs[$item] : NULL);
                 if (!is_null($product->img)) {
                     $product->img_data = $this->loadImage100sp($product->img);
                 }
+                $product->category_id = $category_id;
                 $product->title = (isset($item_names[$item]) ? $item_names[$item] : NULL);
-                $product->price = (isset($item_prices[$item]) ? $item_prices[$item] : NULL);
+                $product->price = (isset($item_prices[$item]) ? str_replace(',', '.', $item_prices[$item]) : NULL);
                 $product->description = (isset($item_descs[$item]) ? $item_descs[$item] : NULL);
-                $product->sizes = $this->request->getPost('item_size_' . $item);
-                //$this->flashSession->error('<pre>' . print_r($new_item, 1) . '</pre>');
+                $sizes = $this->request->getPost('item_size_' . $item);
                 
-                if (!$product->save() && count($product->sizes)) {
+                if (!$product->save() || count($sizes) < 1) {
                     $this->flashSession->error('Ошибка добавления товара');
                     foreach ($product->getMessages() as $message) {
                         $this->flashSession->error($message);
@@ -448,14 +466,8 @@ class CategoriesController extends ControllerBase {
                     $this->db->rollBack();
                     return $this->response->redirect('/categories/load100sp');
                 }
-                if (strlen($product->img_data) < 1) {
-                    $this->flashSession->error('Ошибка добавления товара ' . $product->title . ' отсутствует');
-                    $this->db->rollBack();
-                    return $this->response->redirect('/categories/load100sp');
-                } else {
-                    
-                }
-                foreach ($product->sizes as $cur_attr) {
+
+                foreach ($sizes as $cur_attr) {
                     $existing_attr = ProductAttribute::findFirst(array(
                                 'conditions' => 'product_id = ?1 AND attr = ?2',
                                 'bind' => array(
@@ -471,7 +483,7 @@ class CategoriesController extends ControllerBase {
                     $product_attribute->attr = $cur_attr;
                     $product_attribute->product_id = $product->id;
                     if (!$product_attribute->save()) {
-                        $this->flashSession->error('Ошибка: не удалось сохранить размер для товара');
+                        $this->flashSession->error('Ошибка: не удалось сохранить размер для товара: ' . $product->title);
                         foreach ($product_attribute->getMessages() as $message) {
                             $this->flashSession->error($message);
                         }
@@ -479,9 +491,47 @@ class CategoriesController extends ControllerBase {
                         return $this->response->redirect('/categories/load100sp');
                     }
                 }
+                if (strlen($product->img_data) < 1) {
+					$img_big_data = NULL;
+					$small_img_data = NULL;
+                } else {
+					$tmpHandle = tmpfile();
+					$metaDatas = stream_get_meta_data($tmpHandle);
+					$tmp_name = $metaDatas['uri'];
+					file_put_contents($tmp_name, $product->img_data);
+
+					$thumb = new Imagick();
+					$thumb->readImage($tmp_name);
+					$thumb->resizeImage(1024,800, imagick::FILTER_LANCZOS, 1, true);
+					$thumb->writeImage($tmp_name);
+					$img_big_data = file_get_contents($tmp_name);
+					$thumb->resizeImage(200,200, imagick::FILTER_LANCZOS, 1, true);
+					$thumb->writeImage($tmp_name);
+					$thumb->clear();
+					$thumb->destroy(); 
+					$small_img_data = file_get_contents($tmp_name);
+                }
+
+                if (!is_null($img_big_data)) {
+                    file_put_contents(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
+                }
+                if (!is_null($small_img_data)) {
+                    file_put_contents(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
+					$productImg = new ProductImage();
+					$productImg->img_data = base64_encode($small_img_data);
+					$productImg->product_id = $product->id;
+					if (!$productImg->save()) {
+						$this->flashSession->error('Предупреждение: не удалось сохранить изображение товара ' . $product->title);
+						foreach ($productImg->getMessages() as $message) {
+							$this->flashSession->error($message);
+						}
+					}
+
+                }
+				$prod_count++;
             }
             $this->db->commit();
-            $this->flashSession->success('Товары со 100sp загружены');
+            $this->flashSession->success('Товары со 100sp загружены: ' . $prod_count);
             return $this->response->redirect('/categories/load100sp');
         }
         $this->flashSession->error('Ошибка загрузки. Неверные параметры');
