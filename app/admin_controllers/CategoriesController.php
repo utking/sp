@@ -397,7 +397,7 @@ class CategoriesController extends ControllerBase {
                         $items[$i]['img_addr'] = str_replace('/thumb150', '', $items[$i]['img_addr']);
                         $sizes = [];
                         foreach ($row->find('td[class=sizes_orders]', 0)->find('tr') as $size_row) {
-                            $sizes[] = trim($size_row->children[0]->plaintext);
+                            $sizes[] = str_replace(',', '.', trim($size_row->children[0]->plaintext));
                         }
                         $items[$i]['size'] = $sizes;
 
@@ -414,4 +414,7 @@ class CategoriesController extends ControllerBase {
         return $this->response->redirect('/categories/load100sp');
     }
     
+    public function save100spAction() {
+        $this->view->data = $_POST;
+    }
 }
