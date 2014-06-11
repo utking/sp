@@ -15,7 +15,7 @@
                 <table>
                 <?php foreach($item['size'] as $cur_size) { ?>
                     <tr>
-                        <td><?php echo Phalcon\Tag::textField(["item_size_" . $i . "[]", 'value' => $item['name'], 'class' => 'form-control']) ?></td>
+                        <td><?php echo Phalcon\Tag::textField(["item_size_" . $i . "[]", 'value' => $cur_size, 'class' => 'form-control']) ?></td>
                     </tr>
                     <?php $i++; ?>
                 <?php } ?>
