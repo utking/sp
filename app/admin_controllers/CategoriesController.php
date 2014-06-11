@@ -440,13 +440,8 @@ class CategoriesController extends ControllerBase {
     
     protected function loadImage100sp($image_addr) {
         $tmp_name = tmpfile();
-        $cmd = "wget '$image_addr' " .
-                " --header 'Accept-Language: en-US,en;q=0.5' " .
-                " --header 'Cache-Control: no-cache' " .
-                " --header 'Connection: keep-alive' " .
-                " --header 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0 Iceweasel/29.0.1' " .
-                " --header 'X-Requested-With: XMLHttpRequest' " .
-                " -O " . $tmp_name;
+        $cmd = "wget '$image_addr' -O " . $tmp_name;
+        $this->flashSession->error($cmd);
 
         exec($cmd);
         $ret = file_get_contents($tmp_name);
