@@ -409,6 +409,8 @@ class CategoriesController extends ControllerBase {
                 $this->view->items = $items;
                 return $this->response->redirect('/categories/fetch100sp');
             }
+        } elseif ($this->request->isGet()) {
+            return true;
         }
         $this->flashSession->error('Ошибка загрузки. Неверные параметры: ' . print_r($_POST,1));
         return $this->response->redirect('/categories/load100sp');

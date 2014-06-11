@@ -37,7 +37,7 @@ class AdminSecurity extends Plugin {
                 'rules' => array('index'),
                 'feed' => array('index'),
                 'categories' => array('index', 'list', 'view', 'delete', 'add', 
-                    'load100sp', 'fetch100sp', 'prefetch100sp', 'edit', 'save', 'drop_products', 'new_message'),
+                    'load100sp', 'fetch100sp', 'edit', 'save', 'drop_products', 'new_message'),
                 'profile' => array('index', 'orders', 'view', 'messages', 'update_messages', 'reply_message'),
                 'order' => array('view', 'update'),
                 'users' => array('edit', 'index'),
