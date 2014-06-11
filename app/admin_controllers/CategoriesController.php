@@ -365,7 +365,6 @@ class CategoriesController extends ControllerBase {
                 $file_name = 'fetcher.gz';
 
                     $cmd = "wget '$address' " .
-                        //" --header 'Accept-Encoding: gzip, deflate' " .
                         " --header 'Accept-Language: en-US,en;q=0.5' " .
                         " --header 'Cache-Control: no-cache' " .
                         " --header 'Connection: keep-alive' " .
@@ -375,7 +374,6 @@ class CategoriesController extends ControllerBase {
 
                 exec($cmd);
                 $ret = file_get_contents(__DIR__ . '/../../app/tmp/' . $file_name);
-                //$data = gzdecode($ret);
                 $data = $ret;
 
                 $html = $this->simple_html_dom;
@@ -405,9 +403,9 @@ class CategoriesController extends ControllerBase {
 
                         $i++;
                     }
-                }
+                }                    
                 $this->view->items = $items;
-                return $this->response->redirect('/categories/fetch100sp');
+                return true;
             }
         } elseif ($this->request->isGet()) {
             return true;
