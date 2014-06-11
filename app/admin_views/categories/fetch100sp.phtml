@@ -1,0 +1,19 @@
+<p><?php echo $this->getContent() ?></p>
+<div>
+    <div class="title">Найденный товары в закупке со 100sp.ru</div><br>
+    <?php echo Phalcon\Tag::form(['/categories/fetch100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
+    
+    <table class="table table-condensed table-bordered table-hover">
+        <?php foreach ($items as $item) { ?>
+        <tr>
+            <td><?= $item['name'] ?></td>
+            <td class="price"><?= $item['price'] ?></td>
+            <td><?= $item['desc'] ?></td>
+            <td><div class="product_img"><img src="<?= $item['name'] ?>"></div></td>
+            <td><?= print_r($item['sizes'],1) ?></td>
+        </tr>
+        <?php } ?>
+    </table>
+    <?php echo Phalcon\Tag::submitButton(["Загрузить", 'name' => 'fetch_100sp_form', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+    </form>
+</div>

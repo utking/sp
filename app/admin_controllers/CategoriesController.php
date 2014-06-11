@@ -406,11 +406,12 @@ class CategoriesController extends ControllerBase {
                         $i++;
                     }
                 }
-                $this->flashSession->error('<pre>' . print_r($items, 1) . '</pre>');
-                return $this->response->redirect('/categories/load100sp');
+                $this->view->items = $items;
+                return $this->response->redirect('/categories/fetch100sp');
             }
         }
         $this->flashSession->error('Ошибка загрузки. Неверные параметры');
         return $this->response->redirect('/categories/load100sp');
     }
+    
 }
