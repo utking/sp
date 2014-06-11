@@ -410,11 +410,28 @@ class CategoriesController extends ControllerBase {
         } elseif ($this->request->isGet()) {
             return true;
         }
-        $this->flashSession->error('Ошибка загрузки. Неверные параметры: ' . print_r($_POST,1));
+        $this->flashSession->error('Ошибка загрузки. Неверные параметры');
         return $this->response->redirect('/categories/load100sp');
     }
     
     public function save100spAction() {
-        $this->view->data = $_POST;
+        if ($this->request->isPost() && $this->request->hasPost('items') && $this->request->hasPost('fetch_100sp_form')) {
+            $items = $this->request->getPost('items');
+            $item_imgs = $this->request->getPost('item_imgs');
+            $item_names = $this->request->getPost('item_names');
+            $item_prices = $this->request->getPost('item_prices');
+            $item_descs = $this->request->getPost('item_descs');
+            foreach ($items as $item) {
+                $new_item = new stdClass();
+                $new_item->img = (isset($item_imgs[$item]) ? $item_imgs[$item] : NULL);
+                $new_item->name = (isset($item_names[$item]) ? $item_names[$item] : NULL);
+                $new_item->price = (isset($item_prices[$item]) ? $item_prices[$item] : NULL);
+                $new_item->desc = (isset($item_descs[$item]) ? $item_descs[$item] : NULL);
+                $new_item->sizes = $this->request->getPost('item_size_' . $item);
+                $this->flashSession->error('<pre>' . print_r($new_item, 1) . '</pre>');
+            }
+        }
+        $this->flashSession->error('Ошибка загрузки. Неверные параметры');
+        return $this->response->redirect('/categories/load100sp');
     }
 }
