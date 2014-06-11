@@ -106,7 +106,7 @@ class CategoriesController extends ControllerBase {
                 }
                 $thumb = new Imagick();
                 $thumb->readImage($file->getTempName());
-                $thumb->resizeImage(250,250, imagick::FILTER_LANCZOS, 0.1, true);
+                $thumb->resizeImage(250,250, imagick::FILTER_LANCZOS, 1, true);
                 $thumb->writeImage($file->getTempName());
                 $thumb->clear();
                 $thumb->destroy(); 
