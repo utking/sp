@@ -2,7 +2,7 @@
 <div>
     <div class="title">Найденный товары в закупке со 100sp.ru</div><br>
     <?php echo Phalcon\Tag::form(['/categories/fetch100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
-    
+    <?= print_r($items, 1) ?>
     <table class="table table-condensed table-bordered table-hover">
         <?php foreach ($items as $item) { ?>
         <tr>
