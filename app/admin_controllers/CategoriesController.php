@@ -410,7 +410,7 @@ class CategoriesController extends ControllerBase {
                 return $this->response->redirect('/categories/fetch100sp');
             }
         }
-        $this->flashSession->error('Ошибка загрузки. Неверные параметры');
+        $this->flashSession->error('Ошибка загрузки. Неверные параметры: ' . print_r($_POST,1));
         return $this->response->redirect('/categories/load100sp');
     }
     
