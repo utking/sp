@@ -1,0 +1,10 @@
+<p><?php echo $this->getContent() ?></p>
+<div>
+    <div class="title">Загрузка закупки со 100sp.ru</div><br>
+    <?php echo Phalcon\Tag::form(['/categories/fetch100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
+    <label for="collection_id">ID коллекции на 100sp.ru: </label>
+    <?php echo Phalcon\Tag::textField(["collection_id", 'required' => '', 'class' => 'form-control']) ?>
+    <br>
+    <?php echo Phalcon\Tag::submitButton(["Загрузить", 'name' => 'fetch_100sp_form', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+    </form>
+</div>

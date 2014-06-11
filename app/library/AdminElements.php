@@ -32,6 +32,10 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                         'caption' => 'Добавить закупку',
                         'action' => 'add'
                     ),
+                    array(
+                        'caption' => 'Загрузка со 100sp',
+                        'action' => 'load100sp'
+                    ),
                 )
             ),
             'users' => array(

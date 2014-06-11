@@ -4,3 +4,4 @@ logs/*.log
 app/config/config.ini
 public/img/products/*.jpg
 app/tmp/*.jpg
+app/tmp/*.gz

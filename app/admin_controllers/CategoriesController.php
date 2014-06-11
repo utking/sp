@@ -356,4 +356,60 @@ class CategoriesController extends ControllerBase {
     public function load100spAction() {
         ;
     }
+    
+    public function fetch100spAction() {
+        if ($this->request->isPost() && $this->request->hasPost('collection_id')) {
+            $collection_id = (int)$this->request->getPost('collection_id', 'int');
+            if ($collection_id > 0) {
+                $address = 'http://www.100sp.ru/collection.php?cid=' . $collection_id;
+                $file_name = 'fetcher.gz';
+
+                    $cmd = "wget '$address' " .
+                        " --header 'Accept-Encoding: gzip, deflate' " .
+                        " --header 'Accept-Language: en-US,en;q=0.5' " .
+                        " --header 'Cache-Control: no-cache' " .
+                        " --header 'Connection: keep-alive' " .
+                        " --header 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:29.0) Gecko/20100101 Firefox/29.0 Iceweasel/29.0.1' " .
+                        " --header 'X-Requested-With: XMLHttpRequest' " .
+                        " -O " . __DIR__ . '/../../app/tmp/' . $file_name;
+
+                exec($cmd);
+                $ret = file_get_contents(__DIR__ . '/../../app/tmp/' . $file_name);
+                $data = gzdecode($ret);
+
+                $html = new simple_html_dom();
+                $html->load($data);
+
+                $obj = $html->find('table');
+
+                $items = [];
+                $i = 0;
+                
+                foreach($obj as $table) {
+                    $rows = $table->find('tr[class=goods_list]');
+                    foreach ($rows as $row) {
+                        $items[$i] = [];
+                        $items[$i]['name'] = trim($row->children[1]->plaintext);
+                        $items[$i]['price'] = trim($row->children[3]->plaintext);
+                        $items[$i]['desc'] = trim($row->children[4]->plaintext);
+                        $items[$i]['img_addr'] = trim($row->children[2]->find('a', 0)->find('img', 0)->src);
+                        $items[$i]['details_addr'] = 'http://www.100sp.ru/' . trim($row->children[2]->find('a', 0)->href);
+                        $items[$i]['img_addr'] = str_replace('cache_', '', $items[$i]['img_addr']);
+                        $items[$i]['img_addr'] = str_replace('/thumb150', '', $items[$i]['img_addr']);
+                        $sizes = [];
+                        foreach ($row->find('td[class=sizes_orders]', 0)->find('tr') as $size_row) {
+                            $sizes[] = trim($size_row->children[0]->plaintext);
+                        }
+                        $items[$i]['size'] = $sizes;
+
+                        $i++;
+                    }
+                }
+                $this->flashSession->error(print_r($items, 1));
+                return $this->response->redirect('/categories/load100sp');
+            }
+        }
+        $this->flashSession->error('Ошибка загрузки. Неверные параметры');
+        return $this->response->redirect('/categories/load100sp');
+    }
 }
