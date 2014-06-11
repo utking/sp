@@ -3,13 +3,24 @@
     <div class="title">Найденный товары в закупке со 100sp.ru</div><br>
     <?php echo Phalcon\Tag::form(['/categories/fetch100sp', 'id' => 'fetch_100sp_form', 'class' => 'form-horizontal']) ?>
     <table class="table table-condensed table-bordered table-hover">
+        <?php $i = 1; ?>
         <?php foreach ($items as $item) { ?>
         <tr>
+            <td style="width: 32px;"><?php echo Phalcon\Tag::checkField(["items[]", 'value' => $i, 'class' => 'form-control']) ?></td>
             <td><?php echo Phalcon\Tag::textField(["item_names[]", 'value' => $item['name'], 'class' => 'form-control']) ?></td>
             <td><?php echo Phalcon\Tag::textField(["item_prices[]", 'value' => $item['price'], 'class' => 'form-control']) ?></td>
             <td><?php echo Phalcon\Tag::textarea(["item_descs[]", 'value' => $item['desc'], 'class' => 'form-control', 'rows' => 10]) ?></td>
             <td><img src="<?= $item['img_addr'] ?>" class="cat_img"></td>
-            <td><pre><?= print_r($item['size'],1) ?></pre></td>
+            <td>
+                <table>
+                <?php foreach($item['size'] as $cur_size) { ?>
+                    <tr>
+                        <td><?php echo Phalcon\Tag::textField(["item_size_" . $i . "[]", 'value' => $item['name'], 'class' => 'form-control']) ?></td>
+                    </tr>
+                    <?php $i++; ?>
+                <?php } ?>
+                </table>
+            </td>
         </tr>
         <?php } ?>
     </table>

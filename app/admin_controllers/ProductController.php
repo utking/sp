@@ -399,6 +399,7 @@ class ProductController extends ControllerBase {
                 
                 $product->category_id = $category_id;
                 $product->title = $product_title;
+                $product->price = $product_price;
                 $product->description = $product_description;
                 if (isset($product_prev_img)) {
                     $product->img = $product_prev_img;
