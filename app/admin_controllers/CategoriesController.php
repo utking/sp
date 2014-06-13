@@ -516,7 +516,7 @@ class CategoriesController extends ControllerBase {
                     file_put_contents(__DIR__ . '/../../public/img/products/img_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
                 }
                 if (!is_null($small_img_data)) {
-                    file_put_contents(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg', $img_big_data);
+                    file_put_contents(__DIR__ . '/../../public/img/products/img_sm_' . $product->category_id . '_' .$product->id . '.jpg', $small_img_data);
 					$productImg = new ProductImage();
 					$productImg->img_data = base64_encode($small_img_data);
 					$productImg->product_id = $product->id;
