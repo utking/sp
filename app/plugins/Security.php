@@ -50,7 +50,7 @@ class Security extends Plugin {
                 'rules' => array('index'),
                 'feed' => array('index'),
                 'signup' => array('login', 'index', 'register'),
-                'categories' => array('index', 'list', 'view'),
+                'categories' => array('index', 'list', 'view', 'msg'),
                 'product' => array('index', 'list', 'view')
             );
             foreach ($publicResources as $resource => $actions) {

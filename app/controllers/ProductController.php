@@ -158,7 +158,7 @@ class ProductController extends ControllerBase {
             if ($product && $attr) {
                 if (Product::isStopped($product->id)) {
                     $this->flashSession->error('Товар больше не доступен для заказа. Прием заказов остановлен');
-                    return $this->response->redirect('/product/view/' . $product_id);
+                    return $this->response->redirect('/categories/view/' . $product->category_id);
                 }
                 $order = Order::findFirst(array(
                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2 AND user_id = ?3',
@@ -186,7 +186,7 @@ class ProductController extends ControllerBase {
 
                 if ($order->save()) {
                     $this->flashSession->success('Заказ принят. Не забудьте внести оплату.');
-                    return $this->response->redirect('/product/view/' . $product_id);
+                    return $this->response->redirect('/categories/view/' . $product->category_id . '#product_' . $product_id);
                 } else {
                     foreach ($order->getMessages() as $message) {
                         $this->flashSession->error($message);

@@ -26,13 +26,25 @@ class ProfileController extends ControllerBase {
                     )
                 ));
             }
-            $this->view->orders = Order::find(array(
+            $orders = Order::find(array(
                 'conditions' => 'user_id = ?1',
                 'bind' => array(
                     1 => $auth['id']
                 ),
                 'order' => 'order_datetime DESC'
             ));
+            $categories = array();
+            foreach ($orders as $order) {
+                $product = Product::findFirst($order->product_id);
+                if (!isset($categories[$product->category_id])) {
+                    $categories[$product->category_id] = [];
+                    $categories[$product->category_id]['order_summa'] = 0;
+                }
+                $categories[$product->category_id]['orders'][] = $order->id;
+                $categories[$product->category_id]['order_summa'] += $order->order_summa;
+            }
+            $this->view->categories = $categories;
+
             $this->view->messages = UserMessage::find(array(
                 'conditions' => 'to_user_id = ?1 AND is_new = 1',
                 'bind' => array(
@@ -45,7 +57,8 @@ class ProfileController extends ControllerBase {
             $this->view->user->full_name = '###';
             $this->view->user->email = '###';
             $this->view->user->phone = '###';
-            $this->view->orders = array();
+            //$this->view->orders = array();
+            $this->view->categories = array();
         }
     }
     

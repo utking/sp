@@ -15,6 +15,54 @@ class CategoriesController extends ControllerBase {
             ));
     }
     
+    public function msgAction() {
+        $args = func_get_args();
+        if (count($args) == 1 && $this->request->isGet()) {
+            $category_id = (int)$args[0];
+            $this->view->category = Categories::findFirst((int)$args[0]);
+            if ($this->view->category) {
+                return;
+            }
+        }
+        $this->flashSession->error('Ошибка при попытке оставить сообщение по закупке');
+        return $this->response->redirect('/profile/index');
+    }
+    
+    public function save_msgAction() {
+        if ($this->request->isPost()) {
+            $category_id = $this->request->getPost('category_id', 'int');
+            $msg = trim($this->request->getPost('msg', 'string'));
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: неизвестная закупка');
+                return $this->response->redirect('/profile/index');
+            }
+            if ($msg === '') {
+                $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: сообщение не должно быть пустым');
+                return $this->response->redirect('/categories/msg/' . $category_id);
+            }
+            
+            $item_msg = new OrderMessage();
+            $auth = $this->session->get('auth');
+            $item_msg->client_id = (int)$auth['id'];
+            $item_msg->category_id = $category_id;
+            $item_msg->admin_id = -1;
+            $item_msg->item_datetime = new RawValue('default');
+            $item_msg->msg = $msg;
+            
+            if ($item_msg->save()) {
+                $this->flashSession->success('Сообщение по заказам в закупке "' . $category->title . '" отправлено администратору');
+                return $this->response->redirect('/profile/index');
+            } else {
+                $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: не отправлено');
+                return $this->response->redirect('/product/msg/' . $order_id);
+            }
+        } else {
+            $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке');
+            return $this->response->redirect('/profile/index');
+        }
+    }
+    
     public function viewAction() {
         $args = func_get_args();
         if (count($args) > 0) {
