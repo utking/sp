@@ -13,6 +13,11 @@
                 <tr class="category_row">
                     <td class="cat_title">
                         <div class="title btn-link orders_table_switcher"><?= Categories::getTitle($cur_category) ?></div>
+                        <?php $category = Categories::findFirst($cur_category); ?>
+                        <?= $this->tag->linkTo(array(
+                            '/categories/view/' . $category->id, 
+                            'text' => 
+                            (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
                     </td>
