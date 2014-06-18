@@ -264,19 +264,22 @@ class SignupController extends ControllerBase {
                 return $this->response->redirect('/');
             }
             $new_pass = User::generatePassword();
-            $login = $user->login;
-            $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте <a href='http://www.spnovo.com'>spnovo.com</a> : " . $new_pass . 
-                    "\r\n<br>Не забудьте сменить пароль на странице профиля.";
-            $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
-            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-            if (mail($email, "Восстановление пароля", $msg_body, $headers)) {
-                $this->flashSession->success('Письмо с новым паролем отправлено на указанный E-mail');
-                return $this->response->redirect('/signup/login');
-            } else {
-                $this->flashSession->error('Письмо не отправлено');
+            $user->hash = $this->security->hash($new_pass);
+            
+            if ($user->save()) {
+                $login = $user->login;
+                $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте <a href='http://www.spnovo.com'>spnovo.com</a> : " . $new_pass . 
+                        "\r\n<br>Не забудьте сменить пароль на странице профиля.";
+                $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
+                $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+                if (mail($email, "Восстановление пароля", $msg_body, $headers)) {
+                    $this->flashSession->success('Письмо с новым паролем отправлено на указанный E-mail');
+                    return $this->response->redirect('/signup/login');
+                } else {
+                    $this->flashSession->error('Письмо не отправлено');
+                }
             }
         }
-        $this->flashSession->error('<pre>' . print_r($_POST,1) . '</pre>');
         $this->flashSession->error('Ошибка восстановления пароля');
         return $this->response->redirect('/');
     }
