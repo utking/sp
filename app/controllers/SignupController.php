@@ -25,6 +25,7 @@ class SignupController extends ControllerBase {
         $this->tag->setDefault('full_name', $user->full_name);
         $this->tag->setDefault('phone', $user->phone);
         $this->tag->setDefault('location', $user->location);
+        $this->tag->setDefault('email', $user->email);
         
         $this->tag->setDefault('operation', 'update');
                 
@@ -132,6 +133,7 @@ class SignupController extends ControllerBase {
             }
             
             $login = trim($this->request->getPost('login', 'string'));
+            $email = trim($this->request->getPost('email', 'string'));
             $password = trim($this->request->getPost('password', 'string'));
             $full_name = trim($this->request->getPost('full_name', 'string'));
             $phone = trim($this->request->getPost('phone', 'string'));
@@ -160,6 +162,7 @@ class SignupController extends ControllerBase {
                 $user = User::findFirst($id);
                 if ($user) {
                     $user->login = $login;
+                    $user->email = $email;
                     $user->full_name = $full_name;
                     $user->phone = $phone;
                     $user->location = $location;
@@ -214,6 +217,7 @@ class SignupController extends ControllerBase {
                 
                 $user = new User();
                 $user->login = $login;
+                $user->email = $email;
                 $user->full_name = $full_name;
                 $user->phone = $phone;
                 $user->hash = $this->security->hash($password);

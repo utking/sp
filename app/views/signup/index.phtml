@@ -19,6 +19,12 @@
         </div>
     </div>
     <div class="control-group">
+        <label class="control-label" for="email">E-mail</label>
+        <div class="controls">
+            <?php echo Phalcon\Tag::textField(["email", 'type' => 'email', 'required' => '', 'class' => 'form-control']) ?>
+        </div>
+    </div>
+    <div class="control-group">
         <label class="control-label" for="full_name">Фамилия Имя</label>
         <div class="controls">
             <?php echo Phalcon\Tag::textField(["full_name", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
