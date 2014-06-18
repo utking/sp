@@ -264,7 +264,9 @@ class SignupController extends ControllerBase {
                 return $this->response->redirect('/');
             }
             $msg_body = "Новый пароль Вашей учетной записи на сайте http://www.spnovo.com : " . $new_pass;
-            if (mail($email, "Восстановление пароля", $msg_body, "From: admin@utking.net")) {
+            $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
+            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+            if (mail($email, "Восстановление пароля", $msg_body, $headers)) {
                 $this->flashSession->success('Письмо с новым паролем отправлено на указанный E-mail');
                 return $this->response->redirect('/signup/login');
             } else {
