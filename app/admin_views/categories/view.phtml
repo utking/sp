@@ -211,7 +211,15 @@
     
     <table class="table table-condensed table-bordered forum_msgs_table">
         <?php foreach ($forum_msgs as $cur_msg) : ?>
-        <tr>
+        <tr class="forum_msg_row">
+            <td style="width: 30px;">
+                <?php echo $this->tag->linkTo(array(
+                    './#',
+                    'onclick' => 'removeForumMsg(this); return false;',
+                    'text' => 'x',
+                    'id' => $cur_msg->id
+                    )); ?>
+            </td>
             <td style="width: 40px;">
                  <?php echo $this->tag->linkTo(array(
                     '#' . $cur_msg->id,
@@ -243,6 +251,23 @@
             $('#forum_new_msg_text').select();
             $('#forum_new_msg_text').focus();
             return false;
+        }
+    }
+    
+    function removeForumMsg(el) {
+        if (confirm('Удалить сообщение?')) {
+            var data = {
+                remove_forum_msg: 1,
+                id: el.getAttribute('id')
+            };
+            $.post('/categories/remove_forum_msg', data, function (retData) {
+                var retObj = JSON.parse(retData);
+                if (retObj.hasError === true) {
+                    alert(retObj.errorMsg);
+                } else {
+                    $(el).parents('tr.forum_msg_row').hide(400);
+                }
+            });
         }
     }
     -->

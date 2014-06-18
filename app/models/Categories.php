@@ -8,7 +8,8 @@ class Categories extends Phalcon\Mvc\Model
     }
     
     public static function isStopped($category_id) {
-        $category = Categories::findFirst($category_id);
+        $parent_cat_id = Categories::getRootCategoryID($category_id);
+        $category = Categories::findFirst($parent_cat_id);
         if ($category) {
             $stop_datetime = new DateTime($category->stop_datetime);
             $now = new DateTime();

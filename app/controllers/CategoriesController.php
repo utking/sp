@@ -100,12 +100,12 @@ class CategoriesController extends ControllerBase {
     public function new_messageAction() {
         
         $auth = $this->session->get('auth');
-        $answer = Recaptcha::check(
+        /*$answer = Recaptcha::check(
                 '6LdFpfQSAAAAAPJXXlZLVgl-g-442tIQLkjS9vwx', 
                 $_SERVER['REMOTE_ADDR'], 
                 $this->request->getPost('recaptcha_challenge_field'), 
                 $this->request->getPost('recaptcha_response_field')
-        );
+        );*/
         if ($this->request->isPost() && $this->request->hasPost('category_id') && $this->request->hasPost('forum_new_msg_text')) {
             $category_id = $this->request->getPost('category_id', 'int');
             $category = Categories::findFirst($category_id);
@@ -129,14 +129,14 @@ class CategoriesController extends ControllerBase {
             $new_forum_msg->user_id = $auth['id'];
             $new_forum_msg->msg = $msg_text;
             $new_forum_msg->category_id = $category_id;
-			if (!$answer) {
-				$this->flashSession->error('Не верный код с картинки');
-				$this->tag->setDefault('forum_new_msg_text', $msg_text);
-				return $this->dispatcher->forward(array(
-					'action' => 'view',
-					'params' => array($category_id)
-				));
-			}
+            /*if (!$answer) {
+                $this->flashSession->error('Не верный код с картинки');
+                $this->tag->setDefault('forum_new_msg_text', $msg_text);
+                return $this->dispatcher->forward(array(
+                            'action' => 'view',
+                            'params' => array($category_id)
+                ));
+            }*/
             if (!$new_forum_msg->save()) {
                 $this->flashSession->error('Новое сообщение не добавлено');
                 foreach ($new_forum_msg->getMessages() as $message) {

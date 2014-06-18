@@ -14,6 +14,32 @@ class CategoriesController extends ControllerBase {
                     "conditions" => "parent_category_id = 0"
         ));
     }
+    
+    public function remove_forum_msgAction() {
+        $result = new stdClass();
+        if ($this->request->isPost() && $this->request->hasPost('remove_forum_msg') && $this->request->hasPost('id')) {
+            $msg_id = $this->request->getPost('id', 'int');
+            $msg = ForumMessage::findFirst($msg_id);
+            if (!$msg) {
+                $result->hasError = true;
+                $result->errorMsg = "Сообщение не найдено в базе";
+                die(json_encode($result));
+            }
+            if (!$msg->delete()) {
+                $result->hasError = true;
+                $result->errorMsg = "Сообщение не удалено: " . PHP_EOL;
+                foreach ($msg->getMessages() as $errMessage) {
+                    $result->errorMsg += $errMessage . PHP_EOL;
+                }
+                die(json_encode($result));
+            }
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры запроса на удаление: " . PHP_EOL . print_r($_POST, 1);
+        die(json_encode($result));
+    }
 
     public function viewAction() {
         $args = func_get_args();

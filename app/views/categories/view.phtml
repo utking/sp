@@ -33,7 +33,7 @@
             <td class="cat_title">Название и фото</td>
             <td class="cat_desc">Описание</td>
             <td class="cat_products_count">Товаров в закупке</td>
-            <td class="cat_products_count">Стоп</td>
+            <!--td class="cat_products_count">Стоп</td-->
         </tr>
     <?php foreach ($category_child_cats as $cur_category) { ?>
         <tr>
@@ -47,7 +47,7 @@
             <td class="cat_desc"><?= $cur_category->desc ?></td>
             <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $cur_category->id)))) ?></td>
             <?php $stop_datetime = new DateTime($cur_category->stop_datetime); ?>
-            <td class="cat_products_count"><span class="<?= (!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
+            <!--td class="cat_products_count"><span class="<?= '' /*(!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s')*/ ?></span></td-->
         </tr>
     <?php } ?>
     </table>
@@ -164,12 +164,12 @@
                     <?php echo Phalcon\Tag::textarea(["forum_new_msg_text", 'class' => 'form-control', 'rows' => 10]) ?>
                 </td>
             </tr>
-            <tr>
+            <!--tr>
                 <td>Проверочные символы</td>
                 <td>
-                    <?= Recaptcha::get('6LdFpfQSAAAAACrEsxtX55STBL26Ax8s2Z4N9YFd'); ?>
+                    <?php /*echo Recaptcha::get('6LdFpfQSAAAAACrEsxtX55STBL26Ax8s2Z4N9YFd')*/; ?>
                 </td>
-            </tr>
+            </tr-->
             <tr>
                 <td></td>
                 <td>
