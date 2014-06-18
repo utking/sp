@@ -30,14 +30,4 @@ class Order extends Phalcon\Mvc\Model
         return '-';
     }
     
-    public static function getOrderMessages($order_id) {
-        return OrderMessage::find(array(
-            'conditions' => 'order_id = ?1',
-            'bind' => array(
-                1 => $order_id
-            ),
-            'order' => 'item_datetime DESC'
-        ));
-    }
-
 }

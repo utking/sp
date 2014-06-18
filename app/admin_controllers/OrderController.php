@@ -20,12 +20,14 @@ class OrderController extends ControllerBase {
                     1 => (int)$id
                 )
             ));
+            $product = Product::findFirst($this->view->order->product_id);
             $this->view->order_messages = OrderMessage::find(array(
-                "conditions" => "order_id = ?1",
+                "conditions" => "category_id = ?1",
                 "bind" => array(
-                    1 => (int)$id
+                    1 => $product->category_id
                 )
             ));
+            $this->view->category_id = $product->category_id;
         } else {
             $this->view->order = new Order();
         }

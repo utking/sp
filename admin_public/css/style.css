@@ -179,3 +179,7 @@ table td.forum_msg_info {
 table.forum_msgs_table tr td {
     padding: 12px;
 }
+
+.order_items table {
+    display: none;
+}

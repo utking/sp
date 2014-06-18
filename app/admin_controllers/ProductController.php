@@ -15,9 +15,20 @@ class ProductController extends ControllerBase {
     
     public function ordersAction() {
         $this->tag->appendTitle(' - Заказы');
-        $this->view->orders = Order::find(array(
-            'order' => 'order_datetime DESC'
-            ));
+        $orders = Order::find(array(
+                    'order' => 'order_datetime'
+        ));
+        $categories = array();
+        foreach ($orders as $order) {
+            $product = Product::findFirst($order->product_id);
+            if (!isset($categories[$product->category_id])) {
+                $categories[$product->category_id] = [];
+                $categories[$product->category_id]['order_summa'] = 0;
+            }
+            $categories[$product->category_id]['orders'][] = $order->id;
+            $categories[$product->category_id]['order_summa'] += $order->order_summa;
+        }
+        $this->view->categories = $categories;
     }
     
     public function attrsAction() {

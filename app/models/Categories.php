@@ -17,18 +17,37 @@ class Categories extends Phalcon\Mvc\Model
         return TRUE;
     }
     
-    public static function getTitle($product_id) {
+    public static function getOrderMessages($product_id) {
         $product = Product::findFirst($product_id);
-        if ($product) {
-            $category = Categories::findFirst(array(
-                'conditions' => 'id = ?1',
-                'bind' => array(
-                    1 => (int)$product->category_id
-                )
-            ));
-            if ($category) {
-                return $category->title;
-            }
+        
+        return OrderMessage::find(array(
+            'conditions' => 'category_id = ?1',
+            'bind' => array(
+                1 => $product->category_id
+            ),
+            'order' => 'item_datetime DESC'
+        ));
+    }
+    
+    public static function getOrderMessagesByCategory($category_id) {
+        return OrderMessage::find(array(
+            'conditions' => 'category_id = ?1',
+            'bind' => array(
+                1 => $category_id
+            ),
+            'order' => 'item_datetime DESC'
+        ));
+    }
+    
+    public static function getTitle($category_id) {
+        $category = Categories::findFirst(array(
+            'conditions' => 'id = ?1',
+            'bind' => array(
+                1 => (int)$category_id
+            )
+        ));
+        if ($category) {
+            return $category->title;
         }
         return '-';
     }

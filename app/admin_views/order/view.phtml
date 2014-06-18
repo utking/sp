@@ -1,9 +1,9 @@
 <p><?php echo $this->getContent() ?></p>
 
-<div class="title"><?= Categories::getTitle($order->product_id) ?></div>
+<div class="title"><?= Categories::getTitle($category_id) ?></div>
 <div class="title"><?= Product::getProductTitle($order->product_id) ?></div>
 <?php echo Phalcon\Tag::form(['/order/update', 'id' => 'order_form', 'class' => 'form-horizontal']) ?>
-<table class="table product_details_table">
+<table class="table product_details_table product_table">
     <tbody>
         <tr>
             <td class="product_title">
@@ -22,11 +22,11 @@
 <div class="">
     <table class="table table_order_info">
         <tr>
-            <td class='product_title'> 
+            <td  style="width: 150px; font-weight: bold;"> 
                 Комментарий заказа:
             </td>
             <td>
-				<?= $order->info ?>
+                <?= $order->info ?>
             </td>
     </table>
 </div>
@@ -65,7 +65,7 @@
     <div class="title">Сообщения по заказу</div>
     <table class="table table-bordered table-condensed table-striped table-hover table_order_messages">
         <tr>
-            <td>Дата</td>
+            <td style="width: 150px;">Дата</td>
             <td>Сообщение</td>
         </tr>
         <?php foreach ($order_messages as $msg) { ?>

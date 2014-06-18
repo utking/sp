@@ -1,36 +1,70 @@
 <p><?php echo $this->getContent() ?></p>
 <div>
     <div class="title">Список заказов</div><br>
-    <table class="table table-bordered table-condensed product_table">
+    <table class="table table-bordered table-condensed">
         <thead>
-            <tr class="warning">
-                <th>Заказ</th>
-                <th>Товар</th>
-                <th>Размер</th>
-                <th>Количество</th>
-                <th>Статус</th>
-                <th>Пользователь</th>
-                <th>Дата заказа</th>
-                <th>Сообщения</th>
+            <tr>
+                <th>Закупка</th>
+                <th>Товары</th>
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($orders as $order) { ?>
-            <tr>
-                <td><?php echo $this->tag->linkTo(array(
-                    '/order/view/' . $order->id, 
-                    'class' => 'btn',
-                    'text' => $order->id)); ?></td>
-                <td><?= Product::getProductTitle($order->product_id) ?></td>
-                <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
-                <td><?= $order->product_count ?></td>
-                <td><?= Order::getStatus($order->order_status_id) ?></td>
-                <td><?= User::getLogin($order->user_id) ?></td>
-                <td><?= rus_date($order->order_datetime, true) ?></td>
-                <?php $messages = []; //Order::getOrderMessages($order->id); ?>
-                <td class="product_price"><span class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span><span class="glyphicon <?= (strlen($order->info) > 0 ? 'glyphicon-comment' : '') ?>"></span></td>
-            </tr>
-        <?php } ?>
+            <?php foreach ($categories as $cur_category => $category_orders) : ?>
+                <tr class="category_row">
+                    <td class="cat_title">
+                        <div class="title btn-link orders_table_switcher"><?= Categories::getTitle($cur_category) ?></div>
+                        <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
+                        <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
+                    </td>
+                    <td class="order_items">
+                        <table class="table table-bordered table-condensed product_table">
+                            <thead>
+                                <tr class="warning">
+                                    <th>Заказ</th>
+                                    <th>Товар</th>
+                                    <th>Размер</th>
+                                    <th>Количество</th>
+                                    <th>Статус</th>
+                                    <th>Пользователь</th>
+                                    <th>Дата заказа</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($category_orders['orders'] as $cur_order) { ?>
+                                    <?php $order = Order::findFirst($cur_order) ?>
+                                    <tr>
+                                        <td><?php
+                                            echo $this->tag->linkTo(array(
+                                                '/order/view/' . $order->id,
+                                                'class' => 'btn',
+                                                'text' => $order->id));
+                                            ?></td>
+                                        <td><?= Product::getProductTitle($order->product_id) ?></td>
+                                        <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
+                                        <td><?= $order->product_count ?></td>
+                                        <td><?= Order::getStatus($order->order_status_id) ?></td>
+                                        <td><?= User::getLogin($order->user_id) ?></td>
+                                        <td><?= rus_date($order->order_datetime, true) ?></td>
+                                        <?php $messages = Categories::getOrderMessages($order->product_id); ?>
+                                        <td class="product_price"><span style="margin-right: 0.5em;" class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span><span class="glyphicon <?= (strlen($order->info) > 0 ? 'glyphicon-comment' : '') ?>"></span></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </div>
+
+<script>
+    <!--
+    $(document).ready(function() {
+        $('.orders_table_switcher').click(function() {
+            $(this).parents('.category_row').find('.order_items table').toggle();
+        });
+    });
+-->
+</script>
