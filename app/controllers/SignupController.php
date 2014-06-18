@@ -157,6 +157,22 @@ class SignupController extends ControllerBase {
                 ));
             }
             
+            if ($password === '') {
+                $this->flash->error('Пароль не должен быть пустым');
+                return $this->dispatcher->forward(array(
+                            'controller' => 'signup',
+                            'action' => 'index'
+                ));
+            }
+
+            if (strlen($password) < 6) {
+                $this->flash->error('Пароль не должен быть короче 6 символов');
+                return $this->dispatcher->forward(array(
+                            'controller' => 'signup',
+                            'action' => 'index'
+                ));
+            }
+
             if ($this->request->hasPost('operation') && $this->request->getPost('operation') == 'update') {
                 $id = $this->request->getPost('uid');
                 $user = User::findFirst($id);
@@ -187,21 +203,7 @@ class SignupController extends ControllerBase {
                                 'action' => 'index'
                     ));
                 }
-                if ($password === '') {
-                    $this->flash->error('Пароль не должен быть пустым');
-                    return $this->dispatcher->forward(array(
-                                'controller' => 'signup',
-                                'action' => 'index'
-                    ));
-                }
-
-                if (strlen($password) < 6) {
-                    $this->flash->error('Пароль не должен быть короче 6 символов');
-                    return $this->dispatcher->forward(array(
-                                'controller' => 'signup',
-                                'action' => 'index'
-                    ));
-                }
+                
                 $users = new User();
                 $ex_user = $users->findFirst(array(
                     "conditions" => "login = ?1",
