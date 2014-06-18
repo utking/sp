@@ -52,6 +52,26 @@ class Categories extends Phalcon\Mvc\Model
         return '-';
     }
     
+    public static function getRootCategoryID($category_id) {
+        while (Categories::getParentCategoryId($category_id)) {
+            $category_id = Categories::getParentCategoryId($category_id);
+        }
+        return $category_id;
+    }
+        
+    private static function getParentCategoryId($category_id) {
+        $category = Categories::findFirst(array(
+            'conditions' => 'id = ?1',
+            'bind' => array(
+                1 => (int)$category_id
+            )
+        ));
+        if ($category && !is_null($category->parent_category_id)) {
+            return $category->parent_category_id;
+        }
+        return false;
+    }
+    
     public static function hasChildCategories($category_id) {
         $category = Categories::find(array(
             'conditions' => 'parent_category_id = ?1',
