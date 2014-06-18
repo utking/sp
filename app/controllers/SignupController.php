@@ -265,8 +265,8 @@ class SignupController extends ControllerBase {
             }
             $new_pass = User::generatePassword();
             $login = $user->login;
-            $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте http://www.spnovo.com : " . $new_pass . 
-                    "\r\nНе забудьте сменить пароль на странице профиля.";
+            $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте <a href='http://www.spnovo.com'>spnovo.com</a> : " . $new_pass . 
+                    "\r\n<br>Не забудьте сменить пароль на странице профиля.";
             $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
             $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
             if (mail($email, "Восстановление пароля", $msg_body, $headers)) {
