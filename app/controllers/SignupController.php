@@ -245,5 +245,35 @@ class SignupController extends ControllerBase {
         $this->flashSession->success('Вы вышли из системы!');
         return $this->response->redirect('/');
     }
+    
+    public function resetAction() {
+        ;
+    }
+    
+    public function send_new_passAction() {
+        if ($this->request->isPost() && $this->request->hasPost('email')) {
+            $email = $this->request->getPost('email', 'string');
+            $user = User::findFirst(array(
+                'conditions' => 'email = ?1',
+                'bind' => array(
+                    1 => $email
+                )
+            ));
+            if (!$user) {
+                $this->flashSession->error('Ошибка восстановления пароля - email не найден в системе');
+                return $this->response->redirect('/');
+            }
+            $msg_body = "Новый пароль Вашей учетной записи на сайте http://www.spnovo.com : " . $new_pass;
+            if (mail($email, "Восстановление пароля", $msg_body, "From: admin@spnovo.com")) {
+                $this->flashSession->success('Письмо с новым паролем отправлено на указанный E-mail');
+                return $this->response->redirect('/signup/login');
+            } else {
+                $this->flashSession->error('Письмо не отправлено');
+            }
+        }
+        $this->flashSession->error('<pre>' . print_r($_POST,1) . '</pre>');
+        $this->flashSession->error('Ошибка восстановления пароля');
+        return $this->response->redirect('/');
+    }
 
 }

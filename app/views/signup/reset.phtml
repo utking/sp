@@ -1,0 +1,24 @@
+<div class="span4 offset4">
+
+    <p><?php echo $this->getContent() ?></p>
+
+    <?php
+    echo Phalcon\Tag::form(array("/signup/send_new_pass", 'role' => 'form'));
+    ?>
+    <h2 class="form-signin-heading">Забытый пароль</h2>
+    
+    <h6 class="alert alert-info help-block">Введите e-mail, который Вы указывали при регистрации. Новый пароль будет отправлен на него</h6>
+
+    <?php
+    echo '<div>',
+    Phalcon\Tag::textField(array('email', 'placeholder' => 'E-mail', 'required' => '', 'class' => 'form-control')),
+    '</div>';
+    
+    echo '<br><div>',
+    Phalcon\Tag::submitButton(array('reset', 'value' => 'Отправить', 'class' => 'btn btn-lg btn-primary btn-block')),
+    '</div>';
+
+    echo Phalcon\Tag::endForm();
+    ?>
+
+</div>
