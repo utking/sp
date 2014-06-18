@@ -169,6 +169,7 @@
 
             shown = true
             lock = true
+            target.src = target.getAttribute('data-zoom-image');
             parent = target.parentNode
 
             var p     = target.getBoundingClientRect(),
