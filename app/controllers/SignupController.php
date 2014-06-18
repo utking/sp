@@ -263,6 +263,7 @@ class SignupController extends ControllerBase {
                 $this->flashSession->error('Ошибка восстановления пароля - email не найден в системе');
                 return $this->response->redirect('/');
             }
+            $new_pass = User::generatePassword();
             $msg_body = "Новый пароль Вашей учетной записи на сайте http://www.spnovo.com : " . $new_pass;
             $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
             $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
