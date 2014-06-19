@@ -66,9 +66,11 @@ class ProductController extends ControllerBase {
                 return $this->response->redirect('/product/msg/' . $order_id);
             }
             
+            $category_id = Product::findFirst($order->product_id)->category_id;
+            
             $order_msg = new OrderMessage();
             $order_msg->client_id = $order->user_id;
-            $order_msg->order_id = $order->id;
+            $order_msg->category_id = $category_id;
             $order_msg->admin_id = -1;
             $order_msg->item_datetime = new RawValue('default');
             $order_msg->msg = $msg;

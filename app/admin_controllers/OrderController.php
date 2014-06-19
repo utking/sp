@@ -93,15 +93,7 @@ class OrderController extends ControllerBase {
                     $this->flashSession->error('Ошибка удаления заказа');
                     return $this->response->redirect('/order/view/' . $order_id);
                 }
-                $paymentMsgs = OrderMessage::find(array(
-                    'conditions' => 'order_id = ?1',
-                    'bind' => array(
-                        1 => $order_id
-                    )
-                ));
-                foreach ($paymentMsgs as $msg) {
-                    $msg->delete();
-                }
+                
                 $this->db->commit();
                 $this->flashSession->success('Заказ удален');
                 return $this->response->redirect('/product/orders');

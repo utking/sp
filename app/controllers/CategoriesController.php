@@ -100,10 +100,6 @@ class CategoriesController extends ControllerBase {
     public function ask_adminACtion() {
         $result = new stdClass();
         $auth = $this->session->get('auth');
-        if (!isset($auth['id'])) {
-            $this->flashSession->error('Войдите под своими учетными данными чтобы участвовать в обсуждении.');
-            return $this->response->redirect('/categories/view/' . $category_id);
-        }
         if ($this->request->isPost() && $this->request->hasPost('ask_admin') && $this->request->hasPost('id') && $this->request->hasPost('question')) {
             $category_id = $this->request->getPost('id', 'int');
             $category = Categories::findFirst($category_id);
@@ -120,6 +116,13 @@ class CategoriesController extends ControllerBase {
                 $result->errorMsg = "Категория не существует";
                 die(json_encode($result));
             }
+            
+            if (!isset($auth['id'])) {
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетными данными";
+                die(json_encode($result));
+            }
+            
             $ask_admin = new AskAdminMessage();
             $ask_admin->from_user_id = $auth['id'];
             $ask_admin->msg_text = $msg;
