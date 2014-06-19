@@ -147,3 +147,7 @@ table td.forum_msg_info {
 table.forum_msgs_table tr td {
     padding: 12px;
 }
+
+div#ask_admin_div {
+    display: none;
+}

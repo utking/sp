@@ -97,6 +97,53 @@ class CategoriesController extends ControllerBase {
         }
     }
     
+    public function ask_adminACtion() {
+        $result = new stdClass();
+        $auth = $this->session->get('auth');
+        if (!isset($auth['id'])) {
+            $this->flashSession->error('Войдите под своими учетными данными чтобы участвовать в обсуждении.');
+            return $this->response->redirect('/categories/view/' . $category_id);
+        }
+        if ($this->request->isPost() && $this->request->hasPost('ask_admin') && $this->request->hasPost('id') && $this->request->hasPost('question')) {
+            $category_id = $this->request->getPost('id', 'int');
+            $category = Categories::findFirst($category_id);
+            $msg = trim($this->request->getPost('question', 'string'));
+            
+            if ($msg === '') {
+                $result->hasError = true;
+                $result->errorMsg = "Пустое сообщение";
+                die(json_encode($result));
+            }
+            
+            if (!$category) {
+                $result->hasError = true;
+                $result->errorMsg = "Категория не существует";
+                die(json_encode($result));
+            }
+            $ask_admin = new AskAdminMessage();
+            $ask_admin->from_user_id = $auth['id'];
+            $ask_admin->msg_text = $msg;
+            $ask_admin->item_datetime = new RawValue('default');
+            $ask_admin->to_user_id = 0;
+            $ask_admin->is_new = true;
+            $ask_admin->category_id = $category_id;
+            
+            if (!$ask_admin->save()) {
+                $result->hasError = true;
+                $result->errorMsg = "Сообщение не отправлено: " . PHP_EOL;
+                foreach ($ask_admin->getMessages() as $errMessage) {
+                    $result->errorMsg += $errMessage . PHP_EOL;
+                }
+                die(json_encode($result));
+            }
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры";
+        die(json_encode($result));
+    }
+    
     public function new_messageAction() {
         
         $auth = $this->session->get('auth');

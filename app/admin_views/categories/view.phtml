@@ -262,10 +262,12 @@
             };
             $.post('/categories/remove_forum_msg', data, function (retData) {
                 var retObj = JSON.parse(retData);
-                if (retObj.hasError === true) {
-                    alert(retObj.errorMsg);
-                } else {
-                    $(el).parents('tr.forum_msg_row').hide(400);
+                if (typeof retObj === 'object') {
+                    if (retObj.hasError === true) {
+                        alert(retObj.errorMsg);
+                    } else {
+                        $(el).parents('tr.forum_msg_row').hide(400);
+                    }
                 }
             });
         }

@@ -1,20 +1,22 @@
 <div class="col-md-12">
-    
+
     <p><?php echo $this->getContent() ?></p>
-    
+
     <div class="btn-toolbar" role="toolbar">
         <div class="btn-group">
-            <?= $this->tag->linkTo(array(
-                '/profile/messages/', 
+            <?=
+            $this->tag->linkTo(array(
+                '/profile/messages/',
                 'text' => 'Просмотреть сообщения <span class="glyphicon ' . (count($messages) > 0 ? 'glyphicon-envelope' : '') . '"></span>',
                 'type' => 'button',
                 'class' => 'btn btn-default'
-                )); ?>
+            ));
+            ?>
         </div>
     </div>
     <br>
-    
-        
+
+
     <div class="carousel">
         <div class="page-header">
             <h4>Данные пользователя</h4>
@@ -35,28 +37,30 @@
             </tr>
             <tr>
                 <td colspan="4">
-                    <?= $user->location ?>
+<?= $user->location ?>
                 </td>
             </tr>
         </table>
     </div>
-    
+
     <div class="controls-row">
         <?= $this->tag->form(array('/signup/edit', 'method' => 'post')); ?>
         <?= $this->tag->hiddenField(array('uid', 'value' => $user->id)); ?>
-        <?= $this->tag->submitButton(array(
-        'edit_user', 
-        'name' => 'edit_user',
-        'value' => 'Изменить', 
-        'onclick' => "return confirm('Редактировать пользователя?');",
-        'class' => 'btn btn-warning')); ?>
+        <?=
+        $this->tag->submitButton(array(
+            'edit_user',
+            'name' => 'edit_user',
+            'value' => 'Изменить',
+            'onclick' => "return confirm('Редактировать пользователя?');",
+            'class' => 'btn btn-warning'));
+        ?>
         </form>
     </div>
-    
+
     <div class="page-header">
         <h4>Заказы пользователя</h4>
     </div>
-    <?php echo Phalcon\Tag::form(['/order/cancel', 'id' => 'order_cancel_form', 'class' => 'form-horizontal']) ?>
+<?php echo Phalcon\Tag::form(['/order/cancel', 'id' => 'order_cancel_form', 'class' => 'form-horizontal']) ?>
     <table class="table table-bordered table-condensed">
         <thead>
             <tr>
@@ -65,13 +69,22 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($categories as $cur_category => $category_orders) : ?>
-            <tr>
-                <td class="cat_title">
-                    <div class="title"><?= Categories::getTitle($cur_category) ?></div>
-                    <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
-                    <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
-                    <div>
+                        <?php foreach ($categories as $cur_category => $category_orders) : ?>
+                <tr>
+                    <td class="cat_title">
+                        <div class="title">
+                            <?= Categories::getTitle($cur_category) ?>
+                            <?php $category = Categories::findFirst($cur_category); ?>
+                            <?=
+                            $this->tag->linkTo(array(
+                                '/categories/view/' . $cur_category,
+                                'text' => (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">'))
+                            ))
+                            ?>
+                        </div>
+                        <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
+                        <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
+                        <div>
                             <?=
                             $this->tag->linkTo(array(
                                 '/categories/msg/' . $cur_category,
@@ -80,9 +93,9 @@
                             ))
                             ?>
                         </div>
-                </td>
-                <td>
-                    <table class="table table-bordered table-condensed">
+                    </td>
+                    <td>
+                        <table class="table table-bordered table-condensed">
                             <thead>
                                 <tr>
                                     <th>Товар</th>
@@ -96,8 +109,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($category_orders['orders'] as $order_id) : ?>
-                                <?php $order = Order::findFirst($order_id); ?>
+    <?php foreach ($category_orders['orders'] as $order_id) : ?>
+        <?php $order = Order::findFirst($order_id); ?>
                                     <tr>
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
@@ -106,39 +119,40 @@
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <td><?= Order::getStatus($order->order_status_id) ?></td>
                                         <!--td>
-                                            <?php if (false && !Product::isStopped($order->product_id)) { ?>
-                                            <div>
-                                                <?=
-                                                $this->tag->linkTo(array(
-                                                    '/product/comment_order/' . $order->id,
-                                                    'class' => 'btn btn-sm btn-link',
-                                                    'text' => 'Комментарий'
-                                                ))
-                                                ?>
-                                            </div>
+                                        <?php if (false && !Product::isStopped($order->product_id)) { ?>
+                                                <div>
+                                            <?=
+                                            $this->tag->linkTo(array(
+                                                '/product/comment_order/' . $order->id,
+                                                'class' => 'btn btn-sm btn-link',
+                                                'text' => 'Комментарий'
+                                            ))
+                                            ?>
+                                                </div>
                                     <?php } ?>
                                         </td-->
                                         <td><?= (!Product::isStopped($order->product_id) ? '<button class="btn btn-danger btn-sm" onclick=\'return remove_order(this);\' value="' . $order->id . '">Отменить</button>' : '') ?>
                                         </td>
                                     </tr>
-    <?php endforeach; ?>
+                <?php endforeach; ?>
                             </tbody>
                         </table>
-                </td>
-            </tr>
-            <?php endforeach; ?>
+                    </td>
+                </tr>
+<?php endforeach; ?>
         </tbody>
     </table>
-    </form>
+</form>
 </div>
 
 <script>
     <!--
     function remove_order(el) {
-        if (confirm("Отменить выбранный заказ?")) { 
-            $(el).attr("name", "uid"); 
-            return true; 
-        } return false;
+        if (confirm("Отменить выбранный заказ?")) {
+            $(el).attr("name", "uid");
+            return true;
+        }
+        return false;
     }
-    -->
+-->
 </script>

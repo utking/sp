@@ -37,7 +37,7 @@ class CategoriesController extends ControllerBase {
             die(json_encode($result));
         }
         $result->hasError = true;
-        $result->errorMsg = "Не верные параметры запроса на удаление: " . PHP_EOL . print_r($_POST, 1);
+        $result->errorMsg = "Не верные параметры запроса на удаление";
         die(json_encode($result));
     }
 
