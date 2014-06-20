@@ -97,7 +97,7 @@ class CategoriesController extends ControllerBase {
         }
     }
     
-    public function ask_adminACtion() {
+    public function ask_adminAction() {
         $result = new stdClass();
         $auth = $this->session->get('auth');
         if ($this->request->isPost() && $this->request->hasPost('ask_admin') && $this->request->hasPost('id') && $this->request->hasPost('question')) {
@@ -123,13 +123,14 @@ class CategoriesController extends ControllerBase {
                 die(json_encode($result));
             }
             
-            $ask_admin = new AskAdminMessage();
+            $ask_admin = new UserMessage();
             $ask_admin->from_user_id = $auth['id'];
-            $ask_admin->msg_text = $msg;
+            $ask_admin->msg = $msg;
             $ask_admin->item_datetime = new RawValue('default');
             $ask_admin->to_user_id = 0;
             $ask_admin->is_new = true;
             $ask_admin->category_id = $category_id;
+            $ask_admin->msg_subject = 'Вопрос по категории &laquo;' . $category->title . '&raquo;';
             
             if (!$ask_admin->save()) {
                 $result->hasError = true;
