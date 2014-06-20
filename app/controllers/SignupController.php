@@ -86,7 +86,7 @@ class SignupController extends ControllerBase {
                 "bind" => array(1 => $user_name)
             ));
             
-            if ($this->di->get('config')->staticAdmin->login === $user_name && 
+            /*if ($this->di->get('config')->staticAdmin->login === $user_name && 
                     $this->di->get('config')->staticAdmin->secret === $this->request->getPost('password', 'string')) {
                 $this->session->set('auth', array(
                     'name' => $user_name,
@@ -94,7 +94,7 @@ class SignupController extends ControllerBase {
                 ));
                 $this->flashSession->success('Добро пожаловать ' . $user_name . ' [root]');
                 return $this->response->redirect('/');
-            }
+            }*/
             
             if (!$user) {
                 $this->flash->error('Неверная пара логин/пароль');

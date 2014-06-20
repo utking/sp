@@ -183,3 +183,15 @@ table.forum_msgs_table tr td {
 .order_items table {
     display: none;
 }
+
+.msg_row_old td {
+    color: #bbb;
+}
+
+.msg_row_new td span.forum_info_user {
+    font-size: 1.1em;
+}
+
+.forum_msg_text pre {
+    display: none;
+}

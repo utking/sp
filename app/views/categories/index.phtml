@@ -12,11 +12,6 @@
                     (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
             </td>
             <td class="cat_desc"><?= $category->desc ?></td>
-            <?php if (Categories::hasChildCategories($category->id)) { ?>
-            <td class="cat_products_count">-</td>
-            <?php } else { ?>
-            <td class="cat_products_count">Товаров в закупке - <?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $category->id)))) ?></td>
-            <?php } ?>
             <td class="cat_products_count"><?= rus_date($category->stop_datetime, true) ?></td>
         </tr>
     <?php } ?>

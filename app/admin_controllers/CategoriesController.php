@@ -571,5 +571,119 @@ class CategoriesController extends ControllerBase {
         $ret = file_get_contents($tmp_name);
         return $ret;
     }
+    
+    public function view_messagesAction() {
+        $auth = $this->session->get('auth');
+        if (!isset($auth['id'])) {
+            $this->flashSession->error('Войдите под своими учетными данными чтобы просмотреть сообщения.');
+            return $this->response->redirect('/categories/');
+        }
+        $args = func_get_args();
+        if (count($args) > 0 && $this->request->isGet()) {
+            $id = (int) $args[0];
+            $this->view->category = Categories::findFirst($id);
+            $this->view->cat_messages = AskAdminMessage::find(array(
+                'conditions' => 'category_id = ?1',
+                'bind' => array(
+                    1 => $id
+                ),
+                'order' => 'item_datetime DESC'
+            ));
+        } else {
+            $this->flashSession->error('Не указана закупка для просмотра сообщений.');
+            return $this->response->redirect('/categories/');
+        }
+    }
+    
+    public function remove_msgAction() {
+        $result = new stdClass();
+        $auth = $this->session->get('auth');
+        if ($this->request->isPost() && $this->request->hasPost('remove_msg') && $this->request->hasPost('items')) {
+            $items = $this->request->getPost('items', 'int');
+            
+            if (!isset($auth['id'])) {
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетными данными";
+                die(json_encode($result));
+            }
+            
+            foreach ($items as $item) {
+                $msg = AskAdminMessage::findFirst($item);
+                if ($msg) {
+                    $msg->delete();
+                }
+            }
+                        
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры";
+        die(json_encode($result));
+    }
+    
+    public function send_responseAction() {
+        $result = new stdClass();
+        $auth = $this->session->get('auth');
+        if ($this->request->isPost() && $this->request->hasPost('send_response') && $this->request->hasPost('category_id') && 
+                $this->request->hasPost('message_id') && $this->request->hasPost('text')) {
+            $category_id = $this->request->getPost('category_id', 'int');
+            $message_id = $this->request->getPost('message_id', 'int');
+            $msg = trim($this->request->getPost('text', 'string'));
+            
+            $category = Categories::findFirst($category_id);
+            $question = AskAdminMessage::findFirst($message_id);
+            
+            if ($msg === '') {
+                $result->hasError = true;
+                $result->errorMsg = "Пустое сообщение";
+                die(json_encode($result));
+            }
+            
+            if (!$category) {
+                $result->hasError = true;
+                $result->errorMsg = "Категория не существует";
+                die(json_encode($result));
+            }
+            
+            if (!$question) {
+                $result->hasError = true;
+                $result->errorMsg = "Вопрос не существует";
+                die(json_encode($result));
+            }
+            
+            if (!isset($auth['id'])) {
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетными данными";
+                die(json_encode($result));
+            }
+            
+            $admin_response = new UserMessage();
+            $admin_response->from_user_id = $auth['id'];
+            $admin_response->msg = $msg;
+            $admin_response->item_datetime = new RawValue('default');
+            $admin_response->to_user_id = $question->from_user_id;
+            $admin_response->is_new = true;
+            $admin_response->msg_subject = 'Ответ по категории &laquo;' . $category->title . '&raquo;';
+            
+            if (!$admin_response->save()) {
+                $result->hasError = true;
+                $result->errorMsg = "Сообщение не отправлено: " . PHP_EOL;
+                foreach ($admin_response->getMessages() as $errMessage) {
+                    $result->errorMsg += $errMessage . PHP_EOL;
+                }
+                die(json_encode($result));
+            }
+            
+            $question->is_new = false;
+            $question->save();
+            
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры";
+        die(json_encode($result));
+    }
 
 }

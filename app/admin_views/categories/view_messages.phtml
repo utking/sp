@@ -1,0 +1,138 @@
+<p><?php echo $this->getContent() ?></p>
+
+<div class="title">Сообщения по закупке &laquo;<?= $category->title ?>&raquo;</div>
+
+<div class="modal fade" id="myModal" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Ответ на сообщение</h4>
+            </div>
+            <div class="modal-body">
+                <?=
+                $this->tag->textarea(array(
+                    'response_text',
+                    'class' => 'form-control input-block',
+                    'rows' => 8
+                ));
+                ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close_modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="send_response" onclick="sendResponse(this)">Отпарвить</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group">
+        <?= $this->tag->linkTo(array(
+            './' . $category->id . '#', 
+            'text' => 'Удалить выделенные сообщения',
+            'onclick' => 'removeMessages(); return false;',
+            'class' => 'btn btn-default'
+            )); ?>
+    </div>
+</div>
+
+<br>
+
+<table class="table table-condensed table-bordered">
+    <?php foreach ($cat_messages as $message) { ?>
+        <tr class="msg_row <?= $message->is_new ? ' msg_row_new' : ' msg_row_old' ?>">
+            <td style="width: 18px;">
+                <?=
+                $this->tag->checkField(array('uid[]', 'class' => 'msg_item', 'value' => $message->id));
+                ?>
+            </td>
+            <td class="forum_msg_info">
+                <span class="forum_info_user"><?= User::getLogin($message->from_user_id) ?></span>
+                <span class="forum_info_date btn-link" onclick="toggleMessage(this);"><?= rus_date($message->item_datetime, true) ?></span>
+            </td>
+            <td class="forum_msg_text">
+                <pre><?= $message->msg_text ?></pre>
+            </td>
+            <td class="forum_msg_info">
+                <?=
+                $this->tag->linkTo(
+                        array(
+                            './' . $category->id . '/#',
+                            'id' => $message->id,
+                            'data-toggle' => "modal",
+                            'data-target' => "#myModal",
+                            'onclick' => 'openResponseBlock(this); return false;',
+                            'class' => 'btn btn-link',
+                            'text' => 'Ответить'
+                        )
+                );
+                ?>
+            </td>
+        </tr>
+    <?php } ?>
+</table>
+
+<script>
+    <!--
+    function openResponseBlock(el) {
+        $('#response_text').attr('category_id', <?= $category->id ?> + 0);
+        $('#response_text').attr('message_id', $(el).attr('id'));
+        $('#response_text').val('\n\n> ' + $.trim($(el).parents('.msg_row').find('.forum_msg_text').text()).split("\n", 10).join("\n> "));
+        $('#response_text').focus();
+    }
+
+    function sendResponse(el) {
+        var data = {
+            send_response: 1,
+            text: $.trim($('#response_text').val()),
+            category_id: $('#response_text').attr('category_id'),
+            message_id: $('#response_text').attr('message_id')
+        };
+
+        $.post('/categories/send_response', data, function(retData) {
+            var retObj = JSON.parse(retData);
+            if (typeof retObj === 'object') {
+                if (retObj.hasError === true) {
+                    alert(retObj.errorMsg);
+                } else {
+                    $('#close_modal').click();
+                }
+            }
+        });
+
+        console.info(data);
+    }
+    
+    function toggleMessage(el) {
+        $(el).parents('.msg_row').find('.forum_msg_text pre').toggle(300);
+    }
+    
+    function removeMessages() {
+        var items = new Array();
+        $('.msg_item').each(function () {
+            if ($(this).is(':checked')) {
+                items[items.length] = $(this).val();
+            }
+        });
+        console.info(items);
+        if (items.length && confirm('Удалить выделенные сообщения?')) {
+            var data = {
+                items: items,
+                remove_msg: 1
+            };
+            $.post('/categories/remove_msg', data, function (retData) {
+                var retObj = JSON.parse(retData);
+                if (typeof retObj === 'object') {
+                    if (retObj.hasError === true) {
+                        alert(retObj.errorMsg);
+                    } else {
+                        location.reload()
+                    }
+                }
+            });
+        }
+    }
+-->
+</script>
