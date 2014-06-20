@@ -130,7 +130,7 @@ class CategoriesController extends ControllerBase {
             $ask_admin->to_user_id = 0;
             $ask_admin->is_new = true;
             $ask_admin->category_id = $category_id;
-            $ask_admin->msg_subject = 'Вопрос по категории &laquo;' . $category->title . '&raquo;';
+            $ask_admin->msg_subject = 'Вопрос по категории "' . $category->title . '"';
             
             if (!$ask_admin->save()) {
                 $result->hasError = true;

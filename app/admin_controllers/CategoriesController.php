@@ -582,10 +582,11 @@ class CategoriesController extends ControllerBase {
         if (count($args) > 0 && $this->request->isGet()) {
             $id = (int) $args[0];
             $this->view->category = Categories::findFirst($id);
-            $this->view->cat_messages = AskAdminMessage::find(array(
-                'conditions' => 'category_id = ?1',
+            $this->view->cat_messages = UserMessage::find(array(
+                'conditions' => 'category_id = ?1 AND to_user_id = ?2',
                 'bind' => array(
-                    1 => $id
+                    1 => $id,
+                    2 => $auth['id']
                 ),
                 'order' => 'item_datetime DESC'
             ));
@@ -632,7 +633,7 @@ class CategoriesController extends ControllerBase {
             $msg = trim($this->request->getPost('text', 'string'));
             
             $category = Categories::findFirst($category_id);
-            $question = AskAdminMessage::findFirst($message_id);
+            $question = UserMessage::findFirst($message_id);
             
             if ($msg === '') {
                 $result->hasError = true;
@@ -664,7 +665,8 @@ class CategoriesController extends ControllerBase {
             $admin_response->item_datetime = new RawValue('default');
             $admin_response->to_user_id = $question->from_user_id;
             $admin_response->is_new = true;
-            $admin_response->msg_subject = 'Ответ по категории &laquo;' . $category->title . '&raquo;';
+            $admin_response->category_id = $category->id;
+            $admin_response->msg_subject = 'Re: ' . $question->msg_subject;
             
             if (!$admin_response->save()) {
                 $result->hasError = true;

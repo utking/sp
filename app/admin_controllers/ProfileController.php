@@ -133,21 +133,28 @@ class ProfileController extends ControllerBase {
             if ($msg) {
                 $this->tag->setDefault('msg_subject', 'Re: ' . $msg->msg_subject);
                 $this->tag->setDefault('msg_text', "\n\n > " . join("\n> ", str_split($msg->msg, 80)));
-                $this->tag->setDefault('msg_to_user_id', $msg->from_user_id);
+                $this->tag->setDefault('msg_id', $msg->id);
             }
             return;
-        } elseif ($this->request->isPost() && $this->request->hasPost('msg_to_user_id') && 
+        } elseif ($this->request->isPost() && $this->request->hasPost('msg_id') && 
                 $this->request->hasPost('msg_subject') && $this->request->hasPost('msg_text')) {
             $msg_subject = trim($this->request->getPost('msg_subject', 'string'));
             $msg_text = trim($this->request->getPost('msg_text', 'string'));
-            $msg_to_user_id = $this->request->getPost('msg_to_user_id', 'int');
+            $msg_id = $this->request->getPost('msg_id', 'int');
+            
+            $msg = UserMessage::findFirst($msg_id);
+            if (!$msg) {
+                $this->flashSession->error('Сообщение не существует. Возможно удалено');
+                return $this->response->redirect('/profile/messages/');
+            }
             
             $new_msg = new UserMessage();
             $new_msg->msg = $msg_text;
             $new_msg->item_datetime = new RawValue('default');
             $new_msg->msg_subject = $msg_subject;
             $new_msg->from_user_id = $auth['id'];
-            $new_msg->to_user_id = $msg_to_user_id;
+            $new_msg->to_user_id = $msg->from_user_id;
+            $new_msg->category_id = $msg->category_id;
             $new_msg->is_new = 1;
             
             if (!$new_msg->save()) {
@@ -155,6 +162,8 @@ class ProfileController extends ControllerBase {
                     $this->flashSession->error($message);
                 }
             } else {
+                $msg->is_new = false;
+                $msg->save();
                 $this->flashSession->success('Ответ отправлен');
             }
             

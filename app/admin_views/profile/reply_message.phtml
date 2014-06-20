@@ -23,7 +23,7 @@
         
         <table class="table table-bordered table-condensed">
             <tr>
-                <td>Тема</td>
+                <td style="width: 100px">Тема</td>
                 <td><?php echo Phalcon\Tag::textField(["msg_subject", 'class' => 'form-control']) ?></td>
             </tr>
             <tr>
@@ -33,7 +33,7 @@
         </table>
         <div class="form-actions">
             <?php echo Phalcon\Tag::submitButton(["Отправить", 'name' => 'send_reply', 'class' => 'btn btn-default']) ?>
-            <td><?php echo Phalcon\Tag::hiddenField(["msg_to_user_id"]) ?></td>
+            <td><?php echo Phalcon\Tag::hiddenField(["msg_id"]) ?></td>
         </div>
     </div>
     
