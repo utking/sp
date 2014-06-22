@@ -164,7 +164,7 @@ try {
     $application->setDI($di);
     echo $application->handle()->getContent();
 } catch (\Phalcon\Exception $e) {
-    echo "PhalconException: ", $e->getMessage();
+    //echo "PhalconException: ", $e->getMessage();
     $logger = new FileAdapter("../logs/errors.log");
     $logger->log("PhalconException: " . $e->getMessage(), \Phalcon\Logger::ERROR);
 }

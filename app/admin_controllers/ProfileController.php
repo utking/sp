@@ -169,8 +169,35 @@ class ProfileController extends ControllerBase {
             
             return $this->response->redirect('/profile/messages/');
         }
-        $this->flashSession->error('Не верные данные.');
+        $this->flashSession->error('Не верные данные');
         return $this->response->redirect('/profile/messages/');
+    }
+    
+    public function change_passAction() {
+        $this->tag->setDefault('login', $this->di->get('config_lite')->get('staticAdmin', 'login'));
+        $this->tag->setDefault('password', $this->di->get('config_lite')->get('staticAdmin', 'secret'));
+    }
+    
+    public function set_passAction() {
+        if ($this->request->isPost() && $this->request->hasPost('login') && $this->request->hasPost('password')) {
+            $login = trim($this->request->getPost('login', 'string'));
+            $password = trim($this->request->getPost('password', 'string'));
+            if (strlen($login) < 4) {
+                $this->flashSession->error('Имя пользователя не должно быть короче четырех символов');
+            } elseif (strlen($password) < 6) {
+                $this->flashSession->error('Пароль не должен быть короче шести символов');
+            } else {
+                $config = $this->di->get('config_lite');
+                $config->setFilename(__DIR__ . '/../../app/config/config.ini');
+                $config->set('staticAdmin', 'login', $login);
+                $config->set('staticAdmin', 'secret', $password);
+                $config->sync();
+                $this->flashSession->success('Пароль и логин изменены');
+                return $this->response->redirect('/profile/');
+            }
+        }
+        $this->flashSession->error('Не верные данные');
+        return $this->response->redirect('/profile/');
     }
     
 }
