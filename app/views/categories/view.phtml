@@ -71,11 +71,13 @@
 <?php if (count($category_child_cats)) { ?>
 
     <div>
+        <?php if (strlen($category->rules) > 2) { ?>
         <div class="">
             <div class="title">Условия закупки</div>
             <div class="alert alert-info"><?= $category->rules ?></div>
         </div>
         <br>
+        <?php } ?>
         <div class="title">Закупки в категории &laquo;<?= $category->title ?>&raquo;</div><br>
         <table class="table table-bordered table-condensed cat_table">
             <tr>
@@ -96,7 +98,9 @@
                         ?>
                     </td>
                     <td class="cat_desc"><?= $cur_category->desc ?></td>
-                    <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array(1 => $cur_category->id)))) ?></td>
+                    <td class="cat_products_count">
+                        <?= Categories::productsCount($cur_category->id) ?>
+                    </td>
                     <?php $stop_datetime = new DateTime($cur_category->stop_datetime); ?>
                     <!--td class="cat_products_count"><span class="<?= '' /* (!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') */ ?></span></td-->
                 </tr>
@@ -107,12 +111,13 @@
 <?php } else { ?>
 
     <div>
-        <br>
+        <?php if (strlen($category->rules) > 2) { ?>
         <div class="">
             <div class="title">Условия закупки</div>
             <div class="alert alert-info"><?= $category->rules ?></div>
         </div>
-
+        <br>
+        <?php } ?>
         <div class="title">Товары в закупке &laquo;<?= $category->title ?>&raquo;</div><br>
         <table class="table table-bordered table-condensed product_table">
             <?php foreach ($this->view->products as $product) { ?>
@@ -285,37 +290,36 @@
         bgColor: '#000',
         bgOpacity: .85
     }).listen('.prod_cat_img');
-    
-    <?php if ($category->parent_category_id < 1) { ?>
-    function askAdmin() {
-        $('#ask_admin_div').show(300);
-        if ($('#ask_admin_div').is(':visible')) {
-            var text = $.trim($('#ask_admin_text').val());
-            if (text === '') {
-                $('#ask_admin_text').focus();
-                $('#ask_admin_text').select();
-                return false;
-            }
-            var data = {
-                id: <?= $category->id ?> +0,
-                ask_admin: 1,
-                question: text
-            };
-            $.post('/categories/ask_admin', data, function (retData) {
-                var retObj = JSON.parse(retData);
-                if (typeof retObj === 'object') {
-                    if (retObj.hasError === true) {
-                        alert(retObj.errorMsg);
-                    } else {
-                        alert('Сообщение отправлено');
-                        $('#ask_admin_div').hide(300);
-                    }
+
+<?php if ($category->parent_category_id < 1) { ?>
+        function askAdmin() {
+            $('#ask_admin_div').show(300);
+            if ($('#ask_admin_div').is(':visible')) {
+                var text = $.trim($('#ask_admin_text').val());
+                if (text === '') {
+                    $('#ask_admin_text').focus();
+                    $('#ask_admin_text').select();
+                    return false;
                 }
-            });
+                var data = {
+                    id: <?= $category->id ?> + 0,
+                    ask_admin: 1,
+                    question: text
+                };
+                $.post('/categories/ask_admin', data, function(retData) {
+                    var retObj = JSON.parse(retData);
+                    if (typeof retObj === 'object') {
+                        if (retObj.hasError === true) {
+                            alert(retObj.errorMsg);
+                        } else {
+                            alert('Сообщение отправлено');
+                            $('#ask_admin_div').hide(300);
+                        }
+                    }
+                });
+            }
+            return false;
         }
-        return false;
-    }
-    <?php } ?> 
-    
+<?php } ?>
 -->
 </script>

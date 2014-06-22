@@ -7,6 +7,35 @@ class Categories extends Phalcon\Mvc\Model
         $this->hasMany('id', 'Product', 'category_id');
     }
     
+    public static function productsCount($category_id) {
+        $counter = 0;
+        $subcategories = Categories::find(array(
+            'conditions' => 'parent_category_id = ?1 AND hidden = 0',
+            'bind' => array(
+                1 => $category_id
+            )
+        ));
+        if ($subcategories && count($subcategories)) {
+            foreach ($subcategories as $cur_child) {
+                $counter += Categories::productsCount($cur_child->id);                
+            }
+            return $counter;
+        }
+        
+        $category = Categories::findFirst($category_id);
+        if ($category && $category->hidden) {
+            return 0;
+        }
+        $products = Product::find(array(
+            'conditions' => 'category_id = ?1',
+            'bind' => array(
+                1 => $category_id
+            )
+        ));
+        return count($products);
+    }
+
+
     public static function isStopped($category_id) {
         $parent_cat_id = Categories::getRootCategoryID($category_id);
         $category = Categories::findFirst($parent_cat_id);
