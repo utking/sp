@@ -136,7 +136,7 @@ class CategoriesController extends ControllerBase {
                 $result->hasError = true;
                 $result->errorMsg = "Сообщение не отправлено: " . PHP_EOL;
                 foreach ($ask_admin->getMessages() as $errMessage) {
-                    $result->errorMsg += $errMessage . PHP_EOL;
+                    $result->errorMsg .= $errMessage . PHP_EOL;
                 }
                 die(json_encode($result));
             }

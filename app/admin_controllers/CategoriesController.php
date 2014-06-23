@@ -29,7 +29,7 @@ class CategoriesController extends ControllerBase {
                 $result->hasError = true;
                 $result->errorMsg = "Сообщение не удалено: " . PHP_EOL;
                 foreach ($msg->getMessages() as $errMessage) {
-                    $result->errorMsg += $errMessage . PHP_EOL;
+                    $result->errorMsg .= $errMessage . PHP_EOL;
                 }
                 die(json_encode($result));
             }
@@ -672,7 +672,7 @@ class CategoriesController extends ControllerBase {
                 $result->hasError = true;
                 $result->errorMsg = "Сообщение не отправлено: " . PHP_EOL;
                 foreach ($admin_response->getMessages() as $errMessage) {
-                    $result->errorMsg += $errMessage . PHP_EOL;
+                    $result->errorMsg .= $errMessage . PHP_EOL;
                 }
                 die(json_encode($result));
             }

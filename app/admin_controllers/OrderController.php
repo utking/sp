@@ -135,7 +135,7 @@ class OrderController extends ControllerBase {
                 $result->hasError = true;
                 $result->errorMsg = "Подтверждение не выполнено" . PHP_EOL;
                 foreach ($order->getMessages() as $errMessage) {
-                    $result->errorMsg += $errMessage . PHP_EOL;
+                    $result->errorMsg .= $errMessage . PHP_EOL;
                 }
                 die(json_encode($result));
             }
