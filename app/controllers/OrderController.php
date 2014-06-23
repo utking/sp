@@ -1,7 +1,5 @@
 <?php
 
-use Phalcon\Db\RawValue;
-
 class OrderController extends ControllerBase {
     
     protected function initialize() {
@@ -36,11 +34,9 @@ class OrderController extends ControllerBase {
             }
             
             $product = Product::findFirst($order->product_id);
-            if ($product) {
-                if (Product::isStopped($product->id)) {
-                    $this->flashSession->error('Ошибка удаления заказа. Прием заказов завершен.');
-                    return $this->response->redirect('/profile');
-                }
+            if ($product && Product::isStopped($product->id)) {
+                $this->flashSession->error('Ошибка удаления заказа. Прием заказов завершен.');
+                return $this->response->redirect('/profile');
             }
             
             $this->db->begin();
