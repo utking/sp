@@ -176,6 +176,7 @@ class ProductController extends ControllerBase {
                     $order->order_datetime = new RawValue('default');
                 } else {
                     $order = new Order();
+                    $order->is_approved = false;
                     $order->product_id = $product_id;
                     $order->product_attr_id = $attr_id;
                     $order->order_status_id = 1;

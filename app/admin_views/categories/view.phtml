@@ -91,7 +91,7 @@
     <br>
     <table class="table table-bordered table-condensed product_table">
     <?php foreach ($this->view->products as $product) { ?>
-        <tr>
+        <tr class="product_item_row" product_id="<?= $product->id ?>">
             <td style="width: 16px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
                 <?= $this->tag->checkField(['uid[]', 'value' => $product->id]); ?>
             </td>
@@ -159,19 +159,28 @@
                                         2 => $attr->id
                                         
                                     ),
-                                    'group' => 'user_id'
+                                    'order' => 'order_datetime'
                                 ));
                                 ?>
                                 <?php foreach ($ordered_items as $cur_item) { ?>
-                                <div>
-                                    <?= User::getLogin($cur_item->user_id) ?>
+                                <div class="order_item_row" order_id="<?= $cur_item->id ?>">
+                                    <span style="margin: 0px 4px; <?= $cur_item->is_approved ? 'font-weight: bolder;' : '' ?>" class="user_span">
+                                        <?= User::getLogin($cur_item->user_id) ?>
+                                    </span>
                                     <?php if (strlen($cur_item->info)) { ?>
                                     <a title="Посмотреть комментарий по заказу" href="#" data-reveal-id="myModal_<?= $attr->id ?>" onclick="return false;"><span class="glyphicon <?= strlen($cur_item->info) ? 'glyphicon-comment' : '' ?>"></span></a>
                                     <div id="myModal_<?= $attr->id ?>" class="reveal-modal">
-                                        <h3>Комментарий</h3>
+                                        <h4>Комментарий</h4>
                                         <p><?= $cur_item->info ?></p>
                                         <a class="close-reveal-modal">&#215;</a>
                                    </div>
+                                    <?php } ?>
+                                    <?php if (!$cur_item->is_approved) { ?>
+                                    <span class="glyphicon glyphicon-plus" style="color: green;" 
+                                          title="Подтвердить" onclick="return approveOrder(this);"></span>
+                                    <?php } else { ?>
+                                    <span class="glyphicon glyphicon-minus" style="color: red;" 
+                                          title="Отменить подтверждение" onclick="return disapproveOrder(this);"></span>
                                     <?php } ?>
                                 </div>
                                 <?php } ?>
@@ -271,6 +280,52 @@
                 }
             });
         }
+    }
+    
+    function approveOrder(el) {
+        if (confirm('Подтвердить?')) {
+            var data = {
+                approve_order: 1,
+                order_id: $(el).parents('div.order_item_row').attr('order_id'),
+                product_id: $(el).parents('tr.product_item_row').attr('product_id')
+            };
+            $.post('/order/approve_order', data, function (retData) {
+                var retObj = JSON.parse(retData);
+                if (typeof retObj === 'object') {
+                    if (retObj.hasError === true) {
+                        alert(retObj.errorMsg);
+                    } else {
+                        $(el).parents('div.order_item_row').find('span.user_span').css('font-weight', 'bold');
+                        $('<span class="glyphicon glyphicon-minus" style="color: red;" title="Отменить подтверждение" onclick="return disapproveOrder(this);"></span>').insertBefore($(el));
+                        $(el).remove();
+                    }
+                }
+            });
+        }
+        return false;
+    }
+    
+    function disapproveOrder(el) {
+        if (confirm('Отменить подтверждение?')) {
+            var data = {
+                disapprove_order: 1,
+                order_id: $(el).parents('div.order_item_row').attr('order_id'),
+                product_id: $(el).parents('tr.product_item_row').attr('product_id')
+            };
+            $.post('/order/approve_order', data, function (retData) {
+                var retObj = JSON.parse(retData);
+                if (typeof retObj === 'object') {
+                    if (retObj.hasError === true) {
+                        alert(retObj.errorMsg);
+                    } else {
+                        $(el).parents('div.order_item_row').find('span.user_span').css('font-weight', 'normal');
+                        $('<span class="glyphicon glyphicon-plus" style="color: green;" title="Подтвердить" onclick="return approveOrder(this);"></span>').insertBefore($(el));
+                        $(el).remove();
+                    }
+                }
+            });
+        }
+        return false;
     }
     -->
 </script>

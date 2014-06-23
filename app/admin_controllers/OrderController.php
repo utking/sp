@@ -103,4 +103,49 @@ class OrderController extends ControllerBase {
             return $this->response->redirect('/product/orders');
         }
     }
+    
+    public function approve_orderAction() {
+        $result = new stdClass();
+        $auth = $this->session->get('auth');
+        if ($this->request->isPost() && ($this->request->hasPost('approve_order') || $this->request->hasPost('disapprove_order')) && 
+                $this->request->hasPost('order_id')) {
+            $order_id = $this->request->getPost('order_id', 'int');
+            
+            $order = Order::findFirst($order_id);
+                        
+            if (!$order) {
+                $result->hasError = true;
+                $result->errorMsg = "Заказ не существует";
+                die(json_encode($result));
+            }
+            
+            if (!isset($auth['id'])) {
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетными данными";
+                die(json_encode($result));
+            }
+            
+            if ($this->request->hasPost('approve_order')) {
+                $order->is_approved = true;
+            } else {
+                $order->is_approved = false;
+            }
+            
+            if (!$order->save()) {
+                $result->hasError = true;
+                $result->errorMsg = "Подтверждение не выполнено" . PHP_EOL;
+                foreach ($order->getMessages() as $errMessage) {
+                    $result->errorMsg += $errMessage . PHP_EOL;
+                }
+                die(json_encode($result));
+            }
+                        
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры";
+        die(json_encode($result));
+    }
+    
 }

@@ -35,7 +35,7 @@
                             <tbody>
                                 <?php foreach ($category_orders['orders'] as $cur_order) { ?>
                                     <?php $order = Order::findFirst($cur_order) ?>
-                                    <tr>
+                                    <tr class="<?= $order->is_approved ? 'text-success' : 'text-muted' ?>">
                                         <td><?php
                                             echo $this->tag->linkTo(array(
                                                 '/order/view/' . $order->id,
@@ -49,7 +49,17 @@
                                         <td><?= User::getLogin($order->user_id) ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <?php $messages = Categories::getOrderMessages($order->product_id); ?>
-                                        <td class="product_price"><span style="margin-right: 0.5em;" class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span><span class="glyphicon <?= (strlen($order->info) > 0 ? 'glyphicon-comment' : '') ?>"></span></td>
+                                        <td class="product_price">
+                                            <?php if (strlen($order->info)) { ?>
+                                                <a title="Посмотреть комментарий по заказу" href="#" data-reveal-id="myModal_<?= $order->id ?>" onclick="return false;"><span class="glyphicon <?= strlen($order->info) ? 'glyphicon-comment' : '' ?>"></span></a>
+                                                <div id="myModal_<?= $order->id ?>" class="reveal-modal">
+                                                    <h3>Комментарий</h3>
+                                                    <p><?= $order->info ?></p>
+                                                    <a class="close-reveal-modal">&#215;</a>
+                                                </div>
+                                            <?php } ?>
+                                            <span style="margin-right: 0.5em;" class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
