@@ -30,6 +30,11 @@ class OrderController extends ControllerBase {
                 return $this->response->redirect('/profile');
             }
             
+            if ($order->is_approved) {
+                $this->flashSession->error('Ошибка удаления заказа. Нельзя отказаться от подтвержденного заказа');
+                return $this->response->redirect('/profile');
+            }
+            
             $product = Product::findFirst($order->product_id);
             if ($product) {
                 if (Product::isStopped($product->id)) {
