@@ -120,13 +120,14 @@
         <?php } ?>
         <div class="title">Товары в закупке &laquo;<?= $category->title ?>&raquo;</div><br>
         <table class="table table-bordered table-condensed product_table">
+            <?php $cur_index = 1; ?>
             <?php foreach ($this->view->products as $product) { ?>
                 <tr>
                     <td style="width: 40px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
                         <?=
                         $this->tag->linkTo(array(
                             '/categories/view/' . $category->id . '#product_' . $product->id,
-                            'text' => '' . $product->id,
+                            'text' => '' . $cur_index++,
                             'title' => 'Номер товара'
                         ));
                         ?>

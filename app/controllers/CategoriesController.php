@@ -32,6 +32,10 @@ class CategoriesController extends ControllerBase {
         if ($this->request->isPost()) {
             $category_id = $this->request->getPost('category_id', 'int');
             $msg = trim($this->request->getPost('msg', 'string'));
+            $summa = $this->request->getPost('summa', 'float');
+            $payment_type = $this->request->getPost('payment_type', 'int');
+            $payment_date = trim($this->request->getPost('payment_date', 'string'));
+            
             $category = Categories::findFirst($category_id);
             if (!$category) {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: неизвестная закупка');
@@ -41,6 +45,17 @@ class CategoriesController extends ControllerBase {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: сообщение не должно быть пустым');
                 return $this->response->redirect('/categories/msg/' . $category_id);
             }
+            
+            $payment_types = array(
+                0 => 'Картой', 
+                1 => 'Наличными'
+            );
+            
+            $msg = "Сумма платежа: $summa\n" . 
+                    "Дата платежа: $payment_date\n" .
+                    "Тип платежа: " . $payment_types[$payment_type] . "\n" .
+                    "Примечания: $msg";
+                    
             
             $item_msg = new OrderMessage();
             $auth = $this->session->get('auth');
