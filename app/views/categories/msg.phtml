@@ -25,17 +25,19 @@
             ?>
         </div>
     </div>
-    
+
     <div class="control-group">
-        <label class="control-label" for="payment_date">Дата платежа</label>
         <div class="controls">
-            <div class="input-append date" id="datetimepicker" data-date="<?= strtotime('d.m.Y') ?>" data-date-format="dd.mm.yyyy" date-language='ru'>
-                <input class="controls1" size="16" type="text" value="<?= strtotime('d.m.Y') ?>" name='payment_date'>
-                <span class="add-on"><i class="icon-calendar"></i></span>
-            </div> 
+            <label class="control-label" for="payment_date">Дата платежа</label>
+            <div id="datetimepicker" class="input-append date">
+                <input data-format="dd.MM.yyyy" type="text" name='payment_date'>
+                <span class="add-on" style="display: inline-table">
+                    <i class="glyphicon glyphicon-calendar" data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                </span>
+            </div>
         </div>
     </div>
-    
+
     <div class="control-group">
         <label class="control-label" for="msg">Доп. информация (номер карты и т.п.)</label>
         <div class="controls">
@@ -46,13 +48,13 @@
     <br>
     <div class="control-group">
         <div class="controls">
-<?php echo Phalcon\Tag::submitButton(["Отправить", 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+            <?php echo Phalcon\Tag::submitButton(["Отправить", 'class' => 'btn btn-lg btn-primary btn-block']) ?>
         </div>
     </div>
 
     <div class="control-group">
         <div class="controls">
-<?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category->id]) ?>
+            <?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category->id]) ?>
         </div>
     </div>
 
@@ -64,13 +66,7 @@
     $(document).ready(function() {
         $('.numeric').numeric();
         $("#datetimepicker").datetimepicker({
-            format: 'dd.mm.yyyy',
-            autoclose: true,
-            pickTime: true,
-            todayBtn: true,
-            pickerPosition: "bottom-left",  
-            language: 'ru',
-            weekStart: 1
+            language: 'ru'
         });
     });
 -->

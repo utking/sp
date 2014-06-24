@@ -151,3 +151,7 @@ table.forum_msgs_table tr td {
 div#ask_admin_div {
     display: none;
 }
+
+body div.bootstrap-datetimepicker-widget ul {
+    margin-left: -40px;
+}
