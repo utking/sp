@@ -49,6 +49,10 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                         'caption' => 'Список заказов',
                         'action' => 'orders'
                     ),
+                    array(
+                        'caption' => 'Сообщения об оплате',
+                        'action' => 'payments'
+                    ),
                 )
             ),
         ),

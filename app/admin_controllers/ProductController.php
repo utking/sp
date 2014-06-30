@@ -32,6 +32,15 @@ class ProductController extends ControllerBase {
         $this->view->categories = $categories;
     }
     
+    public function paymentsAction() {
+        $this->view->title = 'Сообщения об оплате';
+        $this->tag->appendTitle(' - Сообщения об оплате');
+        $orders_messages = OrderMessage::find(array(
+                    'order' => 'item_datetime DESC'
+        ));
+        $this->view->messages = $orders_messages;
+    }
+    
     public function attrsAction() {
         $args = func_get_args();
         if (count($args) > 0 && $this->request->isGet()) {
