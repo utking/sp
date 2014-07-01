@@ -2,6 +2,11 @@
 
 class User extends Phalcon\Mvc\Model
 {
+    
+    public function initialize() {
+        $this->hasMany('id', 'OrderMessage', 'from_user_id');
+    }
+    
     public static function getLogin($user_id) {
         if ($user_id <= 0) {
             return 'Admin';

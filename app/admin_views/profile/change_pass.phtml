@@ -1,29 +1,29 @@
-<div class="col-md-6 offset3">
+<div class="col-md-4 offset4">
     
     <div class="page-header">
         <h4>Смена пароля администратора</h4>
     </div>
-    <p><?php echo $this->getContent() ?></p>
+    <p>{{ content() }}</p>
 
-    <?php echo Phalcon\Tag::form(['/profile/set_pass', 'id' => 'reg_form', 'class' => 'form-horizontal']) ?>
+    {{ form('/profile/set_pass', 'id' : 'reg_form', 'class' : 'form-horizontal') }}
 
     <div class="control-group">
         <label class="control-label" for="login">Логин</label>
         <div class="controls">
-            <?php echo Phalcon\Tag::textField(["login", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
+            {{ text_field("login", 'type' : 'text', 'required' : '', 'class' : 'form-control') }}
         </div>
     </div>
     <div class="control-group">
         <label class="control-label" for="password">Пароль</label>
         <div class="controls">
-            <?php echo Phalcon\Tag::textField(["password", 'class' => 'form-control']) ?>
+            {{ text_field("password", 'class' : 'form-control') }}
         </div>
     </div>
     <br>
 
     <div class="control-group">
         <div class="controls">
-            <?php echo Phalcon\Tag::submitButton(["Вперед", 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+            {{ submit_button("Вперед", 'class' : 'btn btn-lg btn-primary btn-block') }}
         </div>
     </div>
 
