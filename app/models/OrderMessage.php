@@ -4,7 +4,8 @@ class OrderMessage extends Phalcon\Mvc\Model
 {
     public function initialize() {
         $this->setSource('sp_payment_msg');
-        $this->hasOne('id', 'User', 'from_user_id');
+        $this->hasOne('client_id', 'User', 'id');
+        $this->hasOne('category_id', 'Categories', 'id');
     }
     
 }

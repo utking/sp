@@ -1,34 +1,27 @@
 <h4 class="well well-sm">{{ title }}</h4>
-<p><?php echo $this->getContent() ?></p>
+<p>{{ content() }}</p>
 
 <div class="carousel">
     <div class="page-header">
         <h4>Сообщения</h4>
     </div>
 
+    {% if messages|length > 0 %}
     <table class="table table-bordered table-condensed">
-        <?php foreach ($messages as $msg) { ?>
+        {% for msg in messages %}
         <tr>
-            <td style='width: 10px; display: none;'><?= Phalcon\Tag::checkField(["message_ids[]", 'value' => $msg->id]) ?></td>
+            <td style='width: 10px; display: none;'>{{ check_field("message_ids[]", 'value' : msg.id) }}</td>
             <td>
-                <a href='#' class="msg_subj" onclick="toggle_msg_body(this); return false;"><?= Categories::getTitle($msg->category_id) ?></a>
-                <div class='msg_body'><pre><?= $msg->msg ?></pre></div>
+                <a href='#' class="msg_subj" onclick="toggle_msg_body(this); return false;">{{ msg.categories.title }}</a>
+                <div class='msg_body'><pre>{{ msg.msg }}</pre></div>
             </td>
-            <td style='width: 150px;'><?= rus_date($msg->item_datetime, true) ?></td>
-            <td style='width: 150px; <?= $msg->client_id < 1 ? 'font-weight: bold' : '' ?>'><?= User::getLogin($msg->client_id) ?></td>
-            <td style='width: 80px;'>
-                    <?=
-                    $this->tag->linkTo(array(
-                        '/profile/reply_message/' . $msg->id,
-                        'text' => 'Ответить',
-                        'type' => 'button',
-                        'class' => 'btn btn-link btn-sm'
-                    ));
-                    ?>
-            </td>
+            <td style='width: 150px;'>{{ msg.item_datetime|rus_date(1) }}</td>
+            <td style='width: 150px; {{ msg.client_id < 1 ? 'font-weight: bold' : '' }}'>{{ msg.user.login }}</td>
+            <td style='width: 80px;'>{{ link_to('/profile/reply_message/' ~ msg.id, 'text' : 'Ответить', 'type' : 'button', 'class' : 'btn btn-link btn-sm') }}</td>
         </tr>
-        <?php } ?>
+        {% endfor %}
     </table>
+    {% endif %}
 </div>
 
 <script>
