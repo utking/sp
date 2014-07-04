@@ -528,7 +528,7 @@ class CategoriesController extends ControllerBase {
                     $thumb->resizeImage(1024, 800, imagick::FILTER_LANCZOS, 1, true);
                     $thumb->writeImage($tmp_name);
                     $img_big_data = file_get_contents($tmp_name);
-                    $thumb->resizeImage(200, 200, imagick::FILTER_LANCZOS, 1, true);
+                    $thumb->resizeImage(250, 250, imagick::FILTER_LANCZOS, 1, true);
                     $thumb->writeImage($tmp_name);
                     $thumb->clear();
                     $thumb->destroy();
