@@ -9,19 +9,34 @@
 
     <?php
     echo '<div>',
-    Phalcon\Tag::textField(array('username', 'placeholder' => 'Login', 'required' => '', 'class' => 'form-control')),
+		Phalcon\Tag::textField(array(
+			'username', 
+			'placeholder' => 'Login', 
+			'required' => '', 
+			'autofocus' => '',
+			'class' => 'form-control')),
     '</div>';
 
     echo '<div>',
-    Phalcon\Tag::passwordField(array('password', 'placeholder' => 'password', 'required' => '', 'class' => 'form-control')),
+		Phalcon\Tag::passwordField(array(
+			'password', 
+			'placeholder' => 'password', 
+			'required' => '', 
+			'class' => 'form-control')),
     '</div>';
     
     echo '<div>';    
-    echo Phalcon\Tag::linkTo(array('/signup/reset', 'text' => 'Забыли пароль?', 'class' => 'btn btn-link btn-sm'));
+	echo Phalcon\Tag::linkTo(array(
+		'/signup/reset', 
+		'text' => 'Забыли пароль?', 
+		'class' => 'btn btn-link btn-sm'));
     echo '</div><br>';
 
     echo '<div>',
-    Phalcon\Tag::submitButton(array('login', 'Value' => 'Войти', 'class' => 'btn btn-lg btn-primary btn-block')),
+		Phalcon\Tag::submitButton(array(
+			'login', 
+			'value' => 'Войти', 
+			'class' => 'btn btn-lg btn-primary btn-block')),
     '</div>';
 
     echo Phalcon\Tag::endForm();
