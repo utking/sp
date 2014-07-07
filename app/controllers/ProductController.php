@@ -57,7 +57,7 @@ class ProductController extends ControllerBase {
             $order_id = $this->request->getPost('order_id', 'int');
             $msg = trim($this->request->getPost('msg', 'string'));
             $order = Order::findFirst($order_id);
-            if (!$order) {
+            if (!$order || $order->user_id == 0) {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказу: неизвестный заказ');
                 return $this->response->redirect('/profile/index');
             }
@@ -89,6 +89,11 @@ class ProductController extends ControllerBase {
     }
 
     public function save_commentAction() {
+        $auth = $this->session->get('auth');
+        if (!isset($auth['id'])) {
+            $this->flashSession->error('Войдите под своими учетным данными.');
+            return $this->response->redirect('/profile/index');
+        }
         if ($this->request->isPost()) {
             $order_id = $this->request->getPost('order_id', 'int');
             $msg = trim($this->request->getPost('comment', 'string'));
