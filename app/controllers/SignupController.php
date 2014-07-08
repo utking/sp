@@ -206,8 +206,8 @@ class SignupController extends ControllerBase {
                 
                 $users = new User();
                 $ex_user = $users->findFirst(array(
-                    "conditions" => "login = ?1",
-                    "bind" => array(1 => $login)
+                    "conditions" => "login = ?1 OR email = ?2",
+                    "bind" => array(1 => $login, 2 => $email)
                 ));
                 if ($ex_user) {
                     $this->flash->success('Пользователь уже существует');
@@ -215,7 +215,7 @@ class SignupController extends ControllerBase {
                                 'controller' => 'signup',
                                 'action' => 'index'
                     ));
-                } 
+                }
                 
                 $user = new User();
                 $user->login = $login;
