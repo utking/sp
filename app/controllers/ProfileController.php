@@ -40,9 +40,13 @@ class ProfileController extends ControllerBase {
                 if (!isset($categories[$parent_cat_id])) {
                     $categories[$parent_cat_id] = [];
                     $categories[$parent_cat_id]['order_summa'] = 0;
+                    $categories[$parent_cat_id]['approved_summa'] = 0;
                 }
                 $categories[$parent_cat_id]['orders'][] = $order->id;
                 $categories[$parent_cat_id]['order_summa'] += $order->order_summa;
+                if ($order->is_approved) {
+                    $categories[$parent_cat_id]['approved_summa'] += $order->order_summa;
+                }
             }
             $this->view->categories = $categories;
 

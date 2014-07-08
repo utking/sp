@@ -84,6 +84,7 @@
                         </div>
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
+                        <div class="price">Подтверждено на сумму: <?= $categories[$cur_category]['approved_summa'] ?></div>
                         <div>
                             <?=
                             $this->tag->linkTo(array(
