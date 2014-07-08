@@ -27,11 +27,13 @@
 <?php if (count($category_child_cats)) { ?>
 
 <div>
+    <?php if (strlen($category->rules) > 2) { ?>
     <br>
     <div class="">
         <div class="title">Условия закупки</div>
         <div class="alert alert-info"><?= $category->rules ?></div>
     </div>
+    <?php } ?>
     <br>
     <div class="title">Закупки в категории</div><br>
     <table class="table table-bordered table-condensed cat_table">
