@@ -5,6 +5,8 @@ class User extends Phalcon\Mvc\Model
     
     public function initialize() {
         $this->hasMany('id', 'OrderMessage', 'from_user_id');
+        $this->hasMany('id', 'UserMessage', 'to_user_id', array( 'alias' => 'InboxMessages'));
+        $this->hasMany('id', 'UserMessage', 'from_user_id', array( 'alias' => 'OutboxMessages'));
     }
     
     public static function getLogin($user_id) {

@@ -53,16 +53,16 @@ class ProfileController extends ControllerBase {
     public function messagesAction() {
         $args = func_get_args();
         $auth = $this->session->get('auth');
+        $this->view->outgoing_messages = UserMessage::find(array(
+            'conditions' => 'from_user_id = ?1',
+            'bind' => array(
+                1 => $auth['id']
+            ),
+            'order' => 'item_datetime DESC'
+        ));
         if (count($args) < 1) {
             $this->view->messages = UserMessage::find(array(
                 'conditions' => 'to_user_id = ?1',
-                'bind' => array(
-                    1 => $auth['id']
-                ),
-                'order' => 'item_datetime DESC'
-            ));
-            $this->view->outgoing_messages = UserMessage::find(array(
-                'conditions' => 'from_user_id = ?1',
                 'bind' => array(
                     1 => $auth['id']
                 ),
@@ -77,13 +77,7 @@ class ProfileController extends ControllerBase {
                 ),
                 'order' => 'item_datetime DESC'
             ));
-            $this->view->outgoing_messages = UserMessage::find(array(
-                'conditions' => 'from_user_id = ?1',
-                'bind' => array(
-                    1 => $auth['id']
-                ),
-                'order' => 'item_datetime DESC'
-            ));
+            
         }
     }
     
