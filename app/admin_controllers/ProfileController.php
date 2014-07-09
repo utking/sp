@@ -61,12 +61,26 @@ class ProfileController extends ControllerBase {
                 ),
                 'order' => 'item_datetime DESC'
             ));
+            $this->view->outgoing_messages = UserMessage::find(array(
+                'conditions' => 'from_user_id = ?1',
+                'bind' => array(
+                    1 => $auth['id']
+                ),
+                'order' => 'item_datetime DESC'
+            ));
         } else { //show unread
             $this->view->messages = UserMessage::find(array(
                 'conditions' => 'to_user_id = ?1 AND is_new = ?2',
                 'bind' => array(
                     1 => $auth['id'],
                     2 => (int)$args[0]
+                ),
+                'order' => 'item_datetime DESC'
+            ));
+            $this->view->outgoing_messages = UserMessage::find(array(
+                'conditions' => 'from_user_id = ?1',
+                'bind' => array(
+                    1 => $auth['id']
                 ),
                 'order' => 'item_datetime DESC'
             ));
@@ -103,6 +117,29 @@ class ProfileController extends ControllerBase {
                                 foreach ($cur_msg->getMessages() as $message) {
                                     $this->flashSession->error($message);
                                 }
+                            }
+                        }
+                    }
+                    return $this->response->redirect('/profile/messages/');
+                }
+            } else {
+                $this->flashSession->error('Не верная операция над сообщением.');
+            }
+        } elseif ($this->request->isPost() && $this->request->hasPost('outgoing_message_ids')) {
+            if ($this->request->hasPost('remove_outgoing_messages')) {
+                $msg_ids = $this->request->getPost('outgoing_message_ids', 'int');
+                if ($msg_ids) {
+                    foreach ($msg_ids as $msg_id) {
+                        $cur_msg = UserMessage::findFirst(array(
+                            'conditions' => 'id = ?1 AND from_user_id = ?2',
+                            'bind' => array(
+                                1 => $msg_id,
+                                2 => (int)$auth['id']
+                            )
+                        ));
+                        if (!$cur_msg->delete()){
+                            foreach ($cur_msg->getMessages() as $message) {
+                                $this->flashSession->error($message);
                             }
                         }
                     }

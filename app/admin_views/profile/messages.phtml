@@ -2,6 +2,7 @@
     
     <p>{{ content() }}</p>
     
+    {% if (messages|length > 0) %}
     {{ form('/profile/update_messages', 'id' : 'messages_form', 'class' : 'form-horizontal') }}
     
     <div class="btn-toolbar" role="toolbar">
@@ -13,7 +14,7 @@
     
     <div class="carousel">
         <div class="page-header">
-            <h4>Сообщения</h4>
+            <h4>Входящие сообщения</h4>
         </div>
         <div class="btn-toolbar form-group" role="toolbar">
             <div class="btn-group">
@@ -40,6 +41,48 @@
             {% endfor %}
         </table>
     </div>
+    {% else %}
+    <div class="carousel">
+        <div class="page-header">
+            <h4>Нет входящих сообщений</h4>
+        </div>
+    </div>
+    {% endif %}
+    </form>
+    
+    {{ form('/profile/update_messages', 'id' : 'outgoing_messages_form', 'class' : 'form-horizontal') }}
+    
+    {% if (outgoing_messages|length > 0) %}
+    <div class="carousel">
+        <div class="page-header">
+            <h4>Исходящие сообщения</h4>
+        </div>
+        <div class="btn-toolbar form-group" role="toolbar">
+            <div class="btn-group">
+                {{ submit_button("Удалить", 'name' : 'remove_outgoing_messages', 'class' : 'btn btn-default') }}
+            </div>
+        </div>
+        <table class="table table-bordered table-condensed">
+            {% for msg in outgoing_messages %}
+            <tr class='{{ msg.is_new ? 'new_message' : ''}}'>
+                <td style='width: 10px;'>{{ check_field("outgoing_message_ids[]", 'value' : msg.id) }}</td>
+                <td>
+                    <a href='#' class="msg_subj" onclick="toggle_msg_body(this); return false;">{{ msg.msg_subject }}</a>
+                    <div class='msg_body'><pre>{{ msg.msg }}</pre></div>
+                </td>
+                <td style='width: 150px;'>{{ msg.receiver.login }}</td>
+                <td style='width: 150px;'>{{ msg.item_datetime|rus_date(1) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <div class="carousel">
+        <div class="page-header">
+            <h4>Нет исходящих сообщений</h4>
+        </div>
+    </div>
+    {% endif %}
     
     </form>
     

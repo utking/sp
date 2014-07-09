@@ -78,12 +78,26 @@ class ProfileController extends ControllerBase {
                 ),
                 'order' => 'item_datetime DESC'
             ));
+            $this->view->outgoing_messages = UserMessage::find(array(
+                'conditions' => 'from_user_id = ?1',
+                'bind' => array(
+                    1 => $auth['id']
+                ),
+                'order' => 'item_datetime DESC'
+            ));
         } else { //show unread
             $this->view->messages = UserMessage::find(array(
                 'conditions' => 'to_user_id = ?1 AND is_new = ?2',
                 'bind' => array(
                     1 => $auth['id'],
                     2 => (int)$args[0]
+                ),
+                'order' => 'item_datetime DESC'
+            ));
+            $this->view->outgoing_messages = UserMessage::find(array(
+                'conditions' => 'from_user_id = ?1',
+                'bind' => array(
+                    1 => $auth['id']
                 ),
                 'order' => 'item_datetime DESC'
             ));
