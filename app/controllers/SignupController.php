@@ -133,7 +133,7 @@ class SignupController extends ControllerBase {
             }
             
             $login = trim($this->request->getPost('login', 'string'));
-            $email = trim($this->request->getPost('email', 'string'));
+            $email = trim($this->request->getPost('email', 'email'));
             $password = trim($this->request->getPost('password', 'string'));
             $full_name = trim($this->request->getPost('full_name', 'string'));
             $phone = trim($this->request->getPost('phone', 'string'));
