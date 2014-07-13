@@ -7,6 +7,21 @@ class Categories extends Phalcon\Mvc\Model
         $this->hasMany('id', 'Product', 'category_id');
     }
     
+    protected static function di()
+    {
+        return \Phalcon\DI\FactoryDefault::getDefault();
+    }
+    
+    protected static function getBuilder()
+    {
+        $di      = self::di();
+        $manager = $di['modelsManager'];
+        $builder = $manager->createBuilder();
+        $builder->from(get_called_class());
+
+        return $builder;
+    }
+    
     public static function productsCount($category_id) {
         $counter = 0;
         $subcategories = Categories::find(array(
@@ -35,6 +50,29 @@ class Categories extends Phalcon\Mvc\Model
         return count($products);
     }
 
+    public static function getOrderCount($category_id) {
+        $counter = 0;
+        $subcategories = Categories::find(array(
+            'conditions' => 'parent_category_id = ?1 AND hidden = 0',
+            'bind' => array(
+                1 => $category_id
+            )
+        ));
+        $orders = self::getBuilder()
+                ->from(array('SpOrder', 'Product'))
+                ->where("SpOrder.product_id = Product.id and Product.category_id = $category_id") //, array('category_id' => $category_id))
+                ->andWhere('order_status_id != 3')
+                ->getQuery()
+                ->execute();
+        $counter += count($orders);
+        if ($subcategories && count($subcategories)) {
+            foreach ($subcategories as $cur_child) {
+                $counter += Categories::getOrderCount($cur_child->id);                
+            }
+            return $counter;
+        }
+        return $counter;
+    }
 
     public static function isStopped($category_id) {
         $parent_cat_id = Categories::getRootCategoryID($category_id);

@@ -14,7 +14,7 @@ class OrderController extends ControllerBase {
         $this->view->order_statuses = OrderStatus::find();
         if (count($args) > 0 && $this->request->isGet()) {
             $id = (int)$args[0];
-            $this->view->order = Order::findFirst(array(
+            $this->view->order = SpOrder::findFirst(array(
                 "conditions" => "id = ?1",
                 "bind" => array(
                     1 => (int)$id
@@ -29,7 +29,7 @@ class OrderController extends ControllerBase {
             ));
             $this->view->category_id = $product->category_id;
         } else {
-            $this->view->order = new Order();
+            $this->view->order = new SpOrder();
         }
     }
     
@@ -37,7 +37,7 @@ class OrderController extends ControllerBase {
         $auth = $this->session->get('auth');
         if ($this->request->isPost() && $this->request->hasPost('order_id')) {
             $order_id = $this->request->getPost('order_id');
-            $order = Order::findFirst($order_id);
+            $order = SpOrder::findFirst($order_id);
             if (!$order) {
                 $this->flashSession->error('Не найден заказ с таким номером');
                 return $this->response->redirect('/order/view/' . $order_id);
@@ -111,7 +111,7 @@ class OrderController extends ControllerBase {
                 $this->request->hasPost('order_id')) {
             $order_id = $this->request->getPost('order_id', 'int');
             
-            $order = Order::findFirst($order_id);
+            $order = SpOrder::findFirst($order_id);
                         
             if (!$order) {
                 $result->hasError = true;

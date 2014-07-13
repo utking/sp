@@ -26,7 +26,7 @@ class ProfileController extends ControllerBase {
                     )
                 ));
             }
-            $this->view->orders = Order::find(array(
+            $this->view->orders = SpOrder::find(array(
                 'conditions' => 'user_id = ?1',
                 'bind' => array(
                     1 => $auth['id']

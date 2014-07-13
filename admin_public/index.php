@@ -1,7 +1,12 @@
 <?php
 
-use Phalcon\Mvc\View\Engine\Volt;
-use Phalcon\Mvc\View;
+use Phalcon\Mvc\View\Engine\Volt,
+        Phalcon\Mvc\View,
+        Phalcon\Mvc\Router;
+
+use Phalcon\Logger\Adapter\File as FileAdapter,
+    Phalcon\Events\Manager,
+    Phalcon\Logger\Adapter\File;
 
 require_once __DIR__ . '/../app/library/simple_html_dom.php';
 require_once __DIR__ . '/../app/library/Config/Lite.php';
@@ -56,13 +61,26 @@ try {
         return new Phalcon\Config\Adapter\Ini('../app/config/config.ini');
     });
     
+    $di->set('modelsManager', function() {
+        return new Phalcon\Mvc\Model\Manager();
+    });
+
     $di->set('simple_html_dom', function() {
         return new simple_html_dom();
     });
 
     //Set the database service
     $di->set('db', function() use ($config) {
-        return new \Phalcon\Db\Adapter\Pdo\Mysql(array(
+        $eventsManager = new Phalcon\Events\Manager();
+
+        $logger = new FileAdapter("../app/logs/debug.log");
+        
+        $eventsManager->attach('db', function($event, $connection) use ($logger) {
+            if ($event->getType() == 'beforeQuery') {
+                $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
+            }
+        });
+        $connection = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
             "host" => $config->database->host,
             "username" => $config->database->username,
             "password" => $config->database->password,
@@ -71,6 +89,9 @@ try {
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'
             )
         ));
+        $connection->setEventsManager($eventsManager);
+
+        return $connection;
     });
 
     $di->set('session', function() {

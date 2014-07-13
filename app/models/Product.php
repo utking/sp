@@ -21,7 +21,7 @@ class Product extends Phalcon\Mvc\Model
     }
     
     public static function getOrderedSumma($product_id) {
-        $sum = Order::sum(array(
+        $sum = SpOrder::sum(array(
             'conditions' => 'product_id = ?1 AND order_status_id = 2',
             'bind' => array(
                 1 => (int)$product_id

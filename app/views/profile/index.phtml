@@ -111,14 +111,14 @@
                             </thead>
                             <tbody>
     <?php foreach ($category_orders['orders'] as $order_id) : ?>
-        <?php $order = Order::findFirst($order_id); ?>
+        <?php $order = SpOrder::findFirst($order_id); ?>
                                     <tr>
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
                                         <td><?= $order->order_summa ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
-                                        <td><?= Order::getStatus($order->order_status_id) ?></td>
+                                        <td><?= SpOrder::getStatus($order->order_status_id) ?></td>
                                         <!--td>
                                         <?php if (false && !Product::isStopped($order->product_id)) { ?>
                                                 <div>

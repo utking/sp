@@ -15,7 +15,7 @@ class ProductController extends ControllerBase {
     
     public function ordersAction() {
         $this->tag->appendTitle(' - Заказы');
-        $orders = Order::find(array(
+        $orders = SpOrder::find(array(
                     'order' => 'order_datetime'
         ));
         $categories = array();
@@ -171,7 +171,7 @@ class ProductController extends ControllerBase {
         $args = func_get_args();
         if (count($args) == 1 && $this->request->isGet()) {
             $order_id = (int)$args[0];
-            $this->view->order = Order::findFirst((int)$args[0]);
+            $this->view->order = SpOrder::findFirst((int)$args[0]);
         } else {
             $this->flashSession->error('Ошибка при попытке оставить сообщение по заказу');
             return $this->response->redirect('/profile/index');
@@ -182,7 +182,7 @@ class ProductController extends ControllerBase {
         if ($this->request->isPost()) {
             $order_id = $this->request->getPost('order_id', 'int');
             $msg = trim($this->request->getPost('msg', 'string'));
-            $order = Order::findFirst($order_id);
+            $order = SpOrder::findFirst($order_id);
             if (!$order) {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказу: неизвестный заказ');
                 return $this->response->redirect('/profile/index');
@@ -238,7 +238,7 @@ class ProductController extends ControllerBase {
                     $this->flashSession->error('Товар больше не доступен для заказа. Прием заказов остановлен');
                     return $this->response->redirect('/product/view/' . $product_id);
                 }
-                $order = Order::findFirst(array(
+                $order = SpOrder::findFirst(array(
                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2 AND user_id = ?3',
                     'bind' => array(
                         1 => $product_id,
@@ -251,7 +251,7 @@ class ProductController extends ControllerBase {
                     $order->product_count += 1;
                     $order->order_datetime = new RawValue('default');
                 } else {
-                    $order = new Order();
+                    $order = new SpOrder();
                     $order->product_id = $product_id;
                     $order->product_attr_id = $attr_id;
                     $order->order_status_id = 1;

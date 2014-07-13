@@ -1,6 +1,6 @@
 <?php
 
-class Order extends Phalcon\Mvc\Model
+class SpOrder extends Phalcon\Mvc\Model
 {
     public function initialize() {
         $this->setSource('sp_order');

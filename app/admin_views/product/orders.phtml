@@ -35,7 +35,7 @@
                             </thead>
                             <tbody>
                                 <?php foreach ($category_orders['orders'] as $cur_order) { ?>
-                                    <?php $order = Order::findFirst($cur_order) ?>
+                                    <?php $order = SpOrder::findFirst($cur_order) ?>
                                     <tr class="<?= $order->is_approved ? 'text-success' : 'text-muted' ?>">
                                         <td><?php
                                             echo $this->tag->linkTo(array(
@@ -47,7 +47,7 @@
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
                                         <td><?= $order->order_summa ?></td>
-                                        <td><?= Order::getStatus($order->order_status_id) ?></td>
+                                        <td><?= SpOrder::getStatus($order->order_status_id) ?></td>
                                         <td><?= User::getLogin($order->user_id) ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <?php $messages = Categories::getOrderMessages($order->product_id); ?>

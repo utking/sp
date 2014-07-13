@@ -9,6 +9,7 @@
             <td class="cat_products_count">Товаров в закупке</td>
             <td class="cat_products_count">Стоп</td>
             <td class="cat_products_count"></td>
+            <td class="cat_products_count">Заказов</td>
             <td class="cat_products_count">Действия</td>
         </tr>
     <?php foreach ($categories as $category) { ?>
@@ -44,6 +45,7 @@
                     )); ?>
                 <?php } ?>
             </td>
+            <td class="cat_products_count"><?= Categories::getOrderCount($category->id) ?></td>
             <td class="cat_products_count"><?= $this->tag->linkTo(array(
                 '/categories/edit/' . $category->id, 
                 'class' => 'btn btn-link',

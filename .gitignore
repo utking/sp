@@ -6,3 +6,4 @@ public/img/products/*.jpg
 app/tmp/*.jpg
 app/tmp/*.gz
 .htaccess
+app/logs/debug.log

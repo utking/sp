@@ -15,7 +15,7 @@ class OrderController extends ControllerBase {
         $user_id = $auth['id'];
         if ($this->request->isPost()) {
             $order_id = $this->request->getPost('uid', 'int');
-            $order = Order::findFirst(array(
+            $order = SpOrder::findFirst(array(
                 "conditions" => "id = ?1 AND user_id = ?2",
                 "bind" => array(
                     1 => $order_id,

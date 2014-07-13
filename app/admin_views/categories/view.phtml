@@ -43,6 +43,7 @@
             <td class="cat_products_count">Товаров в закупке</td>
             <td class="cat_products_count">Стоп</td>
             <td class="cat_products_count"></td>
+            <td class="cat_products_count">Заказов</td>
             <td class="cat_products_count">Действия</td>
         </tr>
     <?php foreach ($category_child_cats as $cur_category) { ?>
@@ -63,6 +64,9 @@
             <?php $stop_datetime = new DateTime($cur_category->stop_datetime); ?>
             <td class="cat_products_count"><span class="<?= (!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
             <td class="cat_products_count"><span class="glyphicon <?= $cur_category->hidden ? 'glyphicon-eye-close' : '' ?>"></span></td>
+
+            <td class="cat_products_count"><?= Categories::getOrderCount($cur_category->id) ?></td>
+            
             <td class="cat_products_count"><?= $this->tag->linkTo(array(
                 '/categories/edit/' . $cur_category->id, 
                 'class' => 'btn btn-link',
@@ -111,8 +115,10 @@
                     $img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
                 }
                 ?>
-			<td class="product_title">
-                <div class="product_title"><?= $product->title ?></div>
+            <td class="product_title_text" style="width: 40px; vertical-align: middle; text-align: center">
+                <div class="product_title_text"><?= $product->title ?></div>
+            </td>
+            <td class="product_title">
                 <?php echo $this->tag->linkTo(array(
                     '/product/view/' . $product->id, 
                     'text' => 
@@ -155,7 +161,7 @@
                             </td>
                             <td>
                                 <?php
-                                $ordered_items = Order::find(array(
+                                $ordered_items = SpOrder::find(array(
                                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
                                     'bind' => array(
                                         1 => $product->id,

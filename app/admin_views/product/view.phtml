@@ -71,7 +71,7 @@
                             </td>
                             <td>
                                 <?php
-                                $ordered_users = Order::find(array(
+                                $ordered_users = SpOrder::find(array(
                                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
                                     'bind' => array(
                                         1 => $product->id,
