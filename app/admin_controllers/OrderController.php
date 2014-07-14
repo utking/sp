@@ -68,6 +68,18 @@ class OrderController extends ControllerBase {
                     return $this->response->redirect('/order/view/' . $order_id);
                 }
                 $this->flashSession->success('Сообщение отправлено');
+                
+                $user = User::findFirst($user_msg->to_user_id);
+                //send email to user
+                $email = $user->email;
+                $msg_body = 'Новое сообщение:<br>' . 
+                        "\r\n<br>$msg_text.";
+                $headers = 'From: SPNovo Admin <' . $this->di->get('config')->mail->from . ">\r\n";
+                $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+                mail($email, "Ответ на вопрос по закупке", $msg_body, $headers);
+                //END send email to user
+                
                 return $this->response->redirect('/order/view/' . $order_id);
             } elseif ($this->request->hasPost('save_order')) {
                 $order_status_id = (int)$this->request->getPost('order_status', 'int');

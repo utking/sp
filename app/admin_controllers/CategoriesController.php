@@ -680,6 +680,17 @@ class CategoriesController extends ControllerBase {
             $question->is_new = false;
             $question->save();
             
+            $user = User::findFirst($admin_response->to_user_id);
+            //send email to user
+            $email = $user->email;
+            $msg_body = 'Ответ на сообщение по заказам в закупке "' . $category->title . '":<br>' . 
+                    "\r\n<br>$msg.";
+            $headers = 'From: SPNovo Admin <' . $this->di->get('config')->mail->from . ">\r\n";
+            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+            mail($email, "Ответ на вопрос по закупке", $msg_body, $headers);
+            //END send email to user
+            
             $result->hasError = false;
             die(json_encode($result));
         }
