@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: *product*
+Disallow: /product/order
+Disallow: /product/view
+Disallow: /profile
+Disallow: /signup
