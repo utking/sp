@@ -14,7 +14,7 @@
                 <?php echo $this->tag->linkTo(array(
                     '/categories/view/' . $category->id, 
                     'text' => 
-                    (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
+                    (strlen($category->img) > 0 ? ('<img alt="cat_<?= $category->id ?>" class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')))); ?>
             </td>
             <td class="cat_desc"><?= $category->desc ?></td>
             <td class="cat_products_count"><?= rus_date($category->stop_datetime, true) ?></td>

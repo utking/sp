@@ -3,6 +3,9 @@
 <html>
     <head>
         <meta charset="utf-8"/>
+	<meta name="description" content="Совместные покупки Рощино Новопокровка Дальнереченск">
+	<meta name="keywords" content="Рощино,Новопокровка,Дальнереченск,Совместныее покупки">
+	<meta name="author" content="UtkinG">
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/datepicker_style.css"/>
         <link rel="stylesheet" href="<?= $this->di->get('config')->application->baseUri ?>/css/bootstrap-responsive.css" />
@@ -19,14 +22,6 @@
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/jquery.elevatezoom.js"></script>
         <script src="<?= $this->di->get('config')->application->baseUri ?>/js/zoomerang.js"></script>
         
-        <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap-datetimepicker.js"></script>
-        <script src="<?= $this->di->get('config')->application->baseUri ?>/js/locales/bootstrap-datetimepicker.ru.js"></script>
-        
-        <script>
-            $(function() {
-                $("#datepicker").datepicker();
-            });
-        </script>
         <?php echo $this->tag->getTitle() ?>
     </head>
 
@@ -63,4 +58,12 @@
             </div>
         </div>
     </body>
+    <script src="<?= $this->di->get('config')->application->baseUri ?>/js/bootstrap-datetimepicker.js"></script>
+    <script src="<?= $this->di->get('config')->application->baseUri ?>/js/locales/bootstrap-datetimepicker.ru.js"></script>
+
+    <script>
+    $(function() {
+		    $("#datepicker").datepicker();
+		    });
+</script>
 </html>
