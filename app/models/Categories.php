@@ -49,6 +49,29 @@ class Categories extends Phalcon\Mvc\Model
         ));
         return count($products);
     }
+    
+    public static function getChildIDs($category_id) {
+        $result = array();
+        $subcategories = Categories::find(array(
+            'conditions' => 'parent_category_id = ?1 AND hidden = 0',
+            'bind' => array(
+                1 => $category_id
+            )
+        ));
+        if ($subcategories && count($subcategories)) {
+            foreach ($subcategories as $cur_child) {
+                $result = array_merge($result, Categories::getChildIDs($cur_child->id));
+            }
+            return $result;
+        }
+        
+        $category = Categories::findFirst($category_id);
+        if ($category && $category->hidden) {
+            return $result;
+        }
+        
+        return array($category_id);
+    }
 
     public static function getOrderCount($category_id) {
         $counter = 0;

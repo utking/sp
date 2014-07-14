@@ -9,6 +9,7 @@
             </tr>
         </thead>
         <tbody>
+            <?php $order_statuses = OrderStatus::find(array('order' => 'status_title')); ?>
             <?php foreach ($categories as $cur_category => $category_orders) : ?>
                 <tr class="category_row">
                     <td class="cat_title">
@@ -17,6 +18,18 @@
                         <?= (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')) ?>
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
+                        <div>
+                            <a title="Подтвердить одобренные" href="#" data-reveal-id="statusModal_<?= $cur_category ?>" onclick="return false;">Подтвердить одобренные</a>
+                            <div id="statusModal_<?= $cur_category ?>" class="reveal-modal changeStatusDialog" category_id="<?= $cur_category ?>">
+                                <h3>Статус для подтвержденных заказов</h3>
+                                <div class="err_block"></div>
+                                <p>{{ select('statusModal_' ~ cur_category, order_statuses, 'using' : ['id', 'status_title'], 'class' : 'order_status_id form-control') }}</p>
+                                <div class="controls-row">
+                                    <a href="#" onclick="ordersChangeStatus(this); return false;" class="btn btn-primary">OK</a>
+                                </div>
+                                <a class="close-reveal-modal">&#215;</a>
+                            </div>
+                        </div>
                     </td>
                     <td class="order_items">
                         <table class="table table-bordered table-condensed product_table">
@@ -80,5 +93,25 @@
             $(this).parents('.category_row').find('.order_items table').toggle();
         });
     });
+    
+    function ordersChangeStatus(el) {
+        var data = {
+            update_orders: 1,
+            category_id: $(el).parents('.changeStatusDialog').attr('category_id'),
+            order_status_id: $(el).parents('.changeStatusDialog').find('.order_status_id option:selected').val()
+        };
+        console.info(data);
+        $.post('/categories/update_orders', data, function (retData) {
+            var retObj = JSON.parse(retData);
+            if (typeof retObj === 'object') {
+                if (retObj.hasError === true) {
+                    $(el).parents('.changeStatusDialog').find('.err_block').addClass('alert alert-danger').html(retObj.errorMsg);
+                } else {
+                    location.reload();
+                }
+            }
+        });
+        return false;
+    }
 -->
 </script>

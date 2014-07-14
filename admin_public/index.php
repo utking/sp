@@ -76,9 +76,9 @@ try {
         $logger = new FileAdapter("../app/logs/debug.log");
         
         $eventsManager->attach('db', function($event, $connection) use ($logger) {
-            if ($event->getType() == 'beforeQuery') {
+            /*if ($event->getType() == 'beforeQuery') {
                 $logger->log($connection->getSQLStatement(), \Phalcon\Logger::INFO);
-            }
+            }*/
         });
         $connection = new \Phalcon\Db\Adapter\Pdo\Mysql(array(
             "host" => $config->database->host,

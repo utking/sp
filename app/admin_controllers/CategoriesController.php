@@ -688,4 +688,69 @@ class CategoriesController extends ControllerBase {
         die(json_encode($result));
     }
 
+    public function update_ordersAction() {
+        $result = new stdClass();
+        $auth = $this->session->get('auth');
+        if ($this->request->isPost() && $this->request->hasPost('update_orders') && $this->request->hasPost('category_id') && 
+                $this->request->hasPost('order_status_id')) {
+            $category_id = $this->request->getPost('category_id', 'int');
+            $order_status_id = $this->request->getPost('order_status_id', 'int');
+            
+            $category = Categories::findFirst($category_id);
+            $order_status = OrderStatus::findFirst($order_status_id);
+            
+            if (!$category) {
+                $result->hasError = true;
+                $result->errorMsg = "Категория не существует";
+                die(json_encode($result));
+            }
+            
+            if (!$order_status) {
+                $result->hasError = true;
+                $result->errorMsg = "Выбранный статус не существует";
+                die(json_encode($result));
+            }
+            
+            if (!isset($auth['id'])) {
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетными данными";
+                die(json_encode($result));
+            }
+            
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            
+            
+            $orders_in_category = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = ?1', array( 1 => 1))
+                    ->andWhere('o.order_status_id != ?2', array( 2 => 3))
+                    ->andWhere('o.product_id = p.id')
+                    ->getQuery()
+                    ->execute();
+            
+            $this->db->begin();
+            foreach ($orders_in_category as $cur_order) {
+                $cur_order->o->order_status_id = $order_status_id;
+                if (!$cur_order->o->save()) {
+                    $result->hasError = true;
+                    $result->errorMsg = '';
+                    foreach ($cur_order->o->getMessages() as $message) {
+                        $result->errorMsg .= $message . "<br>";
+                    }
+                    $this->db->rollBack();
+                    die(json_encode($result));
+                }
+            }
+            $this->db->commit();
+            
+            $result->hasError = false;
+            die(json_encode($result));
+        }
+        $result->hasError = true;
+        $result->errorMsg = "Не верные параметры";
+        die(json_encode($result));
+    }
+    
 }

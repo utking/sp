@@ -77,6 +77,17 @@ class ProductController extends ControllerBase {
             
             if ($order_msg->save()) {
                 $this->flashSession->success('Сообщение по заказу # ' . $order_id . ' отправлено администратору');
+                
+                //send email to admin
+                $email = $this->di->get('config')->mail->admin_email;
+                $msg_body = 'Сообщение по заказу # ' . $order_id . '" от пользователя ' . User::getLogin($order->user_id) . ':<br>' . 
+                        "\r\n<br>$msg.";
+                $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
+                $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+                
+                mail($email, "Вопрос по заказу", $msg_body, $headers);
+                //END send email to admin
+                
                 return $this->response->redirect('/profile/index');
             } else {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказу: не отправлено');

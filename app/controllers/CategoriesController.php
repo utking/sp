@@ -67,6 +67,17 @@ class CategoriesController extends ControllerBase {
             
             if ($item_msg->save()) {
                 $this->flashSession->success('Сообщение по заказам в закупке "' . $category->title . '" отправлено администратору');
+                
+                //send email to admin
+                $email = $this->di->get('config')->mail->admin_email;
+                $msg_body = 'Сообщение по заказам в закупке "' . $category->title . '" от пользователя ' . User::getLogin((int)$auth['id']) . ':<br>' . 
+                        "\r\n<br>$msg.";
+                $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
+                $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+                
+                mail($email, "Вопрос по закупке", $msg_body, $headers);
+                //END send email to admin
+                
                 return $this->response->redirect('/profile/index');
             } else {
                 $this->flashSession->error('Ошибка при попытке оставить сообщение по заказам в закупке: не отправлено');
@@ -155,6 +166,15 @@ class CategoriesController extends ControllerBase {
                 }
                 die(json_encode($result));
             }
+            //send email to admin
+            $email = $this->di->get('config')->mail->admin_email;
+            $msg_body = 'Вопрос по категории "' . $category->title . '" от пользователя ' . User::getLogin($ask_admin->from_user_id) . ':<br>' . 
+                    "\r\n<br>$msg.";
+            $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
+            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+
+            mail($email, "Вопрос по категории", $msg_body, $headers);
+            //END send email to admin
             $result->hasError = false;
             die(json_encode($result));
         }

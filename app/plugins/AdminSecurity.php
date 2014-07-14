@@ -37,7 +37,7 @@ class AdminSecurity extends Plugin {
                 'rules' => array('index'),
                 'feed' => array('index'),
                 'categories' => array('index', 'list', 'view', 'delete', 'add', 'remove_forum_msg',
-                    'view_messages', 'send_response', 'remove_msg',
+                    'view_messages', 'send_response', 'remove_msg', 'update_orders',
                     'load100sp', 'fetch100sp', 'save100sp', 'edit', 'save', 'drop_products', 'new_message'),
                 'profile' => array('index', 'orders', 'view', 'messages', 'update_messages', 'reply_message', 'change_pass', 'set_pass'),
                 'order' => array('view', 'update', 'approve_order'),
