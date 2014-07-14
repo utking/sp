@@ -132,6 +132,9 @@
                         ));
                         ?>
                     </td>
+                    <td class="product_title_text" style="vertical-align: middle; ">
+                        <div class="title"><?= $product->title ?></div>
+                    </td>
                     <td class="product_title">
                         <?php
                         if (file_exists(__DIR__ . '/../../../public/img/products/img_' . $category->id . '_' . $product->id . '.jpg')) {
@@ -145,7 +148,6 @@
                             $small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
                         }
                         ?>
-                        <div class="title"><?= $product->title ?></div>
                         <?php
                         echo (strlen($img_data) ?
                                 ('<img class="cat_img prod_cat_img" src="' . $small_img_data . '" data-zoom-image="' . $img_data . '">') :
