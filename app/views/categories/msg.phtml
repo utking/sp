@@ -19,8 +19,7 @@
         <div class="controls">
             <?php
             echo Phalcon\Tag::select(["payment_type",
-                ['Картой', 'Наличными'],
-                //'using' => array('id', 'title'), 
+                ['Картой', 'Наличными', 'Через оператора'],
                 'class' => 'form-control'])
             ?>
         </div>
@@ -39,7 +38,7 @@
     </div>
 
     <div class="control-group">
-        <label class="control-label" for="msg">Доп. информация (номер карты и т.п.)</label>
+        <label class="control-label" for="msg">Доп. информация (4 последние цифры номера карты или номер отделения при оплате через оператора)</label>
         <div class="controls">
             <?php echo Phalcon\Tag::textarea(["msg", 'required' => '', 'rows' => 5, 'class' => 'form-control']) ?>
         </div>
