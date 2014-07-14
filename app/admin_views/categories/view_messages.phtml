@@ -52,7 +52,10 @@
                 <span class="forum_info_user"><?= User::getLogin($message->from_user_id) ?></span>
                 <span class="forum_info_date btn-link" onclick="toggleMessage(this);"><?= rus_date($message->item_datetime, true) ?></span>
             </td>
-            <td class="forum_msg_text">
+            <td style="width: 180px;">
+                <span class=""><?= Categories::getTitle($message->category_id) ?></span>
+            </td>
+            <td class="forum_msg_text_1">
                 <pre><?= $message->msg ?></pre>
             </td>
             <td class="forum_msg_info">
@@ -106,7 +109,7 @@
     }
     
     function toggleMessage(el) {
-        $(el).parents('.msg_row').find('.forum_msg_text pre').toggle(300);
+        //$(el).parents('.msg_row').find('.forum_msg_text pre').toggle(300);
     }
     
     function removeMessages() {

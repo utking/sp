@@ -581,15 +581,15 @@ class CategoriesController extends ControllerBase {
         $args = func_get_args();
         if (count($args) > 0 && $this->request->isGet()) {
             $id = (int) $args[0];
+            $cat_ids = Categories::getChildIDs($id);
+            $cat_ids[] = $id;
             $this->view->category = Categories::findFirst($id);
-            $this->view->cat_messages = UserMessage::find(array(
-                'conditions' => 'category_id = ?1 AND to_user_id = ?2',
-                'bind' => array(
-                    1 => $id,
-                    2 => $auth['id']
-                ),
-                'order' => 'item_datetime DESC'
-            ));
+            $this->view->cat_messages = $this->modelsManager->createBuilder()
+                    ->from('UserMessage')
+                    ->inWhere('category_id', $cat_ids)
+                    ->andWhere('to_user_id = ?1', array( 1 => $auth['id']))
+                    ->getQuery()
+                    ->execute();
         } else {
             $this->flashSession->error('Не указана закупка для просмотра сообщений.');
             return $this->response->redirect('/categories/');
