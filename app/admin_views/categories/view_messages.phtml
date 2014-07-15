@@ -55,14 +55,14 @@
             <td style="width: 180px;">
                 <span class=""><?= Categories::getTitle($message->category_id) ?></span>
             </td>
-            <td class="forum_msg_text_1">
+            <td class="forum_msg_text">
                 <pre><?= $message->msg ?></pre>
             </td>
             <td class="forum_msg_info">
                 <?=
                 $this->tag->linkTo(
                         array(
-                            './' . $category->id . '/#',
+                            '#',
                             'id' => $message->id,
                             'data-toggle' => "modal",
                             'data-target' => "#myModal",
@@ -80,7 +80,7 @@
 <script>
     <!--
     function openResponseBlock(el) {
-        $('#response_text').attr('category_id', <?= $category->id ?> + 0);
+        $('#response_text').attr('category_id', <?= $category->id ?>);
         $('#response_text').attr('message_id', $(el).attr('id'));
         $('#response_text').val('\n\n> ' + $.trim($(el).parents('.msg_row').find('.forum_msg_text').text()).split("\n", 10).join("\n> "));
         $('#response_text').focus();
@@ -93,7 +93,6 @@
             category_id: $('#response_text').attr('category_id'),
             message_id: $('#response_text').attr('message_id')
         };
-
         $.post('/categories/send_response', data, function(retData) {
             var retObj = JSON.parse(retData);
             if (typeof retObj === 'object') {
@@ -104,12 +103,6 @@
                 }
             }
         });
-
-        console.info(data);
-    }
-    
-    function toggleMessage(el) {
-        //$(el).parents('.msg_row').find('.forum_msg_text pre').toggle(300);
     }
     
     function removeMessages() {
@@ -119,7 +112,6 @@
                 items[items.length] = $(this).val();
             }
         });
-        console.info(items);
         if (items.length && confirm('Удалить выделенные сообщения?')) {
             var data = {
                 items: items,
@@ -131,7 +123,7 @@
                     if (retObj.hasError === true) {
                         alert(retObj.errorMsg);
                     } else {
-                        location.reload()
+                        location.reload();
                     }
                 }
             });

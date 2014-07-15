@@ -587,7 +587,7 @@ class CategoriesController extends ControllerBase {
             $this->view->cat_messages = $this->modelsManager->createBuilder()
                     ->from('UserMessage')
                     ->inWhere('category_id', $cat_ids)
-                    ->andWhere('to_user_id = ?1', array( 1 => $auth['id']))
+                    ->andWhere('to_user_id = 0')
                     ->getQuery()
                     ->execute();
         } else {
