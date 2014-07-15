@@ -204,7 +204,7 @@ class ProductController extends ControllerBase {
                 }
 
                 if ($order->save()) {
-                    $this->flashSession->success('Заказ принят. Не забудьте внести оплату.');
+                    $this->flashSession->success('Заказ принят.');
                     return $this->response->redirect('/categories/view/' . $product->category_id . '#product_' . $product_id);
                 } else {
                     foreach ($order->getMessages() as $message) {

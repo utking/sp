@@ -31,6 +31,14 @@
                     </div> 
                 </td>
             </tr>
+            <?php if (isset($category_id)) { ?>
+            <tr>
+                <td><label for="update_datetime">В начало списка:</label></td>
+                <td>
+                    <?php echo Phalcon\Tag::checkField(["update_datetime"]) ?>
+                </td>
+            </tr>
+            <?php } ?>
             <tr>
                 <td><label for="category_hidden">Не показывать клиентам:</label></td>
                 <td>

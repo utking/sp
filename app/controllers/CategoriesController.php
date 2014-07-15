@@ -11,7 +11,8 @@ class CategoriesController extends ControllerBase {
 
     public function indexAction() {
         $this->view->categories = Categories::find(array(
-                "conditions" => "parent_category_id = 0 AND hidden = 0"
+                "conditions" => "parent_category_id = 0 AND hidden = 0",
+                'order' => 'item_datetime DESC'
             ));
     }
     
@@ -98,7 +99,8 @@ class CategoriesController extends ControllerBase {
                 "bind" => array(
                     1 => (int)$id,
                     2 => false
-                    )
+                    ),
+                'order' => 'item_datetime DESC'
             ));
             if (!$this->view->category) {
                 $this->flashSession->error('Не существующая закупка');

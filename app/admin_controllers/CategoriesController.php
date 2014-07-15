@@ -11,7 +11,8 @@ class CategoriesController extends ControllerBase {
 
     public function indexAction() {
         $this->view->categories = Categories::find(array(
-                    "conditions" => "parent_category_id = 0"
+            "conditions" => "parent_category_id = 0",
+            'order' => 'item_datetime DESC'
         ));
     }
     
@@ -46,8 +47,9 @@ class CategoriesController extends ControllerBase {
         if (count($args) > 0 && $this->request->isGet()) {
             $id = (int) $args[0];
             $this->view->category = Categories::findFirst(array(
-                        "conditions" => "id = ?1",
-                        "bind" => array(1 => (int) $id)
+                "conditions" => "id = ?1",
+                "bind" => array(1 => (int) $id),
+                'order' => 'item_datetime DESC'
             ));
             $this->tag->setDefault('category_id', $id);
             $this->view->category_child_cats = Categories::find(array(
@@ -154,6 +156,8 @@ class CategoriesController extends ControllerBase {
             $category_rules = strip_tags(trim($this->request->getPost('category_rules')), '<p><br><i><b>');
             $stop_datetime = trim($this->request->getPost('category_stop_datetime', 'string'));
             $category_stop_datetime = DateTime::createFromFormat('d.m.Y H:i', $stop_datetime);
+            
+            $update_datetime = ($this->request->hasPost('update_datetime'));
 
             if (!is_object($category_stop_datetime)) {
                 $this->flashSession->error('Дата стопа задана не верно');
@@ -226,6 +230,7 @@ class CategoriesController extends ControllerBase {
                 $category->hidden = $category_hidden;
                 $category->use_forum = $category_use_forum;
                 $category->stop_datetime = $category_stop_datetime->format('Y-m-d H:i');
+                $category->item_datetime = new Phalcon\Db\RawValue('NOW()');
             } elseif ($this->request->hasPost('update_category')) {
                 if (!$this->request->hasPost('category_id')) {
                     $this->flashSession->error('Ошибка обновления закупки - отсутствует ID');
@@ -246,6 +251,11 @@ class CategoriesController extends ControllerBase {
                                 'action' => 'add'
                     ));
                 }
+                
+                if ($update_datetime) {
+                    $category->item_datetime = new Phalcon\Db\RawValue('NOW()');
+                }
+                
                 $category->parent_category_id = $category_parent_id;
                 $category->title = $category_title;
                 $category->desc = $category_description;
