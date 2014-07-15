@@ -19,7 +19,8 @@
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
                         <div>
-                            <a title="Подтвердить одобренные" href="#" data-reveal-id="statusModal_<?= $cur_category ?>" onclick="return false;">Подтвердить одобренные</a>
+                            <div><a title="Подтвердить одобренные" href="#" data-reveal-id="statusModal_<?= $cur_category ?>" onclick="return false;">Подтвердить одобренные</a></div>
+                            <div>{{ link_to('/product/send_messages/' ~ cur_category, 'text': 'Отправить сообщение по закупке') }}</div>
                             <div id="statusModal_<?= $cur_category ?>" class="reveal-modal changeStatusDialog" category_id="<?= $cur_category ?>">
                                 <h3>Статус для подтвержденных заказов</h3>
                                 <div class="err_block"></div>

@@ -32,6 +32,107 @@ class ProductController extends ControllerBase {
         $this->view->categories = $categories;
     }
     
+    public function send_messagesAction() {
+        $args = func_get_args();
+        if ($this->request->isGet() && count($args) > 0) {
+            $category_id = (int)$args[0];
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Категория не существует: ' . $category_id);
+                return $this->response->redirect('/product/orders');
+            }
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $this->view->users = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = ?1', array( 1 => 1))
+                    ->andWhere('o.order_status_id != ?2', array( 2 => 3))
+                    ->andWhere('o.product_id = p.id')
+                    ->groupBy('user_id')
+                    ->getQuery()
+                    ->execute();
+            if (count($this->view->users) < 1) {
+                $this->flashSession->error('Некому отправлять сообщения в этой категории');
+                return $this->response->redirect('/product/orders');
+            }
+            $this->tag->setDefault('category_id', $category_id);
+            $this->tag->setDefault('users_count', print_r(join(',',$cat_ids),1));
+        } elseif ($this->request->isPost() && $this->request->hasPost('category_id') && $this->request->hasPost('msg') ) {
+            $category_id = (int)$this->request->getPost('category_id', 'int');
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $this->view->users = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = ?1', array( 1 => 1))
+                    ->andWhere('o.order_status_id != ?2', array( 2 => 3))
+                    ->andWhere('o.product_id = p.id')
+                    ->groupBy('user_id')
+                    ->getQuery()
+                    ->execute();
+            $this->tag->setDefault('category_id', $category_id);
+            $this->tag->setDefault('users_count', print_r(join(',',$cat_ids),1));
+            $to_users = $this->request->getPost('to_users');
+            if (!is_array($to_users) || count($to_users) < 1) {
+                $this->flashSession->error('Не выбраны пользователи');
+                return true;
+            }
+            
+            $msg = trim($this->request->getPost('msg', 'string'));
+            if ($msg === '') {
+                $this->flashSession->error('Пустое сообщение');
+                return;
+            }
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Категория не существует');
+                return $this->response->redirect('/product/orders');
+            }
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $orders = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = ?1', array( 1 => 1))
+                    ->andWhere('o.order_status_id != ?2', array( 2 => 3))
+                    ->andWhere('o.product_id = p.id')
+                    ->getQuery()
+                    ->execute();
+            if (count($orders) < 1) {
+                $this->flashSession->error('В категории не найдено ни одного заказа');
+                return $this->response->redirect('/product/orders');
+            }
+            $users = $this->modelsManager->createBuilder()
+                    ->from('User')
+                    ->inWhere('id', $to_users)
+                    ->getQuery()
+                    ->execute();
+            foreach ($users as $cur_user) {
+                $new_message = new UserMessage();
+                $new_message->from_user_id = 0;
+                $new_message->to_user_id = $cur_user->id;
+                $new_message->item_datetime = new Phalcon\Db\RawValue('NOW()');
+                $new_message->is_new = true;
+                $new_message->msg_subject = 'Сообщение по закупке "' . $category->title . '"';
+                $new_message->category_id = $category_id;
+                $new_message->msg = $msg;
+                
+                if (!$new_message->save()) {
+                    $this->flashSession->error('Ошибка: не удалось отправить сообщение пользователю: ' . User::getLogin($new_message->to_user_id));
+                    foreach ($new_message->getMessages() as $message) {
+                        $this->flashSession->error($message);
+                    }
+                }
+            }
+            $this->flashSession->success('Сообщение отправлено');
+            return $this->response->redirect('/product/orders');
+        } else {
+            $this->flashSession->error('Не верные параметры для отправки сообщения по закупке');
+            return $this->response->redirect('/product/orders');
+        }
+    }
+    
     public function paymentsAction() {
         $this->view->title = 'Сообщения об оплате';
         $this->tag->appendTitle(' - Сообщения об оплате');

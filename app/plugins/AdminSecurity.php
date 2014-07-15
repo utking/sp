@@ -42,7 +42,8 @@ class AdminSecurity extends Plugin {
                 'profile' => array('index', 'orders', 'view', 'messages', 'update_messages', 'reply_message', 'change_pass', 'set_pass'),
                 'order' => array('view', 'update', 'approve_order'),
                 'users' => array('edit', 'index'),
-                'product' => array('index', 'list', 'view', 'orders', 'edit', 'add', 'save', 'attrs', 'remove_attr', 'add_attr', 'payments')
+                'product' => array('index', 'list', 'view', 'orders', 'edit', 'add', 'save', 'attrs', 'remove_attr', 
+                    'add_attr', 'payments', 'send_messages')
             );
                         
             foreach ($adminPrivateResources as $resource => $actions) {
