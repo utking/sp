@@ -588,6 +588,7 @@ class CategoriesController extends ControllerBase {
                     ->from('UserMessage')
                     ->inWhere('category_id', $cat_ids)
                     ->andWhere('to_user_id = 0')
+                    ->orderBy('item_datetime DESC')
                     ->getQuery()
                     ->execute();
         } else {
