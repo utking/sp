@@ -38,6 +38,7 @@
                                 <tr class="warning">
                                     <th>Заказ</th>
                                     <th>Товар</th>
+                                    <th></th>
                                     <th>Размер</th>
                                     <th>Количество</th>
                                     <th>Сумма</th>
@@ -58,6 +59,9 @@
                                                 'text' => $order->id));
                                             ?></td>
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
+                                        <td class="product_title">
+                                            <?= (strlen(ProductImage::getProductImage($order->product_id)) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($order->product_id) . '">') : ('-')) ?>
+                                        </td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
                                         <td><?= $order->order_summa ?></td>

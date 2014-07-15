@@ -200,11 +200,11 @@ class ProductController extends ControllerBase {
                     $order->order_summa = $product->price;
                     $order->user_id = $auth['id'];
                     $order->product_count = 1;
-                    $order->order_datetime = new RawValue('default');
+                    $order->order_datetime = new RawValue('NOW()');
                 }
 
                 if ($order->save()) {
-                    $this->flashSession->success('Заказ принят.');
+                    $this->flashSession->success('Заказ принят');
                     return $this->response->redirect('/categories/view/' . $product->category_id . '#product_' . $product_id);
                 } else {
                     foreach ($order->getMessages() as $message) {
