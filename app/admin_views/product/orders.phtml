@@ -31,6 +31,7 @@
                                 <a class="close-reveal-modal">&#215;</a>
                             </div>
                         </div>
+                        <div>Скрыть картинки {{ check_field('img_hider[]', 'onclick' : 'toggleImages(this)') }}</div>
                     </td>
                     <td class="order_items">
                         <table class="table table-bordered table-condensed product_table">
@@ -38,7 +39,7 @@
                                 <tr class="warning">
                                     <th>Заказ</th>
                                     <th>Товар</th>
-                                    <th></th>
+                                    <th class="prod_img"></th>
                                     <th>Размер</th>
                                     <th>Количество</th>
                                     <th>Сумма</th>
@@ -59,7 +60,7 @@
                                                 'text' => $order->id));
                                             ?></td>
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
-                                        <td class="product_title">
+                                        <td class="product_title prod_img">
                                             <?= (strlen(ProductImage::getProductImage($order->product_id)) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($order->product_id) . '">') : ('-')) ?>
                                         </td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
@@ -98,6 +99,10 @@
             $(this).parents('.category_row').find('.order_items table').toggle();
         });
     });
+    
+    function toggleImages(el) {
+        $(el).parents('.category_row').find('.prod_img').toggle();
+    }
     
     function ordersChangeStatus(el) {
         var data = {
