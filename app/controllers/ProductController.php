@@ -209,27 +209,32 @@ class ProductController extends ControllerBase {
                         3 => $auth['id']
                     )
                 ));
-                                
-                $order = new SpOrder();
-                $order->is_approved = false;
-                $order->product_id = $product_id;
-                $order->product_attr_id = $attr_id;
-                $order->order_status_id = 1;
-                if ($info === '') {
-                    $order->info = new RawValue('default');
-                } else {
-                    $order->info = $info;
-                }
-                $order->order_summa = $product->price * $product_count;
-                $order->user_id = $auth['id'];
-                $order->product_count = $product_count;
-                $order->order_datetime = new RawValue('NOW()');
                 
-                if (!$order->save()) {
-                    $result->hasError = true;
-                    $result->errorMsg = "Ошибка при совершении заказа";
-                    die(json_encode($result));
+                $this->db->begin();
+                for ($i = 0; $i < $product_count; $i++) {
+                    $order = new SpOrder();
+                    $order->is_approved = false;
+                    $order->product_id = $product_id;
+                    $order->product_attr_id = $attr_id;
+                    $order->order_status_id = 1;
+                    if ($info === '') {
+                        $order->info = new RawValue('default');
+                    } else {
+                        $order->info = $info;
+                    }
+                    $order->order_summa = $product->price;
+                    $order->user_id = $auth['id'];
+                    $order->product_count = 1;
+                    $order->order_datetime = new RawValue('NOW()');
+
+                    if (!$order->save()) {
+                        $result->hasError = true;
+                        $result->errorMsg = "Ошибка при совершении заказа";
+                        $this->db->rollBack();
+                        die(json_encode($result));
+                    }
                 }
+                $this->db->commit();
             }
             $result->hasError = false;
             die(json_encode($result));
