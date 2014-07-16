@@ -62,7 +62,6 @@ class ProfileController extends ControllerBase {
             $this->view->user->full_name = '###';
             $this->view->user->email = '###';
             $this->view->user->phone = '###';
-            //$this->view->orders = array();
             $this->view->categories = array();
         }
     }

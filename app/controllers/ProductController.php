@@ -186,7 +186,7 @@ class ProductController extends ControllerBase {
                         3 => $auth['id']
                     )
                 ));
-                if ($order) {
+                if (false && $order) {
                     $order->order_summa += $product->price;
                     $order->product_count += 1;
                     $order->order_datetime = new RawValue('default');

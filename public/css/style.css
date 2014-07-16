@@ -74,7 +74,7 @@ table.product_table td.sp_stop_datetime
 table tr td.cat_desc,
 table.product_table tr td.cat_desc
 {
-    width: 400px;
+    min-width: 400px;
     text-align: left;
     vertical-align: middle;
     padding: 10px;

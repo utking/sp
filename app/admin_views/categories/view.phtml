@@ -127,7 +127,7 @@
             </td>
             <td class="cat_desc"><?= $product->description ?></td>
             <td class="product_price price"><?= $product->price ?></td>
-            <td><div>Размеры и заказы:</div>
+            <td style="width: 350px;"><div>Размеры и заказы:</div>
                 <?php
                 $product_attributes = ProductAttribute::find(array(
                     'conditions' => 'product_id = ?1',
@@ -136,11 +136,11 @@
                     )
                 ));
                 ?>
-                <table class="table product_attributes_table">
+                <table class="table-condensed product_attributes_table">
                     <?php foreach ($product_attributes as $attr) : ?>
                         <tr>
-                            <td><?= $attr->attr ?></td>
-                            <td>
+                            <td style="width: 60px;"><?= $attr->attr ?></td>
+                            <td style="width: 130px;">
                                 <?php
                                 if (!Categories::isStopped($product->category_id)) {
                                     echo $this->tag->linkTo(array(
@@ -159,7 +159,7 @@
                                 }
                                 ?>
                             </td>
-                            <td>
+                            <td style="width: 140px;">
                                 <?php
                                 $ordered_items = SpOrder::find(array(
                                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2',
