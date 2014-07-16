@@ -152,31 +152,54 @@ class ProductController extends ControllerBase {
 	}
         
     public function orderAction() {
+        $result = new stdClass();
         $auth = $this->session->get('auth');
-        $args = func_get_args();
-        if (count($args) == 2 && $this->request->isGet()) {
-            $product_id = (int)$args[0];
-            $attr_id = (int)$args[1];
+        if ($this->request->isPost() && $this->request->hasPost('product_id') && $this->request->hasPost('attr_id')) {
+            $product_id = (int)$this->request->getPost('product_id', 'int');
+            $attr_id = (int)$this->request->getPost('attr_id', 'int');
+            $product_count = (int)$this->request->getPost('product_count', 'int');
+            $info = trim((string)$this->request->getPost('info', 'string'));
             
             if (!isset($auth['id'])) {
-                $this->flashSession->error('Войдите под своими учетным данными чтобы совершить заказ.');
-                return $this->response->redirect('/product/view/' . $product_id);
+                $result->hasError = true;
+                $result->errorMsg = "Войдите под своими учетным данными чтобы совершить заказ";
+                die(json_encode($result));
+            }
+            
+            if ($product_count < 1) {
+                $result->hasError = true;
+                $result->errorMsg = "Не верное количество товара: " . $product_count;
+                die(json_encode($result));
             }
             
             $product = Product::findFirst(array(
                 "conditions" => "id = ?1",
-                "bind" => array(1 => (int)$product_id)
+                "bind" => array(1 => $product_id)
             ));
             $attr = ProductAttribute::findFirst(array(
                 "conditions" => "id = ?1 AND product_id = ?2",
                 "bind" => array(
-                    1 => (int)$attr_id,
-                    2 => (int)$product_id)
+                    1 => $attr_id,
+                    2 => $product_id)
             ));
+            
+            if (!$product) {
+                $result->hasError = true;
+                $result->errorMsg = "Товар не найден";
+                die(json_encode($result));
+            }
+            
+            if (!$attr) {
+                $result->hasError = true;
+                $result->errorMsg = "Размер не найден";
+                die(json_encode($result));
+            }
+            
             if ($product && $attr) {
                 if (Product::isStopped($product->id)) {
-                    $this->flashSession->error('Товар больше не доступен для заказа. Прием заказов остановлен');
-                    return $this->response->redirect('/categories/view/' . $product->category_id);
+                    $result->hasError = true;
+                    $result->errorMsg = "Товар больше не доступен для заказа. Прием заказов остановлен";
+                    die(json_encode($result));
                 }
                 $order = SpOrder::findFirst(array(
                     'conditions' => 'product_id = ?1 AND product_attr_id = ?2 AND user_id = ?3',
@@ -186,34 +209,34 @@ class ProductController extends ControllerBase {
                         3 => $auth['id']
                     )
                 ));
-                if (false && $order) {
-                    $order->order_summa += $product->price;
-                    $order->product_count += 1;
-                    $order->order_datetime = new RawValue('default');
-                } else {
-                    $order = new SpOrder();
-                    $order->is_approved = false;
-                    $order->product_id = $product_id;
-                    $order->product_attr_id = $attr_id;
-                    $order->order_status_id = 1;
+                                
+                $order = new SpOrder();
+                $order->is_approved = false;
+                $order->product_id = $product_id;
+                $order->product_attr_id = $attr_id;
+                $order->order_status_id = 1;
+                if ($info === '') {
                     $order->info = new RawValue('default');
-                    $order->order_summa = $product->price;
-                    $order->user_id = $auth['id'];
-                    $order->product_count = 1;
-                    $order->order_datetime = new RawValue('NOW()');
-                }
-
-                if ($order->save()) {
-                    $this->flashSession->success('Заказ принят');
-                    return $this->response->redirect('/categories/view/' . $product->category_id . '#product_' . $product_id);
                 } else {
-                    foreach ($order->getMessages() as $message) {
-                        $this->flashSession->error($message);
-                    }
+                    $order->info = $info;
+                }
+                $order->order_summa = $product->price * $product_count;
+                $order->user_id = $auth['id'];
+                $order->product_count = $product_count;
+                $order->order_datetime = new RawValue('NOW()');
+                
+                if (!$order->save()) {
+                    $result->hasError = true;
+                    $result->errorMsg = "Ошибка при совершении заказа";
+                    die(json_encode($result));
                 }
             }
+            $result->hasError = false;
+            die(json_encode($result));
+        } else {
+            $result->hasError = true;
+            $result->errorMsg = "Не верные параметры: " . print_r($_POST,1);
+            die(json_encode($result));
         }
-        $this->flashSession->error('Ошибка при совершении заказа');
-        return $this->response->redirect('/categories/');
     }
 }

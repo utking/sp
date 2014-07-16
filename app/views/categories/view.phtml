@@ -177,16 +177,35 @@
                                 <tr>
                                     <td><?= $attr->attr ?></td>
                                     <td>
+                                        <div>
                                         <?php
                                         if (!Categories::isStopped($product->category_id)) {
                                             echo $this->tag->linkTo(array(
-                                                '/product/order/' . $product->id . '/' . $attr->id,
+                                                //'/product/order/' . $product->id . '/' . $attr->id,
+                                                '#',
+                                                'onclick' => 'return false;',
+                                                'data-reveal-id' => 'orderModal_' . $product->id . '_' . $attr->id,
                                                 'text' => 'Заказать',
                                                 'class' => ''
                                             ));
+                                            ?>
+                                        </div>
+                                        <div id="orderModal_<?= $product->id ?>_<?= $attr->id ?>" class="reveal-modal orderDialog" product_id="<?= $product->id ?>" attr_id="<?= $attr->id ?>">
+                                            <h3>Сделать заказ</h3>
+                                            <div class="err_block"></div>
+                                            <label for="product_count">Количество: </label>{{ select_static('product_count', [1,2,3,4,5,6,7,8,9,10], 'class': 'product_count form-control') }}
+                                            <label for="order_comment">Комментарий к заказу: </label>
+                                            {{ text_area('order_comment', 'rows' : 3, 'class': 'order_comment form-control', 'placeholder' : 'комментарий не обязателен') }}
+                                            <br>
+                                            <div class="controls-row">
+                                                <a href="#" onclick="makeOrder(this); return false;" class="btn btn-primary form-control">OK</a>
+                                            </div>
+                                            <a class="close-reveal-modal">&#215;</a>
+                                        </div>
+                                        <?php
                                         } else {
                                             echo $this->tag->linkTo(array(
-                                                './#',
+                                                '#',
                                                 'onclick' => 'return false;',
                                                 'text' => 'Закупка завершена',
                                                 'class' => ''
@@ -201,12 +220,11 @@
                                                     'bind' => array(
                                                         1 => $product->id,
                                                         2 => $attr->id
-                                                    ),
-                                                    //'group' => 'user_id'
+                                                    )
                                         ));
                                         ?>
                                         <?php foreach ($ordered_users as $cur_user) { ?>
-                                            <div><?= User::getLogin($cur_user->user_id) ?></div>
+                                            <div><?= User::getLogin($cur_user->user_id) ?> (<?= $cur_user->product_count ?>)</div>
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -232,12 +250,6 @@
                         <?php echo Phalcon\Tag::textarea(["forum_new_msg_text", 'class' => 'form-control', 'rows' => 10]) ?>
                     </td>
                 </tr>
-                <!--tr>
-                    <td>Проверочные символы</td>
-                    <td>
-                <?php /* echo Recaptcha::get('6LdFpfQSAAAAACrEsxtX55STBL26Ax8s2Z4N9YFd') */; ?>
-                    </td>
-                </tr-->
                 <tr>
                     <td></td>
                     <td>
@@ -285,6 +297,26 @@
             $('#forum_new_msg_text').focus();
             return false;
         }
+    }
+    
+    function makeOrder(el) {
+        var data = {
+            product_id: $(el).parents('.orderDialog').attr('product_id'),
+            attr_id: $(el).parents('.orderDialog').attr('attr_id'),
+            product_count: $(el).parents('.orderDialog').find('.product_count option:selected').text(),
+            info: $(el).parents('.orderDialog').find('.order_comment').val()
+        };
+        $.post('/product/order', data, function (retData) {
+            var retObj = JSON.parse(retData);
+                if (typeof retObj === 'object') {
+                    if (retObj.hasError === true) {
+                        $(el).parents('.orderDialog').find('.err_block').html(retObj.errorMsg).show();
+                    } else {
+                        location.reload();
+                    }
+                }
+        });
+        return false;
     }
 
     $('.prod_cat_img').elevateZoom({
