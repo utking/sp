@@ -207,6 +207,7 @@ class CategoriesController extends ControllerBase {
                 }
             }
 
+            //Create new category
             if ($this->request->hasPost('add_category')) {
                 $exist_cat = Categories::findFirst(array(
                             'conditions' => 'title = ?1',
@@ -231,7 +232,48 @@ class CategoriesController extends ControllerBase {
                 $category->use_forum = $category_use_forum;
                 $category->stop_datetime = $category_stop_datetime->format('Y-m-d H:i');
                 $category->item_datetime = new Phalcon\Db\RawValue('NOW()');
-            } elseif ($this->request->hasPost('update_category')) {
+            } 
+            //Update existing category
+            elseif ($this->request->hasPost('clone_category')) {
+                if (!$this->request->hasPost('category_id')) {
+                    $this->flashSession->error('Ошибка клонирования закупки - отсутствует ID');
+                    return $this->dispatcher->forward(array(
+                                'controller' => 'categories',
+                                'action' => 'list'
+                    ));
+                }
+                $src_category_id = $this->request->getPost('category_id', 'int');
+                if ($this->request->hasPost('category_img') && strlen($this->request->getPost('category_img', 'string'))) {
+                    $category_prev_img = $this->request->getPost('category_img', 'string');
+                }
+                $src_category = Categories::findFirst($category_id);
+                if (!$src_category) {
+                    $this->flashSession->error('Ошибка клонирования закупки - закупка не найдена');
+                    return $this->dispatcher->forward(array(
+                                'controller' => 'categories',
+                                'action' => 'add'
+                    ));
+                }
+                
+                $category = new Categories();
+                
+                $category->item_datetime = new Phalcon\Db\RawValue('NOW()');
+                
+                $category->parent_category_id = $category_parent_id;
+                $category->title = $category_title;
+                $category->desc = $category_description;
+                $category->rules = $category_rules;
+                $category->hidden = $category_hidden;
+                $category->use_forum = $category_use_forum;
+                if (isset($category_prev_img)) {
+                    $category->img = $category_prev_img;
+                } else {
+                    $category->img = $img_data;
+                }
+                $category->stop_datetime = $category_stop_datetime->format('Y-m-d H:i');
+            }            
+            //Update existing category
+            elseif ($this->request->hasPost('update_category')) {
                 if (!$this->request->hasPost('category_id')) {
                     $this->flashSession->error('Ошибка обновления закупки - отсутствует ID');
                     return $this->dispatcher->forward(array(
@@ -270,11 +312,15 @@ class CategoriesController extends ControllerBase {
                 $category->stop_datetime = $category_stop_datetime->format('Y-m-d H:i');
             }
 
+            //Preparations done. Now save
+            $this->db->begin();
             if (!$category->save()) {
+                //Did not save. Show  error messages
                 $this->flashSession->error('Ошибка сохранения закупки');
                 foreach ($category->getMessages() as $message) {
                     $this->flashSession->error($message);
                 }
+                $this->db->rollBack();
                 if ($this->request->hasPost('add_category')) {
                     return $this->dispatcher->forward(array(
                                 'controller' => 'categories',
@@ -284,7 +330,49 @@ class CategoriesController extends ControllerBase {
                     return $this->response->redirect('/categories/edit/' . $category_id);
                 }
             } else {
+                //If clone category then clone all products in it
+                if ($this->request->hasPost('clone_category')) {
+                    $src_category_products = Product::find(array(
+                        'conditions' => 'category_id = ?1',
+                        'bind' => array(
+                            1 => $src_category_id
+                        )
+                    ));
+                    $created_files = array();
+                    foreach ($src_category_products as $src_product) {
+                        $new_product = new Product();
+                        $new_product->title = $src_product->title;
+                        $new_product->description = $src_product->description;
+                        $new_product->price = $src_product->price;
+                        $new_product->category_id = $category->id;
+                        if (!$new_product->save()) {
+                            foreach ($new_product->getMessages() as $message) {
+                                $this->flashSession->error($message);
+                            }
+                            $this->db->rollBack();
+                            foreach ($created_files as $cur_file) {
+                                unlink($cur_file);
+                            }
+                            return $this->response->redirect('/categories/edit/' . $src_category_id);
+                        }
+                        
+                        if (file_exists(__DIR__ . '/../../public/img/products/img_' . $src_product->category_id . '_' . $src_product->id . '.jpg')) {
+                            copy(__DIR__ . '/../../public/img/products/img_' . $src_product->category_id . '_' . $src_product->id . '.jpg',
+                                    __DIR__ . '/../../public/img/products/img_' . $new_product->category_id . '_' . $new_product->id . '.jpg');
+                            $created_files[] = __DIR__ . '/../../public/img/products/img_' . $new_product->category_id . '_' . $new_product->id . '.jpg';
+                        }
+                        if (file_exists(__DIR__ . '/../../public/img/products/img_sm_' . $src_product->category_id . '_' . $src_product->id . '.jpg')) {
+                            copy(__DIR__ . '/../../public/img/products/img_sm_' . $src_product->category_id . '_' . $src_product->id . '.jpg',
+                                    __DIR__ . '/../../public/img/products/img_sm_' . $new_product->category_id . '_' . $new_product->id . '.jpg');
+                            $created_files[] = __DIR__ . '/../../public/img/products/img_sm_' . $new_product->category_id . '_' . $new_product->id . '.jpg';
+                        }
+                    }
+                }
+                
+                //OK. Saved. 
+                $this->db->commit();
                 $this->flashSession->success('Закупка сохранена');
+                //End of product clone process
                 if ($category->parent_category_id) {
                     return $this->response->redirect('/categories/view/' . $category->parent_category_id);
                 } else {

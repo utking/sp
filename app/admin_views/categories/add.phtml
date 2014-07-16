@@ -1,25 +1,23 @@
-<p><?php echo $this->getContent() ?></p>
-
+<p>{{ content() }}</p>
 <?php $date = new DateTime(); ?>
-
 <div>
     <?php if (isset($category_id)) { ?>
         <div class="title">Изменить закупку товаров</div>
     <?php } else { ?>
         <div class="title">Добавить закупку товаров</div>
     <?php } ?>
-    <?php echo Phalcon\Tag::form(['/categories/save', 'id' => 'new_category_form', 'enctype' => 'multipart/form-data', 'class' => 'form-horizontal']) ?>
+    {{ form('/categories/save', 'id' : 'new_category_form', 'enctype' : 'multipart/form-data', 'class' : 'form-horizontal') }}
         <table class="table table-bordered table-condensed">
             <tr>
                 <td><label for="category_title">Название:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::textField(["category_title", 'required' => '', 'class' => 'form-control']) ?>
+                    {{ text_field("category_title", 'required' : '', 'class' : 'form-control') }}
                 </td>
             </tr>
             <tr>
                 <td><label for="category_description">Описание:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::textarea(["category_description", 'class' => 'form-control', 'rows' => '15']) ?>
+                    {{ text_area("category_description", 'class' : 'form-control', 'rows' : 15) }}
                 </td>
             </tr>
             <tr>
@@ -35,51 +33,44 @@
             <tr>
                 <td><label for="update_datetime">В начало списка:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::checkField(["update_datetime"]) ?>
+                    {{ check_field("update_datetime") }}
                 </td>
             </tr>
             <?php } ?>
             <tr>
                 <td><label for="category_hidden">Не показывать клиентам:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::checkField(["category_hidden"]) ?>
+                    {{ check_field("category_hidden") }}
                 </td>
             </tr>
             <tr>
                 <td><label for="category_use_forum">Разрешить обсуждение:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::checkField(["category_use_forum"]) ?>
+                    {{ check_field("category_use_forum") }}
                 </td>
             </tr>
             <tr>
                 <td><label for="category_parent_id">Родительская категория:</label></td>
                 <td>
-                    <?= Phalcon\Tag::select(["category_parent_id", 
-                        $parents, 
-                        'using' => array('id', 'title'), 
-                        'useEmpty' => true,
-                        'emptyText' => '-',
-                        'class' => 'form-control'
-                        ]) 
-                    ?>
+                    {{ select("category_parent_id", parents, 'using' : ['id', 'title'], 'useEmpty' : true, 'emptyText' : '-', 'class' : 'form-control' ) }}
                 </td>
             </tr>
             <tr>
                 <td><label for="category_rules">Условия закупки:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::textarea(["category_rules", 'class' => 'form-control', 'rows' => '15']) ?>
+                    {{ text_area("category_rules", 'class' : 'form-control', 'rows' : 15) }}
                 </td>
             </tr>
             <tr>
                 <td><label for="category_photo">Изображение:</label></td>
                 <td>
-                    <?php echo Phalcon\Tag::fileField(["category_photo", '' => '', 'onchange' => 'removePhoto(); return false;']) ?>
+                    {{ file_field("category_photo", 'onchange' : 'removePhoto(); return false;') }}
                 </td>
             </tr>
             <?php if (isset($category_id) && strlen($category_img)) { ?>
             <tr id='img_row'>
                 <td class="cat_title">
-                    <a href="#" onclick="removePhoto(); return false;" class="btn btn-warning">Удалить изображение</a>
+                    {{ link_to('#', 'onclick' : 'removePhoto(); return false;', 'class' : "btn btn-warning", 'text' : 'Удалить изображение') }}
                 </td>
                 <td>
                     <div>
@@ -94,11 +85,14 @@
         <div class="control-group">
             <div class="controls">
         <?php if (isset($category_id)) { ?>
-            <?php echo Phalcon\Tag::submitButton(["Обновить", 'name' => 'update_category', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
-            <?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category_id]) ?>
-            <?php echo Phalcon\Tag::hiddenField(["category_img", 'value' => $category_img]) ?>
+            {{ submit_button("Обновить", 'name' : 'update_category', 'class' : 'btn btn-lg btn-primary btn-block') }}
+            
+            {{ submit_button("В новую закупку", 'name' : 'clone_category', 'class' : 'btn btn-lg btn-primary btn-block') }}
+            
+            {{ hidden_field("category_id", 'value' : category_id) }}
+            {{ hidden_field("category_img", 'value' : category_img) }}
         <?php } else { ?>
-            <?php echo Phalcon\Tag::submitButton(["Добавить", 'name' => 'add_category', 'class' => 'btn btn-lg btn-primary btn-block']) ?>
+            {{ submit_button("Добавить", 'name' : 'add_category', 'class' : 'btn btn-lg btn-primary btn-block') }}
         <?php } ?>
             </div>
         </div>
