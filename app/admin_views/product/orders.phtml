@@ -18,19 +18,6 @@
                         <?= (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')) ?>
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
-                        <div>
-                            <div><a title="Подтвердить одобренные" href="#" data-reveal-id="statusModal_<?= $cur_category ?>" onclick="return false;">Подтвердить одобренные</a></div>
-                            <div>{{ link_to('/product/send_messages/' ~ cur_category, 'text': 'Отправить сообщение по закупке') }}</div>
-                            <div id="statusModal_<?= $cur_category ?>" class="reveal-modal changeStatusDialog" category_id="<?= $cur_category ?>">
-                                <h3>Статус для подтвержденных заказов</h3>
-                                <div class="err_block"></div>
-                                <p>{{ select('statusModal_' ~ cur_category, order_statuses, 'using' : ['id', 'status_title'], 'class' : 'order_status_id form-control') }}</p>
-                                <div class="controls-row">
-                                    <a href="#" onclick="ordersChangeStatus(this); return false;" class="btn btn-primary">OK</a>
-                                </div>
-                                <a class="close-reveal-modal">&#215;</a>
-                            </div>
-                        </div>
                         <div>Скрыть картинки {{ check_field('img_hider[]', 'onclick' : 'toggleImages(this)') }}</div>
                     </td>
                     <td class="order_items">
