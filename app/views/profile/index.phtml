@@ -104,7 +104,6 @@
                                     <th>Кол-во</th>
                                     <th>Цена</th>
                                     <th>Дата</th>
-                                    <th>Статус</th>
                                     <th>Сообщения</th>
                                     <th>Отмена</th>
                                 </tr>
@@ -118,7 +117,6 @@
                                         <td><?= $order->product_count ?></td>
                                         <td><?= $order->order_summa ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
-                                        <td><?= SpOrder::getStatus($order->order_status_id) ?></td>
                                         <td>
                                         <?php if (!Product::isStopped($order->product_id)) { ?>
                                                 <div>
