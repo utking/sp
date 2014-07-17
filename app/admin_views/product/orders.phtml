@@ -18,6 +18,7 @@
                         <?= (strlen($category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">')) ?>
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
+                        <div>{{ link_to('/product/send_messages/' ~ cur_category, 'text': 'Отправить сообщение по закупке') }}</div>
                         <div>Скрыть картинки {{ check_field('img_hider[]', 'onclick' : 'toggleImages(this)') }}</div>
                     </td>
                     <td class="order_items">
