@@ -50,7 +50,7 @@
                                         <td class="product_title prod_img">
                                             <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg')) {
                                                 echo '<img class="cat_img" src="', 
-                                                        __DIR__ . '/../../../public/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg'
+                                                        '/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg'
                                                         , '">';
                                             } else {
                                                 echo '-';
