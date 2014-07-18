@@ -4,6 +4,7 @@ class SpOrder extends Phalcon\Mvc\Model
 {
     public function initialize() {
         $this->setSource('sp_order');
+        $this->hasOne('product_id', 'Product', 'id');
     }
     
     public function notSave()

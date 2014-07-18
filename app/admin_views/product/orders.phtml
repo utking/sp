@@ -48,7 +48,14 @@
                                             ?></td>
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
                                         <td class="product_title prod_img">
-                                            <?= (strlen(ProductImage::getProductImage($order->product_id)) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($order->product_id) . '">') : ('-')) ?>
+                                            <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg')) {
+                                                echo '<img class="cat_img" src="', 
+                                                        __DIR__ . '/../../../public/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg'
+                                                        , '">';
+                                            } else {
+                                                echo '-';
+                                            }
+                                            ?>
                                         </td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
