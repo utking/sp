@@ -1,17 +1,21 @@
-.advanced-wrapper {
+.advanced-wrapper,
+.advanced-wrapper1 {
   border: 1px solid #ccc;
   float: left;
   margin-left: 3%;
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.advanced-wrapper {
+.advanced-wrapper,
+.advanced-wrapper1 {
   width: 96%;
   display: block;
 }
-.editor-container {
+.editor-container,
+.editor-container1 {
   height: 400px;
 }
-.toolbar-container {
+.toolbar-container,
+.toolbar-container1 {
   border-bottom: 1px solid #ccc;
 }

@@ -99,6 +99,8 @@ class CategoriesController extends ControllerBase {
                 $this->view->category_id = $category->id;
                 $this->tag->setDefault('category_title', $category->title);
                 $this->tag->setDefault('category_description', $category->desc);
+                $this->view->category_description = $category->desc;
+                $this->view->category_rules = $category->rules;
                 $this->tag->setDefault('category_rules', $category->rules);
                 $this->tag->setDefault('category_hidden', $category->hidden);
                 $this->tag->setDefault('category_use_forum', $category->use_forum);
@@ -141,7 +143,7 @@ class CategoriesController extends ControllerBase {
                 $img_data = base64_encode(file_get_contents($file->getTempName()));
             }
             if (!$this->request->hasPost('category_title') || !$this->request->hasPost('category_description')) {
-                $this->flashSession->error('Не указано название либо описание закупки');
+                $this->flashSession->error('Не указано название либо описание закупки: ' . print_r($_POST,1));
                 return $this->dispatcher->forward(array(
                             'controller' => 'categories',
                             'action' => 'add'
@@ -152,8 +154,8 @@ class CategoriesController extends ControllerBase {
             $category_hidden = (int) $this->request->hasPost('category_hidden');
             $category_use_forum = (int) $this->request->hasPost('category_use_forum');
             $category_title = trim($this->request->getPost('category_title', 'string'));
-            $category_description = strip_tags(trim($this->request->getPost('category_description')), '<p><br><i><b>');
-            $category_rules = strip_tags(trim($this->request->getPost('category_rules')), '<p><br><i><b>');
+            $category_description = trim($this->request->getPost('category_description'));
+            $category_rules = trim($this->request->getPost('category_rules'));
             $stop_datetime = trim($this->request->getPost('category_stop_datetime', 'string'));
             $category_stop_datetime = DateTime::createFromFormat('d.m.Y H:i', $stop_datetime);
             
