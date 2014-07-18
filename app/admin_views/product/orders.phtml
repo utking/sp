@@ -59,7 +59,7 @@
                                         </td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
-                                        <td><?= number_format($order->order_summa) ?></td>
+                                        <td><?= number_format($order->order_summa, 0, ',', '') ?></td>
                                         <td><?= User::getLogin($order->user_id) ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <?php $messages = Categories::getOrderMessages($order->product_id); ?>
