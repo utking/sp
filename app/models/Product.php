@@ -5,6 +5,7 @@ class Product extends Phalcon\Mvc\Model
     public function initialize() {
         $this->setSource('sp_product');
         $this->hasOne('category_id', 'Categories', 'id');
+        $this->hasMany('id', 'ProductAttribute', 'product_id');
     }
     
     public static function getProductTitle($product_id) {

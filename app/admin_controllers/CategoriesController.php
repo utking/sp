@@ -246,7 +246,7 @@ class CategoriesController extends ControllerBase {
                 if ($this->request->hasPost('category_img') && strlen($this->request->getPost('category_img', 'string'))) {
                     $category_prev_img = $this->request->getPost('category_img', 'string');
                 }
-                $src_category = Categories::findFirst($category_id);
+                $src_category = Categories::findFirst($src_category_id);
                 if (!$src_category) {
                     $this->flashSession->error('Ошибка клонирования закупки - закупка не найдена');
                     return $this->dispatcher->forward(array(
@@ -355,6 +355,23 @@ class CategoriesController extends ControllerBase {
                             }
                             return $this->response->redirect('/categories/edit/' . $src_category_id);
                         }
+
+                        $attrs = $src_product->productAttribute;
+                        foreach ($attrs as $attr) {
+                            $new_attr = new ProductAttribute();
+							$new_attr->product_id = $new_product->id;
+							$new_attr->attr = $attr->attr;
+							if (!$new_attr->save()) {
+								foreach ($new_attr->getMessages() as $message) {
+									$this->flashSession->error($message);
+								}
+								$this->db->rollBack();
+								foreach ($created_files as $cur_file) {
+									unlink($cur_file);
+								}
+								return $this->response->redirect('/categories/edit/' . $src_category_id);
+							}
+						}
                         
                         if (file_exists(__DIR__ . '/../../public/img/products/img_' . $src_product->category_id . '_' . $src_product->id . '.jpg')) {
                             copy(__DIR__ . '/../../public/img/products/img_' . $src_product->category_id . '_' . $src_product->id . '.jpg',
