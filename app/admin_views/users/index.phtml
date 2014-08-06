@@ -18,9 +18,9 @@
         <tr>
             <td>{{ user.login }}</td>
             <td>{{ user.full_name }}</td>
-            <td><a href='tel:{{ user.phone }}'>{{ user.phone }}</a></td>
+            <td><a target='_blank' href='tel:{{ user.phone|escape_attr }}'>{{ user.phone }}</a></td>
             <td>{{ user.location }}</td>
-            <td><a href='mailto:{{ user.email }}'>{{ user.email }}</a></td>
+            <td><a href='mailto:{{ user.email|escape_attr }}'>{{ user.email }}</a></td>
         </tr>
         {% endfor %}
     </table>
