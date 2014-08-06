@@ -47,7 +47,7 @@
                                                 'class' => 'btn',
                                                 'text' => $order->id));
                                             ?></td>
-                                        <td><?= Product::getProductTitle($order->product_id) ?></td>
+                                        <td><?= $order->product->title ?></td>
                                         <td class="product_title prod_img">
                                             <?php if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $order->product->category_id . '_' .$order->product_id . '.jpg')) {
                                                 echo '<img class="cat_img" src="', 
@@ -58,10 +58,10 @@
                                             }
                                             ?>
                                         </td>
-                                        <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
+                                        <td><?= $order->productAttribute->attr ?></td>
                                         <td><?= $order->product_count ?></td>
                                         <td><?= number_format($order->order_summa, 0, ',', '') ?></td>
-                                        <td><?= User::getLogin($order->user_id) ?></td>
+                                        <td><?= $order->user->login ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <?php $messages = Categories::getOrderMessages($order->product_id); ?>
                                         <td class="product_price">
@@ -75,7 +75,7 @@
                                             <?php } ?>
                                             <span style="margin-right: 0.5em;" class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span>
                                         </td>
-                                        <td><?= User::getLocation($order->user_id) ?></td>
+                                        <td><?= $order->user->location ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
