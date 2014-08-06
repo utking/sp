@@ -29,11 +29,12 @@
                                     <th>Товар</th>
                                     <th class="prod_img"></th>
                                     <th>Размер</th>
-                                    <th>Количество</th>
+                                    <th>Кол</th>
                                     <th>Сумма</th>
                                     <th>Пользователь</th>
                                     <th>Дата заказа</th>
                                     <th></th>
+                                    <th style='width: 100px;'></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -74,6 +75,7 @@
                                             <?php } ?>
                                             <span style="margin-right: 0.5em;" class="glyphicon <?= (count($messages) > 0 ? 'glyphicon-envelope' : '') ?>"></span>
                                         </td>
+                                        <td><?= User::getLocation($order->user_id) ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
