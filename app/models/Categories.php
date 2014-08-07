@@ -5,6 +5,7 @@ class Categories extends Phalcon\Mvc\Model
     public function initialize() {
         $this->setSource('sp_categories');
         $this->hasMany('id', 'Product', 'category_id');
+        $this->hasOne('id', 'Categories', 'parent_category_id');
     }
     
     protected static function di()
