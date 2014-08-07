@@ -1,70 +1,25 @@
-<p><?php echo $this->getContent() ?></p>
+<p>{{ get_content() }}</p>
 <div class="btn-toolbar" role="toolbar">
     <div class="btn-group">
-        <?=
-        $this->tag->linkTo(array(
-            '/categories/index/',
-            'text' => 'Назад к списку закупок',
-            'type' => 'button',
-            'class' => 'btn btn-default'
-        ));
-        ?>
-        <?php if ($category->parent_category_id) { ?>
-            <?=
-            $this->tag->linkTo(array(
-                '/categories/view/' . $category->parent_category_id,
-                'text' => 'К родительской категории',
-                'type' => 'button',
-                'class' => 'btn btn-default'
-            ));
-            ?>
-        <?php } ?>
+		{{ link_to('/categories/index/', 'text' : 'Назад к списку закупок', 'type' : 'button', 'class' : 'btn btn-default') }}
+		{% if category.parent_category_id > 0 %}
+			{{ link_to('/categories/view/' ~ category.parent_category_id, 'text' : 'К родительской категории', 'type' : 'button', 'class' : 'btn btn-default') }}
+		{% endif %}
     </div>
-    <?php if ($category->parent_category_id < 1) { ?>
+	{% if category.parent_category_id < 1 %}
         <div style="text-align: right; float: right;">
-            <?=
-            $this->tag->linkTo(array(
-                './#' . $category->id,
-                'text' => 'Вопрос администратору',
-                'type' => 'button',
-                'onclick' => 'askAdmin(); return false;',
-                'class' => 'btn btn-link alert alert-warning'
-            ));
-            ?>
+			{{ link_to('./#' ~ category.id, 'text' : 'Вопрос администратору', 'onclick' : 'askAdmin(); return false;', 'class' : 'btn btn-link alert alert-warning') }}
         </div>
-    <?php } ?>
+	{% endif %}
 </div>
 
 <div id="ask_admin_div" class="form-group form-horizontal">
-    <?php if ($category->parent_category_id < 1) { ?>
-        <?=
-        $this->tag->textarea(array(
-            'ask_admin_text',
-            'placeholder' => 'Вопрос администратору',
-            'class' => 'form-control input-block',
-            'rows' => 7
-        ));
-        ?>
+	{% if category.parent_category_id < 1 %}
+		{{ text_area('ask_admin_text', 'placeholder' : 'Вопрос администратору', 'class' : 'form-control input-block', 'rows' : 7) }}
         <br>
-        <?=
-        $this->tag->linkTo(array(
-            './#',
-            'onclick' => 'return askAdmin();',
-            'text' => 'Отправить вопрос',
-            'type' => 'button',
-            'class' => 'btn btn-info'
-        ));
-        ?>
-        <?=
-        $this->tag->linkTo(array(
-            './#',
-            'onclick' => '$("#ask_admin_div").hide(300); return false;',
-            'text' => 'Отмена',
-            'type' => 'button',
-            'class' => 'btn btn-info'
-        ));
-        ?>
-    <?php } ?>
+		{{ link_to('./#', 'onclick' : 'return askAdmin();', 'text' : 'Отправить вопрос', 'type' : 'button', 'class' : 'btn btn-info') }}
+		{{ link_to('./#', 'onclick' : '$("#ask_admin_div").hide(300); return false;', 'text' : 'Отмена', 'type' : 'button', 'class' : 'btn btn-info') }}
+	{% endif %}
 </div>
 
 
@@ -74,37 +29,37 @@
         <?php if (strlen($category->rules) > 2) { ?>
         <div class="">
             <div class="title">Условия закупки</div>
-            <div class="alert alert-info"><?= $category->rules ?></div>
+            <div class="alert alert-info">{{ category.rules|e }}</div>
         </div>
         <br>
         <?php } ?>
-        <div class="title">Закупки в категории &laquo;<?= $category->title ?>&raquo;</div><br>
+        <div class="title">Закупки в категории &laquo;{{ category.title|e }}&raquo;</div><br>
         <table class="table table-bordered table-condensed cat_table">
             <tr>
                 <td class="cat_title">Название и фото</td>
                 <td class="cat_desc">Описание</td>
                 <td class="cat_products_count">Товаров в закупке</td>
-                <!--td class="cat_products_count">Стоп</td-->
             </tr>
-            <?php foreach ($category_child_cats as $cur_category) { ?>
+			{% for cur_category in category_child_cats %}
                 <tr>
                     <td class="cat_title">
-                        <div class="title"><?= $cur_category->title ?></div>
+                        <div class="title">{{ cur_category.title }}</div>
                         <?=
                         $this->tag->linkTo(array(
                             '/categories/view/' . $cur_category->id,
                             'text' =>
-                            (strlen($cur_category->img) > 0 ? ('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $cur_category->img . '">') : ('<img class="cat_img" src="/img/noimage.jpg">'))));
+							(strlen($cur_category->img) > 0 ? 
+								('<img class="cat_img" src="data:image/jpeg;charset=utf-8;base64,' . $cur_category->img . '">') 
+							:
+							   	('<img class="cat_img" src="/img/noimage.jpg">'))));
                         ?>
                     </td>
-                    <td class="cat_desc"><?= $cur_category->desc ?></td>
+                    <td class="cat_desc">{{cur_category.desc|e }}</td>
                     <td class="cat_products_count">
                         <?= Categories::productsCount($cur_category->id) ?>
                     </td>
-                    <?php $stop_datetime = new DateTime($cur_category->stop_datetime); ?>
-                    <!--td class="cat_products_count"><span class="<?= '' /* (!Categories::isStopped($cur_category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') */ ?></span></td-->
                 </tr>
-            <?php } ?>
+			{% endfor %}
         </table>
     </div>
 
@@ -238,54 +193,46 @@
 
 <?php } ?>
 
-<?php if ($category->use_forum > 0) { ?>
-    <?php echo Phalcon\Tag::form(['/categories/new_message', 'id' => 'forum_new_message_form', 'class' => 'form-horizontal']) ?>
+{% if category.use_forum > 0 %}
+	{{ form('/categories/new_message', 'id' : 'forum_new_message_form', 'class' : 'form-horizontal') }}
     <div class="forum_block" id="new_msg">
         <h3 class="help-block">Обсуждение закупки</h3>
         <div id="forum_new_msg">
             <table class="table">
                 <tr>
                     <td style='width: 70px;'><label for="forum_new_msg_text">Сообщение:</label></td>
-                    <td>
-                        <?php echo Phalcon\Tag::textarea(["forum_new_msg_text", 'class' => 'form-control', 'rows' => 10]) ?>
-                    </td>
+                    <td>{{ text_area("forum_new_msg_text", 'class' : 'form-control', 'rows' : 10) }}</td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>
-                        <?php echo Phalcon\Tag::submitButton(["Отправить", 'name' => 'forum_send_new_msg', 'class' => 'btn btn-default', 'onclick' => 'return check_forum_msg();']) ?>
-                        <?php echo Phalcon\Tag::hiddenField(["category_id", 'value' => $category->id]) ?>
+						{{ submit_button("Отправить", 'name' : 'forum_send_new_msg', 'class' : 'btn btn-default', 'onclick' : 'return check_forum_msg();') }}
+						{{ hidden_field("category_id", 'value' : category.id) }}
                     </td>
                 </tr>
             </table>
         </div>
 
         <table class="table table-condensed table-bordered forum_msgs_table">
-            <?php foreach ($forum_msgs as $cur_msg) : ?>
+			{% for cur_msg in forum_msgs %}
                 <tr>
                     <td style="width: 40px;">
-                        <?php
-                        echo $this->tag->linkTo(array(
-                            '#' . $cur_msg->id,
-                            'text' => '#' . $cur_msg->id,
-                            'id' => $cur_msg->id
-                        ));
-                        ?>
+						{{ link_to('#' ~ cur_msg.id, 'text' : '#' ~ cur_msg.id, 'id' : cur_msg.id) }} 
                     </td>
                     <td class="forum_msg_info">
                         <span class="forum_info_user"><?= User::getLogin($cur_msg->user_id) ?></span>
-                        <span class="forum_info_date"><?= rus_date($cur_msg->item_datetime, true) ?></span>
+                        <span class="forum_info_date">{{ cur_msg.item_datetime|rus_date(1) }}</span>
                     </td>
                     <td class="forum_msg_text">
-                        <span class=""><?= $cur_msg->msg ?></span>
+                        <span class="">{{ cur_msg.msg }}</span>
                     </td>
                 </tr>
-            <?php endforeach; ?>
+			{% endfor %}
         </table>
     </div>
     </form>
 
-<?php } ?>
+{% endif %}
 
 <script>
     <!--
