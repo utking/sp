@@ -43,6 +43,10 @@ class OrderController extends ControllerBase {
             if (!$order->delete()) {
                 $this->db->rollback();
                 $this->flashSession->error('Ошибка удаления заказа');
+				$logger->log('Order delete error: ', \Phalcon\Logger::INFO);
+				foreach($order->getMessages() as $message) {
+					$logger->log("\t$message", \Phalcon\Logger::INFO);
+				}
                 return $this->response->redirect('/profile');
             }
             $this->db->commit();
