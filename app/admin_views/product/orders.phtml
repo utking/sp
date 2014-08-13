@@ -40,6 +40,7 @@
                             <tbody>
                                 <?php foreach ($category_orders['orders'] as $cur_order) { ?>
                                     <?php $order = SpOrder::findFirst($cur_order) ?>
+									<?php if (!$order->product) { continue; } ?>
                                     <tr class="<?= $order->is_approved ? 'text-success' : 'text-muted' ?>">
                                         <td><?php
                                             echo $this->tag->linkTo(array(

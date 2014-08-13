@@ -67,10 +67,18 @@
 
             <td class="cat_products_count"><?= Categories::getOrderCount($cur_category->id) ?></td>
             
-            <td class="cat_products_count"><?= $this->tag->linkTo(array(
+			<td class="cat_products_count">
+				<?= $this->tag->linkTo(array(
                 '/categories/edit/' . $cur_category->id, 
                 'class' => 'btn btn-link',
-                'text' => 'Изменить')) ?></td>
+				'text' => 'Изменить')) ?>
+				<br>
+				<?= $this->tag->linkTo(array(
+                '/categories/delete/' . $cur_category->id, 
+				'onclick' => 'return confirm("Удалить закупку?");',
+                'class' => 'btn btn-link',
+				'text' => 'Удалить')) ?>
+				</td>
         </tr>
     <?php } ?>
     </table>
@@ -99,10 +107,8 @@
     <?php $cur_index = 1; ?>
     <?php foreach ($this->view->products as $product) { ?>
         <tr class="product_item_row" product_id="<?= $product->id ?>">
-            <td style="width: 16px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
-                <?= $this->tag->checkField(['uid[]', 'value' => $product->id]); ?>
-            </td>
             <td style="width: 40px; vertical-align: middle; text-align: center" id="product_<?= $product->id ?>">
+                <?= $this->tag->checkField(['uid[]', 'value' => $product->id]); ?><br><br>
                 <?= $this->tag->linkTo(array(
                     '/categories/view/' . $category->id . '#product_' . $product->id, 
                     'text' => '' . $cur_index++,

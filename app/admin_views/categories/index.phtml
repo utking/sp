@@ -46,10 +46,18 @@
                 <?php } ?>
             </td>
             <td class="cat_products_count"><?= Categories::getOrderCount($category->id) ?></td>
-            <td class="cat_products_count"><?= $this->tag->linkTo(array(
+			<td class="cat_products_count">
+				<?= $this->tag->linkTo(array(
                 '/categories/edit/' . $category->id, 
                 'class' => 'btn btn-link',
-                'text' => 'Изменить')) ?></td>
+				'text' => 'Изменить')) ?>
+				<br>
+				<?= $this->tag->linkTo(array(
+                '/categories/delete/' . $category->id, 
+                'class' => 'btn btn-link',
+				'onclick' => 'return confirm("Удалить закупку?");',
+				'text' => 'Удалить')) ?>
+			</td>
         </tr>
     <?php } ?>
     </table>
