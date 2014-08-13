@@ -90,6 +90,68 @@ class CategoriesController extends ControllerBase {
         }
     }
 
+	public function deleteAction() {
+        $args = func_get_args();
+        if (count($args) > 0 && $this->request->isGet()) {
+            $id = (int) $args[0];
+            $category = Categories::findFirst($id);
+			$category_child_cats = $category->getCategories();
+			if ($category_child_cats && count($category_child_cats)) {
+				$this->flashSession->error('Нельзя удалить закупку, являющуюся родительской для других');
+				return $this->response->redirect('/categories/view/' . $id);			
+			}
+			$products = $category->product;
+			$this->db->begin();
+			//delete products
+			foreach ($products as $product_item) {
+				$attributes = $product_item->productAttribute;
+				//delete products attributes first
+				foreach ($attributes as $attr_item) {
+					if (!$attr_item->delete()) {
+						$this->flashSession->error('Не удалось удалить категорию. Ошибка при удалении размеров товаров');
+						foreach ($attr_item->getMessages() as $message) {
+							$this->flashSession->error($message);
+						}
+						$this->db->rollBack();
+						return $this->response->redirect('/categories/view/' . $id);			
+					}
+				}
+				//products attributes deleted. now delete current product
+				if (!$product_item->delete()) {
+					$this->flashSession->error('Не удалось удалить категорию. Ошибка при удалении товаров');
+					foreach ($product_item->getMessages() as $message) {
+						$this->flashSession->error($message);
+					}
+					$this->db->rollBack();
+					return $this->response->redirect('/categories/view/' . $id);			
+				}
+			}
+			//delete products images
+			foreach ($products as $product_item) {
+				$file_to_delete = __DIR__ . '/../../public/img/products/img_' . $product_item->category_id . '_' . $product_item->id . '.jpg';
+				if (file_exists($file_to_delete)) {
+					unlink($file_to_delete);
+				}
+			}
+			//products deleted successfully. now delete category
+			if (!$category->delete()) {
+				$this->flashSession->error('Не удалось удалить категорию');
+				foreach ($category->getMessages() as $message) {
+					$this->flashSession->error($message);
+				}
+				$this->db->rollBack();
+				return $this->response->redirect('/categories/view/' . $id);			
+			}
+			$this->db->commit();
+
+			$this->flashSession->success('Закупка удалена (тест)');
+			return $this->response->redirect('/categories/');
+			//*****************
+		}
+		$this->flashSession->error('Закупка не существует');
+		return $this->response->redirect('/categories/');			
+	}
+
     public function editAction() {
         $args = func_get_args();
         if (count($args) > 0 && $this->request->isGet()) {
