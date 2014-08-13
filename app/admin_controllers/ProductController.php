@@ -21,6 +21,7 @@ class ProductController extends ControllerBase {
         $categories = array();
         foreach ($orders as $order) {
             $product = Product::findFirst($order->product_id);
+			if (!$product) { continue; }
             $parent_cat_id = Categories::getRootCategoryID($product->category_id);
             if (!isset($categories[$parent_cat_id])) {
                 $categories[$parent_cat_id] = [];
