@@ -36,17 +36,19 @@ class ProfileController extends ControllerBase {
             $categories = array();
             foreach ($orders as $order) {
                 $product = Product::findFirst($order->product_id);
-                $parent_cat_id = Categories::getRootCategoryID($product->category_id);
-                if (!isset($categories[$parent_cat_id])) {
-                    $categories[$parent_cat_id] = [];
-                    $categories[$parent_cat_id]['order_summa'] = 0;
-                    $categories[$parent_cat_id]['approved_summa'] = 0;
-                }
-                $categories[$parent_cat_id]['orders'][] = $order->id;
-                $categories[$parent_cat_id]['order_summa'] += $order->order_summa;
-                if ($order->is_approved) {
-                    $categories[$parent_cat_id]['approved_summa'] += $order->order_summa;
-                }
+				if ($product) {
+					$parent_cat_id = Categories::getRootCategoryID($product->category_id);
+					if (!isset($categories[$parent_cat_id])) {
+						$categories[$parent_cat_id] = [];
+						$categories[$parent_cat_id]['order_summa'] = 0;
+						$categories[$parent_cat_id]['approved_summa'] = 0;
+					}
+					$categories[$parent_cat_id]['orders'][] = $order->id;
+					$categories[$parent_cat_id]['order_summa'] += $order->order_summa;
+					if ($order->is_approved) {
+						$categories[$parent_cat_id]['approved_summa'] += $order->order_summa;
+					}
+				}
             }
             $this->view->categories = $categories;
 
