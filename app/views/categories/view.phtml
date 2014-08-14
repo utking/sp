@@ -136,7 +136,6 @@
                                         <?php
                                         if (!Categories::isStopped($product->category_id)) {
                                             echo $this->tag->linkTo(array(
-                                                //'/product/order/' . $product->id . '/' . $attr->id,
                                                 '#',
                                                 'onclick' => 'return false;',
                                                 'data-reveal-id' => 'orderModal_' . $product->id . '_' . $attr->id,
@@ -257,7 +256,7 @@
             var retObj = JSON.parse(retData);
                 if (typeof retObj === 'object') {
                     if (retObj.hasError === true) {
-                        $(el).parents('.orderDialog').find('.err_block').html(retObj.errorMsg).show();
+                        $(el).parents('.orderDialog').find('.err_block').addClass('alert alert-danger').html(retObj.errorMsg).show();
                     } else {
                         location.reload();
                     }
