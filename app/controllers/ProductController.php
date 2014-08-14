@@ -225,11 +225,15 @@ class ProductController extends ControllerBase {
                     $order->order_summa = $product->price;
                     $order->user_id = $auth['id'];
                     $order->product_count = 1;
+                    $order->is_paid = false;
                     $order->order_datetime = new RawValue('NOW()');
 
                     if (!$order->save()) {
                         $result->hasError = true;
                         $result->errorMsg = "Ошибка при совершении заказа";
+						foreach ($order->getMessages() as $message) {
+							$result->errorMsg .= $message . "<br>";
+						}
                         $this->db->rollBack();
                         die(json_encode($result));
                     }
