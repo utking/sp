@@ -314,65 +314,7 @@ class ProductController extends ControllerBase {
     }
         
     public function orderAction() {
-        $auth = $this->session->get('auth');
-        $args = func_get_args();
-        if (count($args) == 2 && $this->request->isGet()) {
-            $product_id = (int)$args[0];
-            $attr_id = (int)$args[1];
-            
-            if (!isset($auth['id'])) {
-                $this->flashSession->error('Войдите под своими учетным данными чтобы совершить заказ.');
-                return $this->response->redirect('/product/view/' . $product_id);
-            }
-            
-            $product = Product::findFirst(array(
-                "conditions" => "id = ?1",
-                "bind" => array(1 => (int)$product_id)
-            ));
-            $attr = ProductAttribute::findFirst(array(
-                "conditions" => "id = ?1 AND product_id = ?2",
-                "bind" => array(
-                    1 => (int)$attr_id,
-                    2 => (int)$product_id)
-            ));
-            if (count($product) == 1 && count($attr) == 1) {
-                if (Product::isStopped($product->id)) {
-                    $this->flashSession->error('Товар больше не доступен для заказа. Прием заказов остановлен');
-                    return $this->response->redirect('/product/view/' . $product_id);
-                }
-                $order = SpOrder::findFirst(array(
-                    'conditions' => 'product_id = ?1 AND product_attr_id = ?2 AND user_id = ?3',
-                    'bind' => array(
-                        1 => $product_id,
-                        2 => $attr_id,
-                        3 => $auth['id']
-                    )
-                ));
-                if ($order) {
-                    $order->order_summa += $product->price;
-                    $order->product_count += 1;
-                    $order->order_datetime = new RawValue('default');
-                } else {
-                    $order = new SpOrder();
-                    $order->product_id = $product_id;
-                    $order->product_attr_id = $attr_id;
-                    $order->order_status_id = 1;
-                    $order->order_summa = $product->price;
-                    $order->user_id = $auth['id'];
-                    $order->product_count = 1;
-                    $order->order_datetime = new RawValue('default');
-                }
-
-                if ($order->save()) {
-                    $this->flashSession->success('Заказ принят. Не забудьте внести оплату.');
-                    return $this->response->redirect('/product/view/' . $product_id);
-                } else {
-                    foreach ($new_order->getMessages() as $message) {
-                        $this->flashSession->error($message);
-                    }
-                }
-            }            
-        }
+		$this->flashSession->error('Заказ не принят. Администратор не должен делать заказы');
         $this->flashSession->error('Ошибка при совершении заказа');
         return $this->response->redirect('/categories/');
     }
