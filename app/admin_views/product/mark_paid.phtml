@@ -1,0 +1,23 @@
+<p><?php echo $this->getContent() ?></p>
+
+{{ form('/product/mark_paid') }}
+{{ hidden_field('category_id') }}
+
+<div class="table">
+    <h4 class="">Список пользователей</h4>
+    <table class="">
+        {% for user in users %}
+        <tr>
+            <td>
+                <label class="" for="to_users_<?= $user->o->user_id ?>">
+                    {{ check_field('to_users[]', 'checked' : '',  'id' : 'to_users_' ~ user.o.user_id, 'value' : user.o.user_id) }} <?= User::getLogin($user->o->user_id) ?>
+                </label>
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>
+
+{{ submit_button('Подтвердить', 'class' : 'btn btn-primary') }}
+
+</form>
