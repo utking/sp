@@ -1,6 +1,7 @@
 <?php
 
-use Phalcon\Db\RawValue;
+use Phalcon\Db\RawValue,
+	Phalcon\Mvc\Model\Resultset\Simple;
 
 class ProductController extends ControllerBase {
     
@@ -130,6 +131,91 @@ class ProductController extends ControllerBase {
             return $this->response->redirect('/product/orders');
         } else {
             $this->flashSession->error('Не верные параметры для отправки сообщения по закупке');
+            return $this->response->redirect('/product/orders');
+        }
+    }
+    
+    public function mark_paidAction() {
+        $args = func_get_args();
+        if ($this->request->isGet() && count($args) > 0) {
+            $category_id = (int)$args[0];
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Категория не существует: ' . $category_id);
+                return $this->response->redirect('/product/orders');
+            }
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $this->view->users = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = ?1', array( 1 => 1))
+                    ->andWhere('o.order_status_id != ?2', array( 2 => 3))
+                    ->andWhere('o.product_id = p.id')
+                    ->groupBy('user_id')
+                    ->getQuery()
+                    ->execute();
+            if (count($this->view->users) < 1) {
+                $this->flashSession->error('Некому поютверждать оплату в этой категории');
+                return $this->response->redirect('/product/orders');
+            }
+            $this->tag->setDefault('category_id', $category_id);
+            $this->tag->setDefault('users_count', print_r(join(',',$cat_ids),1));
+        } elseif ($this->request->isPost() && $this->request->hasPost('category_id')) {
+            $category_id = (int)$this->request->getPost('category_id', 'int');
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $this->view->users = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = 1')
+                    ->andWhere('o.order_status_id != 3')
+                    ->andWhere('o.product_id = p.id')
+                    ->groupBy('user_id')
+                    ->getQuery()
+                    ->execute();
+            $this->tag->setDefault('category_id', $category_id);
+            $this->tag->setDefault('users_count', print_r(join(',',$cat_ids),1));
+            $to_users = $this->request->getPost('to_users');
+            if (!is_array($to_users) || count($to_users) < 1) {
+                $this->flashSession->error('Не выбраны пользователи');
+                return true;
+            }
+            
+            $category = Categories::findFirst($category_id);
+            if (!$category) {
+                $this->flashSession->error('Категория не существует');
+                return $this->response->redirect('/product/orders');
+            }
+            $cat_ids = Categories::getChildIDs($category_id);
+            $cat_ids[] = $category_id;
+            $orders = $this->modelsManager->createBuilder()
+                    ->from(array('o' => 'SpOrder', 'p' => 'Product'))
+                    ->inWhere('p.category_id', $cat_ids)
+                    ->andWhere('o.is_approved = 1')
+                    ->andWhere('o.order_status_id != 3')
+                    ->andWhere('o.product_id = p.id')
+                    ->getQuery()
+                    ->execute();
+            if (count($orders) < 1) {
+                $this->flashSession->error('В категории не найдено ни одного заказа');
+                return $this->response->redirect('/product/orders');
+            }
+
+            foreach ($orders as $cur_order) {
+                $cur_order->o->is_paid = true;
+                
+                if (!$cur_order->o->save()) {
+                    $this->flashSession->error('Ошибка: не удалось подтвердить оплату пользователю: ' . User::getLogin($cur_order->o->user_id) . ' по заказу: ' . $cur_order->o->id);
+                    foreach ($cur_order->getMessages() as $message) {
+                        $this->flashSession->error($message);
+                    }
+                }
+            }
+            $this->flashSession->success('Оплата подтверждена');
+            return $this->response->redirect('/product/orders');
+        } else {
+            $this->flashSession->error('Не верные параметры для подтверждения оплаты по закупке');
             return $this->response->redirect('/product/orders');
         }
     }

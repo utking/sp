@@ -28,7 +28,7 @@ class UserMessage extends Phalcon\Mvc\Model
     }
 
 	public static function findMessages($category_id, $is_new = false) {
-		$cat_ids = Categories::getChildIDs($category->id);
+		$cat_ids = Categories::getChildIDs($category_id);
 		$cat_ids[] = $category_id;
         $messages = self::getBuilder()
                 ->from('UserMessage')

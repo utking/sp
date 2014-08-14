@@ -19,6 +19,7 @@
                         <div>Всего товаров: <?= count($categories[$cur_category]['orders']) ?></div>
                         <div class="price">На сумму: <?= $categories[$cur_category]['order_summa'] ?></div>
                         <div>{{ link_to('/product/send_messages/' ~ cur_category, 'text': 'Отправить сообщение по закупке') }}</div>
+                        <div>{{ link_to('/product/mark_paid/' ~ cur_category, 'text': 'Пометить оплату') }}</div>
                         <div>Скрыть картинки {{ check_field('img_hider[]', 'onclick' : 'toggleImages(this)') }}</div>
                     </td>
                     <td class="order_items">
@@ -61,7 +62,7 @@
                                         </td>
                                         <td><?= $order->productAttribute->attr ?></td>
                                         <td><?= $order->product_count ?></td>
-                                        <td><?= number_format($order->order_summa, 0, ',', '') ?></td>
+										<td <?= $order->is_paid ? 'style="font-weight: bolder;"' : '' ?>><?= number_format($order->order_summa, 0, ',', '') ?></td>
                                         <td><?= $order->user->login ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <?php $messages = Categories::getOrderMessages($order->product_id); ?>

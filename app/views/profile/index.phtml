@@ -115,7 +115,7 @@
                                         <td><?= Product::getProductTitle($order->product_id) ?></td>
                                         <td><?= ProductAttribute::getAttributeTitle($order->product_attr_id) ?></td>
                                         <td><?= $order->product_count ?></td>
-                                        <td><?= $order->order_summa ?></td>
+										<td <?= $order->is_paid ? 'style="color: green; font-weight: bold" title="Оплата подтверждена"' : '' ?>><?= $order->order_summa ?></td>
                                         <td><?= rus_date($order->order_datetime, true) ?></td>
                                         <td>
                                         <?php if (!Product::isStopped($order->product_id)) { ?>
