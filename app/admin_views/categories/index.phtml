@@ -28,21 +28,20 @@
             <td class="cat_products_count"><?= count(Product::find(array('conditions' => 'category_id = ?1', 'bind' => array( 1 => $category->id)))) ?></td>
             <?php } ?>
             <?php $stop_datetime = new DateTime($category->stop_datetime); ?>
-            <?php $category_messages = UserMessage::find(array(
-                'conditions' => 'is_new = 1 AND category_id = ?1',
-                'bind' => array(
-                    1 => $category->id
-                )
-            )); ?>
+			<?php $cat_ids = Categories::getChildIDs($category->id); ?>
+			<?php $cat_ids[] = $category_id; ?>
+            <?php $category_messages = UserMessage::findMessages($category->id, $is_new = false); ?>
+            <?php $new_category_messages = UserMessage::findMessages($category->id, $is_new = true); ?>
             <td class="cat_products_count"><span class="<?= (!Categories::isStopped($category->id) ? '' : ' errorMessage ')  ?>"><?= $stop_datetime->format('d.m.Y H:i:s') ?></span></td>
             <td class="cat_products_count">
                 <span class="glyphicon <?= $category->hidden ? 'glyphicon-eye-close' : '' ?>"></span>
                 <?php if (count($category_messages)) { ?>
                 <br>
-                <?= $this->tag->linkTo(array(
-                    '/categories/view_messages/' . $category->id, 
-                    'text' => '<span title="Есть вопросы администратору" class="glyphicon glyphicon-comment"></span>'
-                    )); ?>
+				{{ link_to('/categories/view_messages/' ~ category.id,
+					'text' : '<span title="Есть вопросы администратору" '
+							~ (new_category_messages|length ? ' style="color: red" ' : '') ~
+							'class="glyphicon glyphicon-comment"></span>')
+				}}
                 <?php } ?>
             </td>
             <td class="cat_products_count"><?= Categories::getOrderCount($category->id) ?></td>
