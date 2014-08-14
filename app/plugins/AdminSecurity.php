@@ -43,7 +43,7 @@ class AdminSecurity extends Plugin {
                 'order' => array('view', 'update', 'approve_order'),
                 'users' => array('edit', 'index'),
                 'product' => array('index', 'list', 'view', 'orders', 'edit', 'add', 'save', 'attrs', 'remove_attr', 
-                    'add_attr', 'payments', 'send_messages')
+                    'add_attr', 'payments', 'send_messages', 'mark_paid')
             );
                         
             foreach ($adminPrivateResources as $resource => $actions) {
