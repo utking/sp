@@ -25,7 +25,7 @@
     <tbody>
         <tr>
             <td class="product_title">
-                <?= (strlen(ProductImage::getProductImage($product->id)) > 0 ? ('<img class="product_img" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">') : ('<img class="product_img" src="/img/noimage.jpg">')) ?>
+                <?= (strlen(ProductImage::getProductImage($product->id)) > 0 ? ('<img class="product_img" alt="Не поддерживаемый браузер" src="data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id) . '">') : ('<img class="product_img" src="/img/noimage.jpg">')) ?>
             </td>
             <td class="price"><?= $product->price ?></td>
             <td class=""><?= $product->description ?></td>
