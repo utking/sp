@@ -43,7 +43,12 @@
     <div class="control-group">
         <label class="control-label" for="location">Населенный пункт</label>
         <div class="controls">
-            <?php echo Phalcon\Tag::textField(["location", 'type' => 'text', 'required' => '', 'class' => 'form-control']) ?>
+            <?php echo Phalcon\Tag::textField(["location", 'type' => 'text', 'required' => '', 'class' => 'form-control', 'list' => 'cities_list']) ?>
+			<datalist id='cities_list'>
+				<option value='Новопокровка'></option>
+				<option value='Рощино'></option>
+				<option value='Дальнереченск'></option>
+			</datalist>
         </div>
     </div>
     <div class="control-group">
