@@ -106,7 +106,11 @@
                         if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $category->id . '_' . $product->id . '.jpg')) {
                             $small_img_data = '/img/products/img_sm_' . $category->id . '_' . $product->id . '.jpg';
                         } else {
-                            $small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+							if (strlen(ProductImage::getProductImage($product->id))) {
+								$small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+							} else {
+								$small_img_data = ''; 
+							}
                         }
                         ?>
                         <?php
