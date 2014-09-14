@@ -2,10 +2,9 @@
 
 class ControllerBase extends Phalcon\Mvc\Controller
 {
-
     protected function initialize()
     {
-        Phalcon\Tag::prependTitle('SP | ');
+        Phalcon\Tag::prependTitle('EconomKHV | ');
     }
 
     protected function forward($uri){

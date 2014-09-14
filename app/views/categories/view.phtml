@@ -49,7 +49,7 @@
                             '/categories/view/' . $cur_category->id,
                             'text' =>
 							(strlen($cur_category->img) > 0 ? 
-								('<img class="cat_img" alt="Не поддерживаемый браузер" src="data:image/jpeg;charset=utf-8;base64,' . $cur_category->img . '">') 
+								('<img class="cat_img" alt="Не поддерживаемый браузер или изображение отсутствует" src="data:image/jpeg;charset=utf-8;base64,' . $cur_category->img . '">') 
 							:
 							   	('<img class="cat_img" src="/img/noimage.jpg">'))));
                         ?>
@@ -106,12 +106,16 @@
                         if (file_exists(__DIR__ . '/../../../public/img/products/img_sm_' . $category->id . '_' . $product->id . '.jpg')) {
                             $small_img_data = '/img/products/img_sm_' . $category->id . '_' . $product->id . '.jpg';
                         } else {
-                            $small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+							if (strlen(ProductImage::getProductImage($product->id))) {
+	                            $small_img_data = 'data:image/jpeg;charset=utf-8;base64,' . ProductImage::getProductImage($product->id);
+							} else {
+								$small_img_data = '';
+							}
                         }
                         ?>
                         <?php
-                        echo (strlen($img_data) ?
-                                ('<img class="cat_img prod_cat_img" alt="Не поддерживаемый браузер" src="' . $small_img_data . '" data-zoom-image="' . $img_data . '">') :
+                        echo (strlen($small_img_data) ?
+                                ('<img class="cat_img prod_cat_img" src="' . $small_img_data . '" data-zoom-image="' . $img_data . '">') :
                                 ('<img class="cat_img" src="/img/noimage.jpg">'))
                         ;
                         ?>
@@ -148,8 +152,8 @@
                                             <h3>Сделать заказ</h3>
                                             <div class="err_block"></div>
                                             <label for="product_count">Количество: </label>{{ select_static('product_count', [1,2,3,4,5,6,7,8,9,10], 'class': 'product_count form-control') }}
-                                            <label for="order_comment">Комментарий к заказу: </label>
-                                            {{ text_area('order_comment', 'rows' : 3, 'class': 'order_comment form-control', 'placeholder' : 'комментарий не обязателен') }}
+                                            <label for="order_comment">Комментарий к заказу и номер контактного телефона: </label>
+                                            {{ text_area('order_comment', 'rows' : 3, 'required' : 'required', 'class': 'order_comment form-control', 'placeholder' : 'комментарий и номер телефона обязателны') }}
                                             <br>
                                             <div class="controls-row">
                                                 <a href="#" onclick="makeOrder(this); return false;" class="btn btn-primary form-control">OK</a>

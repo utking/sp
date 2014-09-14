@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 class SignupController extends ControllerBase {
     
@@ -24,7 +24,6 @@ class SignupController extends ControllerBase {
         $this->tag->setDefault('login', $user->login);
         $this->tag->setDefault('full_name', $user->full_name);
         $this->tag->setDefault('phone', $user->phone);
-        $this->tag->setDefault('location', $user->location);
         $this->tag->setDefault('email', $user->email);
         
         $this->tag->setDefault('operation', 'update');
@@ -138,19 +137,10 @@ class SignupController extends ControllerBase {
             $full_name = trim($this->request->getPost('full_name', 'string'));
             $phone = trim($this->request->getPost('phone', 'string'));
             $confirmation = trim($this->request->getPost('confirmation', 'string'));
-            $location = trim($this->request->getPost('location', 'string'));
             $rules_accept = (int)($this->request->hasPost('accept_rules'));
                         
             if ($password != $confirmation) {
                 $this->flash->error('Пароль и подтвверждение не соответсвуют друг другу');
-                return $this->dispatcher->forward(array(
-                            'controller' => 'signup',
-                            'action' => 'index'
-                ));
-            }
-            
-            if ($location === '') {
-                $this->flash->error('Населенный пункт должен быть указан');
                 return $this->dispatcher->forward(array(
                             'controller' => 'signup',
                             'action' => 'index'
@@ -181,7 +171,6 @@ class SignupController extends ControllerBase {
                     $user->email = $email;
                     $user->full_name = $full_name;
                     $user->phone = $phone;
-                    $user->location = $location;
                     if ($password !== '') {
                         $user->hash = $this->security->hash($password);
                     }
@@ -224,7 +213,6 @@ class SignupController extends ControllerBase {
                 $user->phone = $phone;
                 $user->hash = $this->security->hash($password);
                 $user->is_alive = 1;
-                $user->location = $location;
                 
                 if ($user->save() == true) {
                     $this->flashSession->success("Теперь вы можете войти со своими логином и паролем");
@@ -270,7 +258,7 @@ class SignupController extends ControllerBase {
             
             if ($user->save()) {
                 $login = $user->login;
-                $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте <a href='http://www.spnovo.com'>spnovo.com</a> : " . $new_pass . 
+                $msg_body = "Новый пароль Вашей учетной записи ($login) на сайте <a href='http://www.economkhv.ru'>economkhv.ru</a> : " . $new_pass . 
                         "\r\n<br>Не забудьте сменить пароль на странице профиля.";
                 $headers = 'From: ' . $this->di->get('config')->mail->from . "\r\n";
                 $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";

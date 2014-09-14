@@ -13,14 +13,6 @@ class AdminElements extends Phalcon\Mvc\User\Component {
                 'caption' => 'Главная',
                 'action' => 'index'
             ),
-            'rules' => array(
-                'caption' => 'Правила',
-                'action' => 'index'
-            ),
-            'feed' => array(
-                'caption' => 'Отзывы и хвастики',
-                'action' => 'index'
-            ),
             'categories' => array(
                 'caption' => 'Закупки',
                 'items' => array(

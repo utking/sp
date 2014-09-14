@@ -74,7 +74,7 @@ class OrderController extends ControllerBase {
                 $email = $user->email;
                 $msg_body = 'Новое сообщение:<br>' . 
                         "\r\n<br>$msg_text.";
-                $headers = 'From: SPNovo Admin <' . $this->di->get('config')->mail->from . ">\r\n";
+                $headers = 'From: EconomKHV Admin <' . $this->di->get('config')->mail->from . ">\r\n";
                 $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
 
                 mail($email, "Ответ на вопрос по закупке", $msg_body, $headers);

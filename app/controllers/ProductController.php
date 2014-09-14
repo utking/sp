@@ -165,6 +165,12 @@ class ProductController extends ControllerBase {
                 $result->errorMsg = "Войдите под своими учетным данными чтобы совершить заказ";
                 die(json_encode($result));
             }
+
+			if ($info == '') {
+                $result->hasError = true;
+                $result->errorMsg = "Не указаны коментарии к заказу!";
+                die(json_encode($result));
+			}
             
             if ($product_count < 1) {
                 $result->hasError = true;

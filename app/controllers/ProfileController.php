@@ -11,21 +11,13 @@ class ProfileController extends ControllerBase {
 
     public function indexAction() {
         $auth = $this->session->get('auth');
-        if (isset($auth['id'])) {
-            if ($auth['id'] == 0) {
-                $this->view->user = new User();
-                $this->view->user->login = $this->di->get('config')->staticAdmin->login;
-                $this->view->user->email = $this->di->get('config')->staticAdmin->login . '@localhost';
-                $this->view->user->full_name = $this->di->get('config')->staticAdmin->login;
-                $this->view->user->phone = $this->di->get('config')->staticAdmin->login;
-            } else {
-                $this->view->user = User::findFirst(array(
-                    'conditions' => 'id = ?1',
-                    'bind' => array(
-                        1 => $auth['id']
-                    )
-                ));
-            }
+        if (isset($auth['id']) && (int)$auth['id'] > 0) {
+			$this->view->user = User::findFirst(array(
+				'conditions' => 'id = ?1',
+				'bind' => array(
+					1 => $auth['id']
+				)
+			));
             $orders = SpOrder::find(array(
                 'conditions' => 'user_id = ?1',
                 'bind' => array(
@@ -59,12 +51,7 @@ class ProfileController extends ControllerBase {
                 )
             ));
         } else {
-            $this->view->user = new User();
-            $this->view->user->login = '###';
-            $this->view->user->full_name = '###';
-            $this->view->user->email = '###';
-            $this->view->user->phone = '###';
-            $this->view->categories = array();
+			$this->response->redirect('/');
         }
     }
     

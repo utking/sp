@@ -20,14 +20,6 @@ class User extends Phalcon\Mvc\Model
         return '###';
     }
     
-    public static function getLocation($user_id) {
-        $user = User::findFirst($user_id);
-        if ($user) {
-            return $user->location;
-        }
-        return '###';
-    }
-    
     public static function generatePassword($length = 8) {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $count = mb_strlen($chars);
