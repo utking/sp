@@ -160,7 +160,7 @@ class ProductController extends ControllerBase {
             $product_count = (int)$this->request->getPost('product_count', 'int');
             $info = trim((string)$this->request->getPost('info', 'string'));
             
-            if (!isset($auth['id'])) {
+            if (!isset($auth['id']) || (int)$auth['id'] < 1) {
                 $result->hasError = true;
                 $result->errorMsg = "Войдите под своими учетным данными чтобы совершить заказ";
                 die(json_encode($result));
